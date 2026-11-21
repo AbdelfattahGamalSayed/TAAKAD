@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import type { Locale } from './copy';
+import type { CheckContext } from './checkFlow';
 
 export type Assessment = {
   status: 'assessed' | 'insufficient_information'; riskLevel: number | null;
@@ -21,7 +22,7 @@ export async function health() {
   if (!response.ok) throw new Error('NETWORK');
   return response.json() as Promise<{ ok: boolean; configured: boolean }>;
 }
-type Request = { text: string; sender: string; image: string | null; locale: Locale; consent: boolean; source?: 'text' | 'reviewed_screenshot'; reviewConfirmed?: boolean; prepared?: boolean };
+type Request = { text: string; sender: string; image: string | null; locale: Locale; consent: boolean; source?: 'text' | 'reviewed_screenshot'; reviewConfirmed?: boolean; prepared?: boolean; context?: CheckContext };
 export type Extraction = { status: 'readable' | 'unclear'; text: string; sender: string; warnings: string[] };
 export async function requestExtraction(body: Request, signal: AbortSignal): Promise<Extraction> { return request('/api/extract', body, signal); }
 export async function requestAssessment(body: Request, signal: AbortSignal): Promise<Assessment> { return request('/api/analyze', body, signal); }

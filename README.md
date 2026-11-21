@@ -29,7 +29,7 @@ Expo / React Native UI (English + Arabic)
 
 ## Privacy design
 
-The user selects text or a photo; the app does not read SMS or WhatsApp in the background. Screenshot transcription requires explicit consent to send the selected image to OpenAI. The user then reviews/edits the extracted text and consents again to text assessment. Pasted text and the optional claimed sender are also sent only with consent. Remove sensitive details before transmission; cropping is optional, and without cropping the whole selected photo is used.
+The user selects text or a photo; the app does not read SMS or WhatsApp in the background. Screenshot transcription requires explicit consent to send the selected image to OpenAI. The user then reviews/edits the extracted text and consents again to text assessment. Pasted text, the optional claimed sender and optional context answers are also sent only with consent. Remove sensitive details before transmission; cropping is optional, and without cropping the whole selected photo is used. The current photo and edited draft remain in app memory for Back navigation; they are cleared when removed/replaced or after successful assessment, and are not saved as history.
 
 The backend keeps requests in memory and does not intentionally persist or log message/image content. OpenAI requests set `store: false`; this does not promise zero retention by the provider. Only language and theme preferences persist in app storage. The OS/photo picker may retain temporary images. Feed requests disclose ordinary connection metadata to the source, but do not include the user's message, URL or image. Public feed caches are held in server memory.
 
@@ -68,14 +68,16 @@ The API key is read on each request. The ignored `.local/session.json` is a deve
 
 ## Current features
 
-The Trust Blue visual foundation uses larger labelled controls, a prominent screenshot tile, shared light/dark colours, readable system typography and mirrored Arabic navigation across all five tabs. System font scaling remains enabled; reduced-motion preferences suppress the intro and stack animations. See [the design system](design-system/t2akkad/MASTER.md) for tokens, layout rules and accessibility testing limits. New guided journeys, authentication and ticket-based community remain separate, unimplemented phases.
+The Trust Blue visual foundation uses larger labelled controls, a prominent screenshot tile, shared light/dark colours, readable system typography and mirrored Arabic navigation across all five tabs. System font scaling remains enabled; reduced-motion preferences suppress the intro and stack animations. See [the design system](design-system/t2akkad/MASTER.md) for tokens, layout rules and accessibility testing limits. Check now uses a guided journey; authentication and ticket-based community remain separate, unimplemented phases.
+
+Check starts with screenshot upload or pasting a message/link, then proceeds through editable text review, useful optional questions, and final consent. Back retains the current draft. Local English/Arabic keyword rules select account and password-reset questions without sending data; these rules are intentionally limited and may miss unusual wording. Users can answer Yes, No, Not sure, or skip. Editing text or sender clears prior answers and consent. Leaving Check cancels pending requests and ignores late responses. The confirmation shows a short preview; Edit the message opens the complete text, and the entire reviewed text is submitted.
 
 English and Arabic screens now use shorter, everyday wording. Results put severity and next actions before an optional **More details** section containing quotes, link evidence, scoring explanations and full limitations. The essential uncertainty warning stays visible; low scores explicitly do not mean safe, and reported scam links get a visible warning. Alerts retain original publisher text, dates and old/unavailable labels, while collection metadata moves into details. Settings keeps consent/privacy information and the demo disclaimer visible; troubleshooting and implementation explanations are optional. User-facing errors give recovery steps instead of API-key or terminal instructions. The AI prompt also requests short explanations and action-first advice; this is not a measured guarantee of reading level or model reliability.
 
 - Whole-photo selection by default. No black masks, manual rectangle drawing or percentage controls.
 - Optional **Choose & crop** opens the native phone photo picker and crop editor. Canceling leaves the previous selection intact. Expo Go's built-in iOS crop selection is square; Android uses its native crop UI. The browser uses whole-photo selection.
 - Preview and explicit consent before sending a screenshot to OpenAI for transcription.
-- Editable extracted message and sender. Any edit clears analysis consent. Only reviewed text and sender, not the image, are sent in the analysis request.
+- Editable extracted message and sender. Any edit clears context answers and analysis consent. Only reviewed text, sender and optional context answers, not the image, are sent in the analysis request.
 - Exact quoted warning phrases, explanations, evidence strength, a 1–5 ordinal warning level, or insufficient information without a score.
 - Public Phishing.Database exact-hostname checks alongside separate URL structure clues. Results distinguish listed, no match, unavailable and stale data. No user URLs are sent to the feed provider and suspicious destinations are never visited.
 - Four offline recovery checklists: opened a link, entered a password, shared a code, or paid/shared card details. Multiple scenarios can be selected.
@@ -90,6 +92,8 @@ No automatic message monitoring, official police endorsement, scheduled notifica
 The backend downloads a fixed public domain feed into memory and caches it for one hour. When refresh fails it can use cached data for up to 24 hours with a stale label, then reports unavailable. It rejects corrupt feeds and skips isolated malformed records (at most 1%). Checks match the exact visible hostname; no redirect expansion or website inspection occurs.
 
 A listed hostname raises overall risk to at least 4, with the separate AI message score displayed. Reports can be wrong or outdated. No match never means safe. Up to ten visible links are checked. A score is not a probability or identity verification.
+
+There is no score cap for messages without links: requests for codes, impersonation and payment scams can warrant 4 or 5. Context answers are unverified user reports, not proof of sender identity or safety. The model is instructed to use them to explain the situation without overriding strong scam evidence; this instruction is not a guarantee of correct model judgment.
 
 See THIRD_PARTY_NOTICES.md for the feed's MIT license and attribution.
 

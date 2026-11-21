@@ -33,6 +33,10 @@ Use short headings that name the task, familiar words and a concrete next action
 
 Never hide consent, the named external recipient, essential uncertainty, a reported-scam warning, old/unavailable alert labels or the fictional-community notice. Keep technical setup instructions in repository documentation or optional connection help, not error messages. Simplification must not imply safety, verified identity, official endorsement or guaranteed recovery.
 
+## Guided Check journey
+
+Use one stage at a time: choose, photo consent (screenshots only), editable text review, optional context questions, and final consent. The screenshot tile is the dominant entry; message and link alternatives remain labelled and visible. Back preserves the draft and reviewed screenshot text. Questions have Yes, No, Not sure and Skip choices; they never authenticate a sender. Editing the message or sender resets answers and consent. Final confirmation uses a short preview with an Edit action for the complete text. Results retain warning level and next actions before optional evidence. Keep whole-photo selection and optional native cropping.
+
 ## Verification and limits
 
 Automated checks cover semantic text contrast (at least 4.5:1 in light and dark), all five tabs in both languages/themes at 375px, 48-unit controls, keyboard focus, reduced-motion startup, tablet layouts and a browser 200% text stress test. The browser stress test approximates enlarged text; it is not a substitute for actual iOS Dynamic Type or VoiceOver testing.

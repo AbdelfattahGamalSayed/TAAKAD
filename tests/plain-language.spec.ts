@@ -1,3 +1,4 @@
+import { pasteAndConfirm } from './check-helpers';
 import { test, expect } from '@playwright/test';
 import { copy } from '../src/lib/copy';
 import { featureCopy } from '../src/lib/features';
@@ -12,9 +13,7 @@ for(const locale of ['en','ar'] as const) {
     const action=locale==='en'?'Do not share the code.':'لا تشارك الرمز.';
     await page.route('**/api/analyze',r=>r.fulfill({json:{status:'assessed',riskLevel:4,messageRiskLevel:4,summary,observedSignals:[],recommendedActions:[action],limitations:['Technical test limitation'],evidenceQuality:'strong',evidence:[{quote:message,reason:'Evidence explanation'}],extractedText:message,detectedUrls:[],urlEvidence:[],analysisMode:'ai',analyzedAt:new Date().toISOString(),locale}}));
     await page.goto('/');
-    await page.getByRole('tab',{name:t.message,exact:true}).click();
-    await page.getByRole('textbox',{name:t.message,exact:true}).fill(message);
-    await page.getByRole('checkbox').click();
+    await pasteAndConfirm(page,message,locale);
     await page.getByRole('button',{name:t.analyze,exact:true}).click();
     await expect(page.getByText(action,{exact:true})).toBeVisible();
     await expect(page.getByTestId('warning-score')).toHaveText('4 / 5');
@@ -39,14 +38,12 @@ for(const locale of ['en','ar'] as const) {
     await page.emulateMedia({reducedMotion:'reduce'});
     let code='API_NOT_CONFIGURED';
     await page.route('**/api/analyze',r=>r.fulfill({status:503,json:{error:code}}));
-    await page.goto('/');await page.getByRole('tab',{name:t.message,exact:true}).click();
-    await page.getByRole('textbox',{name:t.message,exact:true}).fill(message);
-    await page.getByRole('checkbox').click();
+    await page.goto('/');await pasteAndConfirm(page,message,locale);
     for(const error of ['API_NOT_CONFIGURED','UNAUTHORIZED','INVALID_AI_RESPONSE'] as const){
       code=error;await page.getByRole('button',{name:t.analyze,exact:true}).click();
       await expect(page.getByRole('alert')).toHaveText(t.errors[error]);
       await expect(page.getByRole('alert')).not.toContainText(/API|server|\.env|npm|Expo|الخادم/);
-      await expect(page.getByRole('textbox',{name:t.message,exact:true})).toHaveValue(message);
+      await expect(page.getByText(message,{exact:true})).toBeVisible();
       await expect(page.getByRole('button',{name:t.analyze,exact:true})).toBeEnabled();
     }
   });

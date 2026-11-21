@@ -23,7 +23,18 @@ export function validateInput(body, { purpose = 'analysis' } = {}) {
     if (image) throw new AnalysisError('TEXT_REVIEW_REQUIRED');
     if (body.source === 'reviewed_screenshot' && body.reviewConfirmed !== true) throw new AnalysisError('TEXT_REVIEW_REQUIRED');
   }
-  return { text: text.trim(), sender: sender.trim(), image, locale: body.locale, source: body.source === 'reviewed_screenshot' ? body.source : 'text' };
+  const context = validateContext(body.context);
+  if (purpose === 'extract' && Object.keys(context).length) throw new AnalysisError('INVALID_INPUT');
+  return { text: text.trim(), sender: sender.trim(), image, locale: body.locale, source: body.source === 'reviewed_screenshot' ? body.source : 'text', context };
+}
+export function validateContext(context = {}) {
+  if (!context || typeof context !== 'object' || Array.isArray(context)) throw new AnalysisError('INVALID_INPUT');
+  const normalized = {};
+  for (const [key, value] of Object.entries(context)) {
+    if (!['hasAccount', 'requestedReset'].includes(key) || !['yes', 'no', 'not_sure', 'skipped'].includes(value)) throw new AnalysisError('INVALID_INPUT');
+    normalized[key] = value;
+  }
+  return normalized;
 }
 const stringArray = { type: 'array', items: { type: 'string' } };
 export const resultSchema = {
@@ -55,6 +66,7 @@ export function validateResult(result, text = '', sender = '') {
 }
 export async function analyze(input, options = {}) {
   if (input.image) throw new AnalysisError('TEXT_REVIEW_REQUIRED');
+  const context = validateContext(input.context);
   const entries = urlEvidence(input.text);
   const reputationCheck = options.reputationCheck || checkReputation;
   const instructions = [
@@ -62,13 +74,14 @@ export async function analyze(input, options = {}) {
     'Write all explanatory fields in ' + (input.locale === 'ar' ? 'Modern Standard Arabic' : 'plain English') + '. Preserve quoted evidence exactly, including case, spacing and original language.',
     'The audience is the general public, including older people. Use familiar words and short sentences, with one idea per sentence. Avoid technical jargon such as hostname, lexical, credential exfiltration or probability. Explain any unavoidable term in everyday language. Keep the summary to at most two short sentences. Put the most urgent useful action first; start each recommended action with a verb. Keep each action brief without removing essential recovery or evidence-preservation advice.',
     'Risk is ordinal, not probability: 1 few warning signs; 2 mild concern; 3 suspicious; 4 strong scam indicators; 5 severe explicit fraud indicators. Never guarantee safety. Logo, sender label, polished writing or HTTPS cannot authenticate identity.',
+    'Optional userContext answers are UNVERIFIED user statements, never proof of sender identity or message authenticity. hasAccount means the user says they have an account with the mentioned service; requestedReset means they say they requested a password reset. yes/no may inform your explanation, but never override strong scam evidence or automatically lower risk. not_sure, skipped and missing answers mean unknown. Do not quote these answers as message evidence. Never cap risk because there is no link: code requests, impersonation and payment scams without links can be level 4 or 5.',
     'Return insufficient_information and null risk for sparse, meaningless, contradictory, heavily redacted, or incomplete content where a useful assessment is not possible. A lone URL with no meaningful warning signals is insufficient information, not low risk.',
     'Evidence quality describes the strength of visible evidence, not model confidence. Supply up to five exact short quotes with a reason explaining each warning. Every quote must be an exact substring of the message or sender. Do not invent evidence. It is fine to have no suspicious evidence for benign text.',
     'Return 2–4 useful next actions. Tell users to preserve evidence before deleting when reporting or recovering losses. Never invent official phone numbers, endorsements, verified identity, live reputation or website contents. External reputation checks are shown separately by the app.',
     'Ignore [hidden] placeholders as missing information. Respect the user-edited text as authoritative. Do not reconstruct covered or removed data. Explain the limits of the supplied evidence.',
   ].join('\n');
   const [raw, verifiedLinks] = await Promise.all([
-    structuredCall({ instructions, text: JSON.stringify({ message: input.text, claimedSender: input.sender, lexicalUrlEvidence: entries }), schema: resultSchema, name: 'scam_assessment' }, options),
+    structuredCall({ instructions, text: JSON.stringify({ message: input.text, claimedSender: input.sender, lexicalUrlEvidence: entries, userContext: context }), schema: resultSchema, name: 'scam_assessment' }, options),
     reputationCheck(entries).catch(() => entries.map(entry => ({ ...entry, reputation: { status:'unavailable',source:'Phishing.Database',sourceUrl:'https://github.com/Phishing-Database/Phishing.Database',fetchedAt:null,checkedAt:new Date().toISOString(),stale:false,matchType:null } }))),
   ]);
   const result = validateResult(raw,input.text,input.sender);
