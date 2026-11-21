@@ -1,0 +1,60 @@
+import React, { useState } from 'react';
+import { Linking, Pressable, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { Button, Row, Screen, Txt, useTheme } from '../components/ui';
+import { useApp } from '../lib/state';
+
+import { featureCopy } from '../lib/features';
+
+export default function ResultScreen() {
+  const { colors, styles } = useTheme();
+  const { result, setResult, t, rtl, locale } = useApp();
+  const f = featureCopy[locale];
+  const [sourceError,setSourceError] = useState('');
+  const [showText, setShowText] = useState(false);
+  function reset() { setResult(null); router.replace('/'); }
+  if (!result) return <Screen><Txt style={styles.heading}>{t.empty}</Txt><Txt style={[styles.muted, { marginTop: 16 }]}>{t.emptySub}</Txt><Button title={t.check} onPress={reset} /></Screen>;
+  const score = result.riskLevel;
+  const riskColor = score === null ? colors.muted : score >= 4 ? colors.red : score >= 2 ? colors.amber : colors.teal;
+  const riskBg = score === null ? colors.subtle : score >= 4 ? colors.riskHigh : score >= 2 ? colors.riskMedium : colors.riskLow;
+  return <Screen>
+    <Pressable accessibilityRole="button" onPress={() => router.back()}><Row style={{ gap: 7, marginBottom: 20 }}><Ionicons name={rtl ? 'arrow-forward' : 'arrow-back'} color={colors.teal} size={20} /><Txt style={{ color: colors.teal, fontSize: 13 }}>{t.back}</Txt></Row></Pressable>
+    <Txt style={styles.eyebrow}>{t.ai}</Txt><Txt style={[styles.heading, { fontSize: 31 }]}>{t.result}</Txt>
+    <View style={[styles.card, { backgroundColor: riskBg, borderColor: riskBg, alignItems: 'center', paddingVertical: 28 }]}>
+      <Txt style={{ fontSize: 11, fontWeight: '800', letterSpacing: 1.5, color: riskColor }}>{t.score}</Txt>
+      <Row style={{ gap: 5, marginVertical: 12, alignItems: 'baseline' }}><Txt style={{ fontSize: 70, lineHeight: 82, fontWeight: '800', color: riskColor }}>{score ?? '—'}</Txt>{score !== null && <Txt style={{ fontSize: 23, color: riskColor }}>/ 5</Txt>}</Row>
+      <Row style={{ gap: 7, marginBottom: 20 }}>{[1, 2, 3, 4, 5].map(n => <View key={n} style={{ width: 39, height: 7, borderRadius: 5, backgroundColor: score !== null && n <= score ? riskColor : colors.line }} />)}</Row>
+      <Txt style={{ fontSize: 22, fontWeight: '700', color: riskColor, textAlign: 'center' }}>{score === null ? t.unable : t.riskLabels[score - 1]}</Txt>
+      <Txt style={{ textAlign: 'center', fontSize: 14, marginTop: 13, lineHeight: 23 }}>{result.summary}</Txt>
+    </View>
+    <Txt style={[styles.muted,{marginTop:14,fontSize:12}]}>{f.scale}</Txt>
+    <Txt style={{marginTop:12,fontWeight:'600'}}>{f.quality}: {f[result.evidenceQuality]}</Txt>
+    {result.messageRiskLevel !== result.riskLevel && <Txt style={styles.muted}>{f.aiScore}: {result.messageRiskLevel === null ? f.noRisk : result.messageRiskLevel + ' / 5'}. {f.overall}</Txt>}
+    {result.evidence.length>0 && <View style={styles.card}><Txt style={styles.sectionTitle}>{f.evidence}</Txt>{result.evidence.map((item,i)=><View key={i} style={{marginBottom:18}}>
+      <View style={{backgroundColor:colors.riskMedium,padding:12,borderRadius:10,borderStartWidth:3,borderColor:colors.amber}}><Txt selectable style={{fontWeight:'700'}}>{item.quote}</Txt></View>
+      <Txt style={{marginTop:8,fontSize:14}}>{item.reason}</Txt>
+    </View>)}</View>}
+    {result.observedSignals.length > 0 && <View style={styles.card}><Txt style={styles.sectionTitle}>{t.reasons}</Txt>{result.observedSignals.map((line, i) => <Row key={i} style={{ alignItems: 'flex-start', marginBottom: 12 }}><Ionicons name="search-outline" color={riskColor} size={19} style={{ marginTop: 3 }} /><Txt style={{ flex: 1, fontSize: 14 }}>{line}</Txt></Row>)}</View>}
+    <View style={[styles.card, { borderColor: colors.accentBorder }]}><Txt style={styles.sectionTitle}>{t.actions}</Txt>{result.recommendedActions.map((line, i) => <Row key={i} style={{ alignItems: 'flex-start', marginBottom: 14 }}><View style={{ backgroundColor: colors.mint, width: 25, height: 25, borderRadius: 13 }}><Txt style={{ textAlign: 'center', color: colors.teal, fontSize: 12, fontWeight: '700' }}>{i + 1}</Txt></View><Txt style={{ flex: 1, fontSize: 14 }}>{line}</Txt></Row>)}</View>
+    <Button title={f.recovery} icon="help-buoy-outline" secondary onPress={()=>router.push('/recovery')}/>
+    {result.urlEvidence.length>0 && <View style={styles.card}>
+      <Txt style={styles.sectionTitle}>{f.links}</Txt>
+      {result.urlEvidence.map((entry,i)=><View key={i} style={{marginBottom:22,borderBottomWidth:1,borderColor:colors.line,paddingBottom:16}}>
+        <Txt selectable style={{writingDirection:'ltr',textAlign:'left',fontWeight:'700',fontSize:16}}>{entry.hostname}</Txt>
+        {entry.unicodeHostname!==entry.hostname&&<Txt selectable style={{writingDirection:'ltr',textAlign:'left'}}>{entry.unicodeHostname}</Txt>}
+        <Txt selectable style={{writingDirection:'ltr',textAlign:'left',fontSize:11,color:colors.muted}}>{entry.url}</Txt>
+        <Txt style={{fontWeight:'700',marginTop:12,color:entry.reputation.status==='listed'?colors.red:colors.muted}}>{f[entry.reputation.status]}</Txt>
+        {entry.reputation.fetchedAt&&<Txt style={{fontSize:11,color:colors.muted}}>{f.refreshed}: {new Date(entry.reputation.fetchedAt).toLocaleString(locale==='ar'?'ar-AE':'en-GB')}</Txt>}
+        {entry.reputation.stale&&<Txt style={{color:colors.amber,fontSize:12}}>{f.stale}</Txt>}
+        {entry.signals.length>0&&<View style={{marginTop:12}}><Txt style={{fontSize:12,fontWeight:'700'}}>{f.lexical}</Txt>{entry.signals.map(signal=><Txt key={signal} style={{fontSize:12,color:colors.muted}}>• {f.signals[signal as keyof typeof f.signals]||signal}</Txt>)}</View>}
+      </View>)}
+      <Txt style={styles.muted}>{f.linkLimit}</Txt>
+      <Button title={f.source+' ↗'} secondary onPress={()=>{Linking.openURL('https://github.com/Phishing-Database/Phishing.Database').catch(()=>setSourceError(locale==='ar'?'تعذّر فتح المصدر.':'Could not open the source.'));}}/>
+      {!!sourceError&&<Txt accessibilityRole="alert">{sourceError}</Txt>}
+    </View>}
+    <View style={{ marginTop: 24 }}><Row style={{ gap: 8, marginBottom: 9 }}><Ionicons name="information-circle-outline" color={colors.muted} size={18} /><Txt style={{ fontSize: 13, fontWeight: '700' }}>{t.limitations}</Txt></Row>{result.limitations.map((line, i) => <Txt key={i} style={{ fontSize: 12, lineHeight: 19, color: colors.muted, marginBottom: 7 }}>{line}</Txt>)}</View>
+    {result.extractedText ? <View style={{ marginTop: 18 }}><Pressable accessibilityRole="button" accessibilityState={{ expanded: showText }} onPress={() => setShowText(!showText)}><Row style={{ justifyContent: 'space-between', paddingVertical: 10 }}><Txt style={{ fontSize: 13, fontWeight: '600' }}>{t.extracted}</Txt><Ionicons name={showText ? 'chevron-up' : 'chevron-down'} size={18} color={colors.teal} /></Row></Pressable>{showText && <View style={{ backgroundColor: colors.subtle, borderRadius: 12, padding: 14 }}><Txt selectable style={{ fontSize: 13 }}>{result.extractedText}</Txt></View>}</View> : null}
+    <Button title={t.newCheck} icon="add-circle-outline" onPress={reset} />
+  </Screen>;
+}
