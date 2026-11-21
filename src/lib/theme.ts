@@ -1,20 +1,20 @@
 export type ThemePreference = 'system' | 'light' | 'dark';
 export const lightColors = {
-  navy: '#103D49', teal: '#087475', mint: '#E5F3EE', paper: '#F7F8F3',
-  line: '#D8E2DB', muted: '#5D7478', white: '#FFFFFF', surface: '#FFFFFF',
-  subtle: '#EBEFE9', input: '#F7F9F7', placeholder: '#5F736C',
-  accentSolid: '#087F80', onAccent: '#FFFFFF', accentBorder: '#B7D2C9',
-  upload: '#F5FAF6', tipStart: '#E3F0E5', tipEnd: '#ECF4E7', tipText: '#496C59',
-  amber: '#92530B', red: '#B83C3C', errorBg: '#FFF0ED', errorBorder: '#F3C5BB',
+  text: '#142D52', primary: '#2059D4', primarySoft: '#E8F0FF', background: '#F4F7FD',
+  line: '#CCD8EB', muted: '#50627D', white: '#FFFFFF', surface: '#FFFFFF',
+  subtle: '#EDF2FA', input: '#FFFFFF', placeholder: '#566981', controlBorder: '#788BA7',
+  accentSolid: '#245EEA', onAccent: '#FFFFFF', accentBorder: '#9AB7EE',
+  upload: '#EFF5FF', tipStart: '#E5EFFF', tipEnd: '#F1F6FF', tipText: '#355580',
+  amber: '#895000', red: '#B52F3D', errorBg: '#FFF0ED', errorBorder: '#C67572',
   riskHigh: '#FFF0EA', riskMedium: '#FFF4DE', riskLow: '#E5F3EA',
 };
 export type ThemeColors = typeof lightColors;
 export const darkColors: ThemeColors = {
-  navy: '#E6F2EF', teal: '#78DED1', mint: '#183C38', paper: '#0C171B',
-  line: '#30464A', muted: '#A5BDBA', white: '#FFFFFF', surface: '#14252A',
-  subtle: '#1D3237', input: '#101F24', placeholder: '#94AAA6',
-  accentSolid: '#087F80', onAccent: '#FFFFFF', accentBorder: '#3F736A',
-  upload: '#112C2C', tipStart: '#173B35', tipEnd: '#203B30', tipText: '#BEDDCF',
+  text: '#F0F5FF', primary: '#A9C8FF', primarySoft: '#20385E', background: '#0C1628',
+  line: '#364B69', muted: '#B4C3DA', white: '#FFFFFF', surface: '#15243B',
+  subtle: '#1E304B', input: '#101E33', placeholder: '#A8BAD3', controlBorder: '#7891B5',
+  accentSolid: '#A9C8FF', onAccent: '#10254A', accentBorder: '#6486B9',
+  upload: '#192F50', tipStart: '#20385E', tipEnd: '#192D4B', tipText: '#C0D5F6',
   amber: '#F6C677', red: '#FFAAA2', errorBg: '#3C2428', errorBorder: '#81514E',
   riskHigh: '#39272B', riskMedium: '#393221', riskLow: '#183B33',
 };

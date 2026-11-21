@@ -30,16 +30,16 @@ function AlertsContent(){
  const items=feed?.items.filter(i=>!recent||!i.older)||[];
  return <Screen>
   <Txt style={styles.eyebrow}>{t.eyebrow}</Txt><Txt style={styles.heading}>{t.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{t.intro}</Txt>
-  <View style={styles.card}><Txt style={{fontSize:13}}>{t.scope}</Txt><Txt style={[styles.muted,{fontSize:12,marginTop:12}]}>{t.frequency}</Txt>
-   {feed?.checkedAt&&<Txt style={[styles.muted,{fontSize:12,marginTop:10}]}>{t.checked}: {date(feed.checkedAt)}</Txt>}
-   {feed?.nextCheckAt&&<Txt style={[styles.muted,{fontSize:12}]}>{t.next}: {date(feed.nextCheckAt)}</Txt>}
+  <View style={styles.card}><Txt style={{fontSize:16}}>{t.scope}</Txt><Txt style={[styles.muted,{fontSize:16,marginTop:12}]}>{t.frequency}</Txt>
+   {feed?.checkedAt&&<Txt style={[styles.muted,{fontSize:16,marginTop:10}]}>{t.checked}: {date(feed.checkedAt)}</Txt>}
+   {feed?.nextCheckAt&&<Txt style={[styles.muted,{fontSize:16}]}>{t.next}: {date(feed.nextCheckAt)}</Txt>}
    <Button title={t.refresh} icon="refresh-outline" onPress={()=>reload.current()} disabled={busy}/>
   </View>
-  {(busy||feed?.refreshing)&&<Row style={{marginTop:18}}><ActivityIndicator color={colors.teal}/><Txt style={styles.muted}>{t.loading}</Txt></Row>}
+  {(busy||feed?.refreshing)&&<Row style={{marginTop:18}}><ActivityIndicator color={colors.primary}/><Txt style={styles.muted}>{t.loading}</Txt></Row>}
   {!!error&&<Txt accessibilityRole="alert" style={styles.error}>{error}</Txt>}
   {feed&&!feed.refreshing&&feed.sources.some(s=>s.status!=='ready')&&<Txt style={styles.error}>{t.partial}</Txt>}
   {feed&&<View style={{marginTop:18}}>
-   <Row>{feed.sources.map(s=><Txt key={s.id} style={{flex:1,fontSize:11,color:colors.muted}}>{t[s.category as 'security'|'technology'|'community']} - {s.status==='ready'?t.ready:s.status==='stale'?t.cached:t.unavailable}</Txt>)}</Row>
+   <Row>{feed.sources.map(s=><Txt key={s.id} style={{flex:1,fontSize:16,color:colors.muted}}>{t[s.category as 'security'|'technology'|'community']} - {s.status==='ready'?t.ready:s.status==='stale'?t.cached:t.unavailable}</Txt>)}</Row>
    <Row><View style={{flex:1}}><Button title={t.all} secondary={recent} onPress={()=>setRecent(false)}/></View><View style={{flex:1}}><Button title={t.recent} secondary={!recent} onPress={()=>setRecent(true)}/></View></Row>
   </View>}
   {feed&&!feed.refreshing&&feed.recentCount===0&&feed.items.length>0&&<Txt style={[styles.muted,{marginTop:18}]}>{t.noRecent}</Txt>}
@@ -47,13 +47,13 @@ function AlertsContent(){
   {items.map(item=><View key={item.id} style={styles.card}>
    <Txt style={styles.eyebrow}>{item.older?t.older:t.update}</Txt>
    <Txt style={styles.sectionTitle}>{item.title}</Txt>
-   <Txt style={{color:colors.teal,fontSize:12,fontWeight:'700'}}>{locale==='ar'?"مكتب أبوظبي الإعلامي":item.publisher}</Txt>
-   <Txt style={[styles.muted,{fontSize:12,marginTop:8}]}>{t.published}: {date(item.publishedAt)}</Txt>
-   {!!item.excerpt&&<View style={{marginTop:14}}><Txt style={{fontSize:11,color:colors.muted,marginBottom:5}}>{t.excerpt}</Txt><Txt style={{fontSize:14}}>{item.excerpt}</Txt></View>}
-   {(item.stale||!!error)&&<Txt style={[styles.muted,{fontSize:12,marginTop:10}]}>{t.stale}</Txt>}
+   <Txt style={{color:colors.primary,fontSize:16,fontWeight:'700'}}>{locale==='ar'?"مكتب أبوظبي الإعلامي":item.publisher}</Txt>
+   <Txt style={[styles.muted,{fontSize:16,marginTop:8}]}>{t.published}: {date(item.publishedAt)}</Txt>
+   {!!item.excerpt&&<View style={{marginTop:14}}><Txt style={{fontSize:16,color:colors.muted,marginBottom:5}}>{t.excerpt}</Txt><Txt style={{fontSize:16}}>{item.excerpt}</Txt></View>}
+   {(item.stale||!!error)&&<Txt style={[styles.muted,{fontSize:16,marginTop:10}]}>{t.stale}</Txt>}
    <Button title={t.open} icon="open-outline" secondary onPress={()=>open(item.url)}/>
   </View>)}
   <Button title={t.permission} icon="open-outline" secondary onPress={()=>open(SOURCE+'/'+locale+'/rss-news-feeds-abu-dhabi-media-office/')}/>
-  <Txt style={[styles.muted,{fontSize:11,marginTop:18}]}>{t.note}</Txt>
+  <Txt style={[styles.muted,{fontSize:16,marginTop:18}]}>{t.note}</Txt>
  </Screen>;
 }

@@ -68,6 +68,8 @@ The API key is read on each request. The ignored `.local/session.json` is a deve
 
 ## Current features
 
+The Trust Blue visual foundation uses larger labelled controls, a prominent screenshot tile, shared light/dark colours, readable system typography and mirrored Arabic navigation across all five tabs. System font scaling remains enabled; reduced-motion preferences suppress the intro and stack animations. See [the design system](design-system/t2akkad/MASTER.md) for tokens, layout rules and accessibility testing limits. The planned simplified copy/journeys, authentication and ticket-based community are separate phases and are not implemented by this visual update.
+
 - Whole-photo selection by default. No black masks, manual rectangle drawing or percentage controls.
 - Optional **Choose & crop** opens the native phone photo picker and crop editor. Canceling leaves the previous selection intact. Expo Go's built-in iOS crop selection is square; Android uses its native crop UI. The browser uses whole-photo selection.
 - Preview and explicit consent before sending a screenshot to OpenAI for transcription.
