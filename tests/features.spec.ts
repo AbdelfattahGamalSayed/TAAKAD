@@ -58,11 +58,13 @@ test('insufficient information shows no numeric rating',async({page})=>{
  await page.route('**/api/analyze',route=>route.fulfill({json:{...result,status:'insufficient_information',riskLevel:null,messageRiskLevel:null,evidence:[],evidenceQuality:'limited',summary:'More context is needed.',urlEvidence:[]}}));
  await start(page);await fillMessage(page);await page.getByRole('button',{name:'Check for warning signs'}).click();await expect(page.getByText('More context is needed.',{exact:true})).toBeVisible();await expect(page.getByTestId('warning-score')).toHaveCount(0);
 });
-test('all four recovery branches and checkboxes work offline',async({page})=>{
- await start(page);await page.getByRole('button',{name:'I already clicked'}).click();for(const label of ['I opened a link','I entered a password','I shared a verification code','I paid or shared card details'])await page.getByRole('checkbox',{name:label}).click();
- await expect(page.getByRole('checkbox')).toHaveCount(16);const step=page.getByRole('checkbox',{name:/Close the page/});await step.click();await expect(step).toBeChecked();await page.context().setOffline(true);await step.click();await expect(step).not.toBeChecked();await page.screenshot({path:'.local/recovery-mobile.png'});
+test('recovery journey and completion reminders work offline',async({page})=>{
+ await start(page);await page.getByRole('button',{name:'I already clicked or shared something'}).click();await page.getByRole('button',{name:'Help me take action'}).click();
+ await page.context().setOffline(true);
+ for(let i=0;i<5;i++){await page.getByRole('radio',{name:'Yes',exact:true}).click();await page.getByRole('button',{name:'Next',exact:true}).click();}
+ await expect(page.getByText('Protect your money',{exact:true})).toBeVisible();const step=page.getByRole('checkbox');await step.click();await expect(step).toBeChecked();await step.click();await expect(step).not.toBeChecked();await page.screenshot({path:'.local/recovery-mobile.png'});
 });
 test('Arabic layout and dark preference persist on narrow screens',async({page})=>{
  await start(page);await page.getByRole('tab',{name:/Settings/}).click();await page.getByRole('radio',{name:'Dark',exact:true}).click();await page.getByRole('radio',{name:'العربية',exact:true}).click();await page.reload();await expect(page.getByTestId('intro')).toBeHidden();await expect(page.getByRole('radio',{name:'داكن',exact:true})).toBeChecked();
- await page.goto('/recovery');await page.getByRole('checkbox',{name:'أدخلت كلمة مرور'}).click();await expect(page.getByText('اتخذ الخطوة الآمنة التالية',{exact:true})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await expect(page.getByTestId('intro')).toBeHidden();await page.screenshot({path:'.local/recovery-arabic-dark.png'});
+ await page.goto('/recovery');await page.getByRole('button',{name:'ساعدني على التصرف'}).click();await expect(page.getByText('اتخذ الخطوة الآمنة التالية',{exact:true})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await expect(page.getByTestId('intro')).toBeHidden();await page.screenshot({path:'.local/recovery-arabic-dark.png'});
 });

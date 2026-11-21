@@ -80,7 +80,9 @@ English and Arabic screens now use shorter, everyday wording. Results put severi
 - Editable extracted message and sender. Any edit clears context answers and analysis consent. Only reviewed text, sender and optional context answers, not the image, are sent in the analysis request.
 - Exact quoted warning phrases, explanations, evidence strength, a 1–5 ordinal warning level, or insufficient information without a score.
 - Public Phishing.Database exact-hostname checks alongside separate URL structure clues. Results distinguish listed, no match, unavailable and stale data. No user URLs are sent to the feed provider and suspicious destinations are never visited.
-- Four offline recovery checklists: opened a link, entered a password, shared a code, or paid/shared card details. Multiple scenarios can be selected.
+- Offline guided recovery: five single questions about payments, card details, codes/sign-in approvals, passwords, and links/installations. Yes/No/Not sure answers select relevant steps, with money first and no duplicate bank step. Back preserves answers; edits clear completion reminders. No private details, AI calls, persistent recovery history or reports are collected/sent.
+- Original illustrated blocking/reporting guides for WhatsApp, iPhone Messages and Google Messages. Evidence preservation comes first. These simplified diagrams are not platform screenshots; menu labels and availability vary by version/carrier. Reporting to an app is not a police report.
+- Verified Abu Dhabi Police Aman contact options, separate formal-report guidance and emergency 999. Phone/SMS buttons hand off to the device; no call is made or message sent automatically. Help is available without finishing the questions. Sources and verification date are recorded in [recovery sources](docs/RECOVERY-SOURCES.md).
 - English and Arabic, saved language, Light/Dark/System appearance, accessible controls and a brief opening animation.
 - Fictional Community preview with search and filters. Live accounts and posting are not implemented.
 - Practice messages, educational tips, cancellation and actionable error states.
