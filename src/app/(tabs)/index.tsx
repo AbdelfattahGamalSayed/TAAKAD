@@ -62,7 +62,7 @@ export default function CheckScreen() {
  const editable=mode!=='screenshot'||stage==='review';
  const direction={textAlign:rtl&&mode!=='link'?'right' as const:'left' as const,writingDirection:rtl&&mode!=='link'?'rtl' as const:'ltr' as const};
  return <Screen>
-  <Txt style={styles.eyebrow}>{t.eyebrow}</Txt><Txt style={styles.heading}>{t.title}</Txt><Txt style={[styles.muted,{marginTop:14}]}>{t.subtitle}</Txt>
+  <Txt style={styles.heading}>{t.title}</Txt><Txt style={[styles.muted,{marginTop:14}]}>{t.subtitle}</Txt>
   <View style={styles.card}>
    <Txt style={styles.sectionTitle}>{t.checkTitle}</Txt>
    <Row style={{backgroundColor:colors.subtle,borderRadius:16,padding:4,gap:4}}>

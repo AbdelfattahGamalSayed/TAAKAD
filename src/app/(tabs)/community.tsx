@@ -16,7 +16,7 @@ export default function CommunityScreen() {
  const [posting,setPosting] = useState(false);
  const posts = samplePosts.filter(p => (category === 'all' || p.category === category) && (p[locale].title+' '+p[locale].body).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
  return <Screen>
-  <Txt style={styles.eyebrow}>{f.eyebrow}</Txt><Txt style={styles.heading}>{f.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{f.subtitle}</Txt>
+  <Txt style={styles.heading}>{f.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{f.subtitle}</Txt>
   <View style={[styles.card,{backgroundColor:colors.primarySoft,borderColor:colors.accentBorder,marginTop:20}]}><Row style={{alignItems:'flex-start',gap:10}}><Ionicons name="flask-outline" size={21} color={colors.primary}/><View style={{flex:1}}><Txt style={{fontWeight:'700',color:colors.primary}}>{f.preview}</Txt><Txt style={[styles.muted,{marginTop:5,fontSize:16,lineHeight:24}]}>{f.notice}</Txt></View></Row></View>
   <Button title={f.start} icon="add-circle-outline" onPress={()=>setPosting(!posting)}/>
   {posting && <View accessibilityRole="alert" style={styles.card}><Txt style={styles.sectionTitle}>{f.coming}</Txt><Txt style={styles.muted}>{f.comingBody}</Txt><Button title={f.login} icon="lock-closed-outline" onPress={()=>{}} disabled/><Button title={f.close} secondary onPress={()=>setPosting(false)}/></View>}

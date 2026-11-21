@@ -1,44 +1,152 @@
 export const featureCopy = {
- en: {
-  prepared:'Review your screenshot', chooseCrop:'Choose & crop (optional)', cropOptional:'Cropping is optional. Without cropping, the whole image is used.', loadingPhoto:'Opening photo…', extract:'Read screenshot text', extractConsent:'I checked this screenshot and agree to send it to OpenAI to read its text.',
-  review:'2 · Review the extracted text', reviewHelp:'Correct mistakes, especially links and sender details. Remove any remaining private information. Only this edited text and sender will be sent for risk analysis.',
-  reviewed:'I reviewed the message and sender and agree to send this edited text to OpenAI for analysis.',
-  unclear:'Some text could not be read reliably. Correct it or paste the message before continuing.',
-  reading:'Reading the screenshot…', evidence:'What raised concern', quality:'Visible evidence', limited:'Limited', moderate:'Moderate', strong:'Strong',
-  scale:'The score is a warning level, not a probability. A low score does not prove a message is safe.',
-  links:'Independent link checks', listed:'Reported in the phishing feed', not_listed:'No exact hostname match in this feed', unavailable:'Reputation check unavailable',
-  linkLimit:'A feed report can be wrong or outdated. No match does not mean safe. We do not open links or authenticate senders.',
-  refreshed:'Feed downloaded', stale:'Cached feed · refresh failed', source:'Source: Phishing.Database', lexical:'Link structure clues (not proof of fraud)', aiScore:'AI message score', overall:'Overall score includes feed evidence.',
-  recovery:'I already clicked', recoveryTitle:'Take the next safe step', recoveryIntro:'Select what happened. More than one option may apply. Use a trusted app or independently found official contact details, never contact details from the suspicious message.',
-  opened:'I opened a link', password:'I entered a password', otp:'I shared a verification code', payment:'I paid or shared card details', check:'Mark steps as done. This checklist is temporary and is not saved.',
-  sourceTitle:'Guidance sources', back:'Back', noRisk:'Not enough information',
-  signals:{ unencrypted_http:'Uses HTTP without encryption',credentials_in_url:'The name before @ is not the destination host',internationalized_domain:'Internationalized domain: compare the spelling carefully',ip_address_host:'Uses an IP address instead of a named domain',shortened_link:'Shortened link hides the final destination',many_subdomains:'Several subdomains can obscure the actual domain',unusual_port:'Uses a non-default port' }
- },
- ar: {
-  prepared:'راجع لقطة الشاشة',chooseCrop:'اختيار واقتصاص (اختياري)',cropOptional:'الاقتصاص اختياري. دون اقتصاص، تُستخدم الصورة كاملة.',loadingPhoto:'جارٍ فتح الصورة…',extract:'قراءة نص الصورة',extractConsent:'راجعت لقطة الشاشة وأوافق على إرسالها إلى OpenAI لقراءة النص.',
-  review:'٢ · راجع النص المستخرج',reviewHelp:'صحّح الأخطاء، خاصة الروابط وبيانات المرسل. احذف أي معلومات خاصة متبقية. سيُرسل هذا النص المعدّل واسم المرسل فقط لتحليل المخاطر.',
-  reviewed:'راجعت الرسالة والمرسل وأوافق على إرسال النص المعدّل إلى OpenAI للتحليل.',
-  unclear:'تعذّرت قراءة بعض النص بوضوح. صحّحه أو الصق الرسالة قبل المتابعة.',reading:'جارٍ قراءة الصورة…',
-  evidence:'ما الذي أثار القلق',quality:'الأدلة الظاهرة',limited:'محدودة',moderate:'متوسطة',strong:'قوية',scale:'الدرجة مستوى تحذير وليست احتمالاً إحصائياً. الدرجة المنخفضة لا تثبت أمان الرسالة.',
-  links:'فحوص مستقلة للروابط',listed:'ورد بلاغ عنه في قائمة التصيد',not_listed:'لا يوجد تطابق تام للنطاق في هذه القائمة',unavailable:'فحص السمعة غير متاح',
-  linkLimit:'قد يكون البلاغ خاطئاً أو قديماً. عدم وجود تطابق لا يعني الأمان. لا نفتح الروابط ولا نثبت هوية المرسل.',
-  refreshed:'تاريخ تنزيل القائمة',stale:'قائمة مخزنة · تعذّر التحديث',source:'المصدر: Phishing.Database',lexical:'مؤشرات في بنية الرابط (ليست دليلاً قاطعاً)',aiScore:'تقييم الذكاء الاصطناعي للرسالة',overall:'تشمل الدرجة الإجمالية أدلة قائمة التصيد.',
-  recovery:'لقد ضغطت بالفعل',recoveryTitle:'اتخذ الخطوة الآمنة التالية',recoveryIntro:'اختر ما حدث. قد ينطبق أكثر من خيار. استخدم تطبيقاً موثوقاً أو بيانات اتصال رسمية وجدتها بشكل مستقل، وليس بيانات الرسالة المشبوهة.',
-  opened:'فتحت رابطاً',password:'أدخلت كلمة مرور',otp:'شاركت رمز تحقق',payment:'دفعت أو شاركت بيانات بطاقة',check:'ضع علامة على الخطوات المنجزة. هذه القائمة مؤقتة ولا تُحفظ.',sourceTitle:'مصادر الإرشادات',back:'رجوع',noRisk:'المعلومات غير كافية',
-  signals:{unencrypted_http:'يستخدم HTTP دون تشفير',credentials_in_url:'الاسم قبل @ ليس نطاق الوجهة',internationalized_domain:'نطاق دولي: قارن التهجئة بعناية',ip_address_host:'يستخدم عنوان IP بدلاً من اسم نطاق',shortened_link:'رابط مختصر يخفي الوجهة النهائية',many_subdomains:'قد تخفي النطاقات الفرعية الكثيرة النطاق الحقيقي',unusual_port:'يستخدم منفذاً غير افتراضي'}
- }
+  "en": {
+    "prepared": "Review your screenshot",
+    "chooseCrop": "Choose & crop (optional)",
+    "cropOptional": "Cropping is optional. If you skip it, we use the whole photo.",
+    "loadingPhoto": "Opening photo…",
+    "extract": "Read screenshot text",
+    "extractConsent": "I agree to send this photo to OpenAI to read the message.",
+    "review": "Check the message text",
+    "reviewHelp": "Fix any mistakes, especially in links. Remove private details before continuing.",
+    "reviewed": "I agree to send this edited message and sender details to OpenAI to check for scams.",
+    "unclear": "Some words are unclear. Fix them or paste the message before continuing.",
+    "reading": "Reading the screenshot…",
+    "evidence": "What raised concern",
+    "quality": "How much information we found",
+    "limited": "A little",
+    "moderate": "Some",
+    "strong": "A lot",
+    "scale": "The number shows warning signs, not the chance of a scam. A low number does not mean safe.",
+    "links": "What we found about the links",
+    "listed": "This website has been reported for scams",
+    "not_listed": "No report found in this list. This does not mean safe.",
+    "unavailable": "We could not check reports about this website",
+    "linkLimit": "Reports can be wrong or old. We do not open links or confirm who sent the message.",
+    "refreshed": "List last updated",
+    "stale": "Using an older list. We could not update it.",
+    "source": "Source: Phishing.Database",
+    "lexical": "Other things we noticed about the link",
+    "aiScore": "Message-only warning level",
+    "overall": "The final warning level also uses reports about the links.",
+    "recovery": "I already clicked",
+    "recoveryTitle": "Take the next safe step",
+    "recoveryIntro": "Choose what happened. You can choose more than one.",
+    "opened": "I opened a link",
+    "password": "I entered a password",
+    "otp": "I shared a verification code",
+    "payment": "I paid or shared card details",
+    "check": "Tick each step when done. Your ticks are not saved.",
+    "sourceTitle": "Read the original advice",
+    "back": "Back",
+    "noRisk": "Not enough information",
+    "signals": {
+      "unencrypted_http": "The link does not use a secure connection",
+      "credentials_in_url": "The website name is after the @ sign",
+      "internationalized_domain": "Some letters may look like others. Check the website name carefully.",
+      "ip_address_host": "The website address uses numbers instead of a name",
+      "shortened_link": "This short link hides the final website",
+      "many_subdomains": "The long address may make the real website hard to spot",
+      "unusual_port": "The address uses an unusual connection setting"
+    },
+    "listedNotice": "A link in this message has been reported for scams. Reports can be wrong or old.",
+    "contactSafety": "Use the real app or a number you already trust—not contact details in the message."
+  },
+  "ar": {
+    "prepared": "راجع لقطة الشاشة",
+    "chooseCrop": "اختيار واقتصاص (اختياري)",
+    "cropOptional": "الاقتصاص اختياري. إذا تخطّيته، نستخدم الصورة كاملة.",
+    "loadingPhoto": "جارٍ فتح الصورة…",
+    "extract": "قراءة نص الصورة",
+    "extractConsent": "أوافق على إرسال الصورة إلى OpenAI لقراءة الرسالة.",
+    "review": "راجع نص الرسالة",
+    "reviewHelp": "صحّح الأخطاء، خاصة في الروابط. احذف المعلومات الخاصة قبل المتابعة.",
+    "reviewed": "أوافق على إرسال الرسالة المعدّلة وبيانات المرسل إلى OpenAI للتحقق من الاحتيال.",
+    "unclear": "بعض الكلمات غير واضحة. صحّحها أو الصق الرسالة قبل المتابعة.",
+    "reading": "جارٍ قراءة الصورة…",
+    "evidence": "ما الذي أثار القلق",
+    "quality": "كمية المعلومات التي وجدناها",
+    "limited": "قليلة",
+    "moderate": "متوسطة",
+    "strong": "كثيرة",
+    "scale": "يشير الرقم إلى علامات التحذير، وليس احتمال الاحتيال. الرقم المنخفض لا يعني الأمان.",
+    "links": "ما الذي وجدناه عن الروابط؟",
+    "listed": "أُبلغ عن استخدام هذا الموقع في الاحتيال",
+    "not_listed": "لم نجد بلاغاً في هذه القائمة. هذا لا يعني الأمان.",
+    "unavailable": "تعذّر فحص البلاغات عن هذا الموقع",
+    "linkLimit": "قد تكون البلاغات خاطئة أو قديمة. لا نفتح الروابط ولا نؤكد هوية المرسل.",
+    "refreshed": "آخر تحديث للقائمة",
+    "stale": "نستخدم قائمة قديمة. تعذّر تحديثها.",
+    "source": "المصدر: Phishing.Database",
+    "lexical": "ملاحظات أخرى عن الرابط",
+    "aiScore": "مستوى التحذير من الرسالة وحدها",
+    "overall": "يأخذ مستوى التحذير النهائي البلاغات عن الروابط في الحسبان أيضاً.",
+    "recovery": "لقد ضغطت بالفعل",
+    "recoveryTitle": "اتخذ الخطوة الآمنة التالية",
+    "recoveryIntro": "اختر ما حدث. يمكنك اختيار أكثر من إجابة.",
+    "opened": "فتحت رابطاً",
+    "password": "أدخلت كلمة مرور",
+    "otp": "شاركت رمز تحقق",
+    "payment": "دفعت أو شاركت بيانات بطاقة",
+    "check": "ضع علامة بعد إتمام كل خطوة. لا نحفظ هذه العلامات.",
+    "sourceTitle": "اقرأ الإرشادات الأصلية",
+    "back": "رجوع",
+    "noRisk": "المعلومات غير كافية",
+    "signals": {
+      "unencrypted_http": "لا يستخدم الرابط اتصالاً آمناً",
+      "credentials_in_url": "اسم الموقع يأتي بعد علامة @",
+      "internationalized_domain": "قد تتشابه بعض الحروف. راجع اسم الموقع بعناية.",
+      "ip_address_host": "يستخدم عنوان الموقع أرقاماً بدلاً من اسم",
+      "shortened_link": "يخفي هذا الرابط المختصر الموقع النهائي",
+      "many_subdomains": "قد يصعّب العنوان الطويل معرفة الموقع الحقيقي",
+      "unusual_port": "يستخدم العنوان إعداد اتصال غير معتاد"
+    },
+    "listedNotice": "أُبلغ عن استخدام رابط في هذه الرسالة للاحتيال. قد تكون البلاغات خاطئة أو قديمة.",
+    "contactSafety": "استخدم التطبيق الرسمي أو رقماً تثق به، وليس بيانات الاتصال في الرسالة."
+  }
 };
 export const recoverySteps = {
- en: {
- opened:['Close the page. Do not enter information, accept prompts, download files or return through that link. Opening a link alone does not prove your device was compromised.','Update your browser and operating system. If you downloaded or installed anything, stop using it and seek help from trusted device support or your IT team.','If you also entered a password, shared a code or paid, follow the matching checklist below.'],
- password:['Open the real service through its trusted app or an independently verified address. Change the exposed password and any other accounts that reused it.','Sign out other sessions and remove unfamiliar devices or access. Enable multi-factor authentication. If locked out, use the service’s official account recovery.','Check account activity and recovery details. Secure your email account too if its password was exposed.'],
- otp:['Contact the affected service immediately through its trusted app or independently verified support. If the code related to a payment or bank account, contact the bank urgently.','Tell support which action the code authorized. Ask them to secure the account, end unauthorized sessions and review recent activity or transactions.','Do not share another code or approve new prompts. Change exposed passwords through the real service.'],
- payment:['Contact your bank or payment provider immediately using its official app or the number on your card. Explain the suspected fraud and ask about freezing the card/account and disputing or recalling the payment. Recovery is not guaranteed.','Keep the original message, receipts, transaction references and dates as evidence. Ask the provider about the appropriate local reporting route.','Watch for further transactions and follow the provider’s advice. Be wary of anyone demanding a fee to recover lost money.']
- },
- ar: {
- opened:['أغلق الصفحة. لا تدخل معلومات ولا توافق على طلبات ولا تنزّل ملفات ولا تعد عبر الرابط. فتح الرابط وحده لا يثبت اختراق جهازك.','حدّث المتصفح ونظام التشغيل. إذا نزّلت أو ثبّتّ شيئاً، توقّف عن استخدامه واطلب مساعدة الدعم الموثوق لجهازك أو فريق تقنية المعلومات.','إذا أدخلت كلمة مرور أو شاركت رمزاً أو دفعت، اتبع أيضاً القائمة المناسبة أدناه.'],
- password:['افتح الخدمة الحقيقية عبر تطبيقها الموثوق أو عنوان تحققت منه بشكل مستقل. غيّر كلمة المرور المكشوفة وكلمات مرور الحسابات التي تعيد استخدامها.','سجّل خروج الجلسات الأخرى وأزل الأجهزة أو الصلاحيات غير المعروفة. فعّل التحقق متعدد العوامل. إذا فقدت الوصول فاستخدم استرداد الحساب الرسمي.','راجع نشاط الحساب وبيانات الاسترداد. أمّن بريدك الإلكتروني أيضاً إذا كُشفت كلمة مروره.'],
- otp:['اتصل بالخدمة المعنية فوراً عبر تطبيقها الموثوق أو دعم تحققت منه بشكل مستقل. إذا تعلق الرمز بدفع أو حساب مصرفي، اتصل بالبنك بشكل عاجل.','وضّح للدعم العملية التي أجازها الرمز. اطلب تأمين الحساب وإنهاء الجلسات غير المصرح بها ومراجعة النشاط أو المعاملات الأخيرة.','لا تشارك رمزاً آخر ولا توافق على طلبات جديدة. غيّر كلمات المرور المكشوفة عبر الخدمة الحقيقية.'],
- payment:['اتصل بالبنك أو مزوّد الدفع فوراً عبر تطبيقه الرسمي أو الرقم على بطاقتك. اشرح الاشتباه بالاحتيال واسأل عن تجميد البطاقة أو الحساب والاعتراض على الدفع أو استرجاعه. الاسترداد غير مضمون.','احتفظ بالرسالة الأصلية والإيصالات ومراجع المعاملات والتواريخ كأدلة. اسأل المزوّد عن جهة الإبلاغ المحلية المناسبة.','راقب المعاملات اللاحقة واتبع إرشادات المزوّد. احذر ممن يطلب رسوماً لاستعادة الأموال المفقودة.']
- }
+  "en": {
+    "opened": [
+      "Close the page. Do not enter details, download files or accept requests. Opening a link alone does not mean your phone was hacked.",
+      "Update your phone and browser. If you installed something from the link, stop using it and ask trusted device support for help.",
+      "If you shared a password or code, or paid money, choose that option too."
+    ],
+    "password": [
+      "Open the real app and change your password. Change it on other accounts where you used the same password.",
+      "In account settings, sign out other devices. Turn on the extra sign-in check, such as a code. If you cannot sign in, use the service’s account recovery.",
+      "Check for changes you did not make, including your recovery phone number and email. Secure your email too if you shared its password."
+    ],
+    "otp": [
+      "Contact the service now using its real app or a trusted number. If the code was for your bank or a payment, contact your bank urgently.",
+      "Tell them you shared a code. Ask them to secure your account, sign out other devices and check recent payments or changes.",
+      "Do not share more codes or approve new requests. Change any password you shared through the real app."
+    ],
+    "payment": [
+      "Contact your bank now using its app or the number on your card. Ask it to block further payments and check whether your money can be recovered. Recovery is not guaranteed.",
+      "Keep the message and payment receipts. Ask your bank how to report the scam.",
+      "Check for more payments you did not make. Do not pay anyone who promises to recover your money."
+    ]
+  },
+  "ar": {
+    "opened": [
+      "أغلق الصفحة. لا تدخل بيانات ولا تنزّل ملفات ولا توافق على طلبات. فتح الرابط وحده لا يعني اختراق هاتفك.",
+      "حدّث هاتفك ومتصفحك. إذا ثبّتّ شيئاً من الرابط، توقّف عن استخدامه واطلب مساعدة دعم موثوق لجهازك.",
+      "إذا شاركت كلمة مرور أو رمزاً أو دفعت مالاً، اختر ذلك الخيار أيضاً."
+    ],
+    "password": [
+      "افتح التطبيق الرسمي وغيّر كلمة المرور. غيّرها أيضاً في أي حساب آخر استخدمت فيه الكلمة نفسها.",
+      "من إعدادات الحساب، سجّل خروج الأجهزة الأخرى. فعّل خطوة إضافية للدخول مثل رمز التحقق. إذا لم تستطع الدخول، استخدم استرداد الحساب لدى الخدمة.",
+      "راجع التغييرات التي لم تُجرها، ومنها رقم الهاتف والبريد المخصّصان لاسترداد الحساب. أمّن بريدك أيضاً إذا شاركت كلمة مروره."
+    ],
+    "otp": [
+      "تواصل مع الخدمة الآن عبر تطبيقها الرسمي أو رقم موثوق. إذا كان الرمز لبنكك أو لدفعة، تواصل مع البنك فوراً.",
+      "أخبرهم أنك شاركت رمزاً. اطلب تأمين حسابك وتسجيل خروج الأجهزة الأخرى ومراجعة المدفوعات أو التغييرات الأخيرة.",
+      "لا تشارك مزيداً من الرموز ولا توافق على طلبات جديدة. غيّر أي كلمة مرور شاركتها عبر التطبيق الرسمي."
+    ],
+    "payment": [
+      "تواصل مع بنكك الآن عبر تطبيقه أو الرقم على بطاقتك. اطلب إيقاف المدفوعات الإضافية والتحقق من إمكانية استرداد أموالك. الاسترداد غير مضمون.",
+      "احتفظ بالرسالة وإيصالات الدفع. اسأل بنكك عن كيفية الإبلاغ عن الاحتيال.",
+      "راجع أي مدفوعات أخرى لم تُجرها. لا تدفع لمن يعدك باسترداد أموالك."
+    ]
+  }
 };

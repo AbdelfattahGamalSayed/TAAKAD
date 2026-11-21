@@ -16,14 +16,14 @@ test('whole photo, explicit consent, editable OCR, text-only assessment',async({
  await start(page);await uploadSynthetic(page);
  await expect(page.getByRole('button',{name:'Hide area',exact:true})).toHaveCount(0);
  await page.getByRole('img',{name:'Review your screenshot',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:'.local/whole-photo-preview.png'});
- await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByRole('alert')).toContainText('Please agree');expect(extractCalls).toBe(0);
- await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByText('2 · Review the extracted text',{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByRole('alert')).toContainText('Please tick the box');expect(extractCalls).toBe(0);
+ await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByText("Check the message text",{exact:true})).toBeVisible();
  const pixels=await page.evaluate(async(uri:string)=>{const img=new Image();img.src=uri;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d')!;x.drawImage(img,0,0);return{width:img.width,height:img.height,top:[...x.getImageData(5,5,1,1).data],bottom:[...x.getImageData(595,395,1,1).data]};},extracted.image as string);
  expect(pixels).toEqual({width:600,height:400,top:[0,128,0,255],bottom:[0,0,255,255]});expect(extracted.prepared).toBe(true);expect(analysisCalls).toBe(0);
  await page.getByRole('checkbox').click();await page.getByRole('textbox',{name:'Message',exact:true}).fill(message);await expect(page.getByRole('checkbox')).not.toBeChecked();
  await page.getByRole('textbox',{name:'Sender name or number (optional)'}).fill('Reviewed sender');await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Check for warning signs'}).click();
- await expect(page.getByText('What raised concern',{exact:true})).toBeVisible();expect(analyzed.image).toBe(null);expect(analyzed.text).toBe(message);expect(analyzed.sender).toBe('Reviewed sender');expect(analyzed.reviewConfirmed).toBe(true);
- await expect(page.getByText('Send your OTP now',{exact:true})).toBeVisible();await expect(page.getByText('No exact hostname match in this feed',{exact:true})).toBeVisible();await page.screenshot({path:'.local/result-mobile.png'});
+ await expect(page.getByText('What raised concern',{exact:true})).toHaveCount(0);await expect(page.getByText('What to do next',{exact:true})).toBeVisible();await page.getByRole('button',{name:'More details',exact:true}).click();await expect(page.getByText('What raised concern',{exact:true})).toBeVisible();expect(analyzed.image).toBe(null);expect(analyzed.text).toBe(message);expect(analyzed.sender).toBe('Reviewed sender');expect(analyzed.reviewConfirmed).toBe(true);
+ await expect(page.getByText('Send your OTP now',{exact:true})).toBeVisible();await expect(page.getByText("No report found in this list. This does not mean safe.",{exact:true})).toBeVisible();await page.screenshot({path:'.local/result-mobile.png'});
 });
 test('remove resets consent and prevents submission',async({page})=>{
  await start(page);await uploadSynthetic(page);await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Remove',exact:true}).click();
@@ -31,7 +31,7 @@ test('remove resets consent and prevents submission',async({page})=>{
 });
 test('unclear OCR remains editable and requires text',async({page})=>{
  await page.route('**/api/extract',route=>route.fulfill({json:{status:'unclear',text:'',sender:'',warnings:['Image was unreadable.']}}));
- await start(page);await uploadSynthetic(page);await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByText('Some text could not be read reliably. Correct it or paste the message before continuing.',{exact:true})).toBeVisible();
+ await start(page);await uploadSynthetic(page);await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Read screenshot text'}).click();await expect(page.getByText("Some words are unclear. Fix them or paste the message before continuing.",{exact:true})).toBeVisible();
  await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Check for warning signs'}).click();await expect(page.getByRole('alert')).toBeVisible();expect(page.url()).not.toContain('/result');
 });
 test('provider failure is visible and preserves editable input',async({page})=>{
@@ -44,11 +44,12 @@ test('cancel ignores a late result',async({page})=>{
 for(const status of ['listed','unavailable'] as const)test('explicit reputation state: '+status,async({page})=>{
  const entry={...result.urlEvidence[0],reputation:{...result.urlEvidence[0].reputation,status,stale:status==='listed'}};
  await page.route('**/api/analyze',route=>route.fulfill({json:{...result,messageRiskLevel:2,urlEvidence:[entry]}}));await start(page);await fillMessage(page);await page.getByRole('button',{name:'Check for warning signs'}).click();
- await expect(page.getByText(status==='listed'?'Reported in the phishing feed':'Reputation check unavailable',{exact:true})).toBeVisible();if(status==='listed')await expect(page.getByText('Cached feed · refresh failed',{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'More details',exact:true}).click();
+ await expect(page.getByText(status==='listed'?"This website has been reported for scams":"We could not check reports about this website",{exact:true})).toBeVisible();if(status==='listed')await expect(page.getByText("Using an older list. We could not update it.",{exact:true})).toBeVisible();
 });
 test('insufficient information shows no numeric rating',async({page})=>{
  await page.route('**/api/analyze',route=>route.fulfill({json:{...result,status:'insufficient_information',riskLevel:null,messageRiskLevel:null,evidence:[],evidenceQuality:'limited',summary:'More context is needed.',urlEvidence:[]}}));
- await start(page);await fillMessage(page);await page.getByRole('button',{name:'Check for warning signs'}).click();await expect(page.getByText('More context is needed.',{exact:true})).toBeVisible();await expect(page.getByText('/ 5',{exact:true})).toHaveCount(0);
+ await start(page);await fillMessage(page);await page.getByRole('button',{name:'Check for warning signs'}).click();await expect(page.getByText('More context is needed.',{exact:true})).toBeVisible();await expect(page.getByTestId('warning-score')).toHaveCount(0);
 });
 test('all four recovery branches and checkboxes work offline',async({page})=>{
  await start(page);await page.getByRole('button',{name:'I already clicked'}).click();for(const label of ['I opened a link','I entered a password','I shared a verification code','I paid or shared card details'])await page.getByRole('checkbox',{name:label}).click();

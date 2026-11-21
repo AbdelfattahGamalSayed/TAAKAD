@@ -67,6 +67,18 @@ export function Button({ title, onPress, disabled = false, secondary = false, ic
     </Row>
   </Touch>;
 }
+export function Details({ children, testID }: { children: React.ReactNode; testID?: string }) {
+  const { t } = useApp();
+  const { colors } = useTheme();
+  const [expanded, setExpanded] = useState(false);
+  return <View testID={testID} style={{ marginTop: 24 }}>
+    <Touch accessibilityRole="button" accessibilityLabel={t.moreDetails} accessibilityState={{ expanded }} aria-expanded={expanded}
+      onPress={() => setExpanded(value => !value)} style={{ padding: 16, backgroundColor: colors.primarySoft, borderRadius: 16 }}>
+      <Row style={{ justifyContent: 'space-between' }}><Txt style={{ color: colors.primary, fontWeight: '700' }}>{t.moreDetails}</Txt><Icon name={expanded ? 'chevron-up' : 'chevron-down'} color={colors.primary} size={24} /></Row>
+    </Touch>
+    {expanded && <View style={{ paddingTop: 16 }}><View style={{ gap: 16 }}>{children}</View></View>}
+  </View>;
+}
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
   text: { color: colors.text, fontSize: 17, lineHeight: 26, flexShrink: 1 },
   page: { width: '100%', maxWidth: 680, alignSelf: 'center', padding: 20, paddingBottom: 48 },

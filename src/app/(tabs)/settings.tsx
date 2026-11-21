@@ -1,4 +1,4 @@
-import { Touch as Pressable , Icon as Ionicons , Button, Row, Screen, Txt, useTheme } from '../../components/ui';
+import { Touch as Pressable , Icon as Ionicons , Button, Details, Row, Screen, Txt, useTheme } from '../../components/ui';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useApp } from '../../lib/state';
@@ -21,8 +21,11 @@ export default function SettingsScreen() {
         <Txt style={{ textAlign: 'center', color: themePreference === value ? colors.primary : colors.muted, fontSize:16, fontWeight: '700' }}>{value === 'system' ? t.themeSystem : value === 'light' ? t.themeLight : t.themeDark}</Txt>
       </Pressable>)}</Row>
     </View>
-    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.connection}</Txt><Row>{connection === 'checking' ? <ActivityIndicator color={colors.primary} /> : <><View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: connection === 'ready' ? colors.primary : colors.amber }} /><Txt style={{ fontWeight: '600' }}>{t[connection]}</Txt></>}</Row><Button title={t.refresh} secondary onPress={refresh} disabled={connection === 'checking'} /><Txt style={{ color: colors.muted, fontSize:16, lineHeight:24, marginTop: 15 }}>{t.localNetwork}</Txt></View>
     <View style={styles.card}><Row style={{ marginBottom: 12 }}><Ionicons name="lock-closed-outline" color={colors.primary} size={23} /><Txt style={{ fontSize: 18, fontWeight: '700' }}>{t.privacyTitle}</Txt></Row><Txt style={styles.muted}>{t.privacyBody}</Txt><Button secondary title={cleared ? t.cleared : t.clear} onPress={() => { setResult(null); setCleared(true); }} /></View>
     <View style={styles.card}><Txt style={styles.sectionTitle}>{t.prototype}</Txt><Txt style={styles.muted}>{t.prototypeBody}</Txt><Txt style={{ color: colors.primary, fontWeight: '600', marginTop: 18, fontSize:16 }}>T2AKKAD · 0.1.0</Txt></View>
+    <Details testID="settings-details">
+    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.connection}</Txt><Row>{connection === 'checking' ? <ActivityIndicator color={colors.primary} /> : <><View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: connection === 'ready' ? colors.primary : colors.amber }} /><Txt style={{ fontWeight: '600' }}>{t[connection]}</Txt></>}</Row><Button title={t.refresh} secondary onPress={refresh} disabled={connection === 'checking'} /><Txt style={{ color: colors.muted, fontSize:16, lineHeight:24, marginTop: 15 }}>{t.localNetwork}</Txt></View>
+      <Txt style={styles.muted}>{t.dataDetails}</Txt><Txt style={styles.muted}>{t.aboutDetails}</Txt>
+    </Details>
   </Screen>;
 }

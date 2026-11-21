@@ -10,8 +10,8 @@ export default function RecoveryScreen() {
  const [selected,setSelected]=useState<Scenario[]>([]),[done,setDone]=useState<string[]>([]),[error,setError]=useState('');
  const toggle=(id:string)=>setDone(done.includes(id)?done.filter(x=>x!==id):[...done,id]);
  return <Screen>
-  <Txt style={styles.eyebrow}>{f.recovery}</Txt><Txt style={styles.heading}>{f.recoveryTitle}</Txt>
-  <Txt style={[styles.muted,{marginTop:16}]}>{f.recoveryIntro}</Txt>
+  <Txt style={styles.heading}>{f.recoveryTitle}</Txt>
+  <Txt style={[styles.muted,{marginTop:16}]}>{f.recoveryIntro}</Txt><Txt style={[styles.muted,{marginTop:8}]}>{f.contactSafety}</Txt>
   {(['opened','password','otp','payment'] as Scenario[]).map(s=><View style={styles.card} key={s}>
    <Pressable accessibilityRole="checkbox" aria-checked={selected.includes(s)} accessibilityState={{checked:selected.includes(s)}} onPress={()=>setSelected(selected.includes(s)?selected.filter(x=>x!==s):[...selected,s])}>
     <Row><Ionicons name={selected.includes(s)?'checkbox':'square-outline'} color={colors.primary} size={26}/><Txt style={{flex:1,fontWeight:'700'}}>{f[s]}</Txt></Row>
@@ -23,7 +23,7 @@ export default function RecoveryScreen() {
    })}</View>}
   </View>)}
   <Txt style={[styles.sectionTitle,{marginTop:24}]}>{f.sourceTitle}</Txt>
-  {[['FTC','https://consumer.ftc.gov/articles/what-do-if-you-were-scammed'],['NCSC','https://www.ncsc.gov.uk/collection/phishing-scams/what-to-do']].map(([title,url])=><Button key={title} title={title+' ↗'} secondary onPress={()=>{Linking.openURL(url).catch(()=>setError(locale==='ar'?'تعذّر فتح المصدر.':'Could not open the source.'));}}/>)}
+  {[['FTC','https://consumer.ftc.gov/articles/what-do-if-you-were-scammed'],['NCSC','https://www.ncsc.gov.uk/collection/phishing-scams/what-to-do']].map(([title,url])=><Button key={title} title={title+' ↗'} secondary onPress={()=>{Linking.openURL(url).catch(()=>setError(locale==='ar'?"تعذّر فتح الصفحة. تحقّق من الإنترنت وحاول مجدداً.":"Could not open the page. Check your internet and try again."));}}/>)}
   {!!error&&<Txt accessibilityRole="alert">{error}</Txt>}
   <Button title={f.back} onPress={()=>router.canGoBack()?router.back():router.replace('/')}/>
  </Screen>;

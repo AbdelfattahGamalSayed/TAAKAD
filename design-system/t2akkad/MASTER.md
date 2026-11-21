@@ -1,6 +1,6 @@
 # T2AKKAD: Trust Blue foundation
 
-User-approved direction, implemented 2026-11-21. Applies to Expo SDK 58 / React Native 0.88. This phase covers the visual foundation; simpler copy, new check journeys, authentication and community tickets remain separate work.
+User-approved direction, implemented 2026-11-21. Applies to Expo SDK 58 / React Native 0.88. The visual foundation and plain-language copy are implemented; new check journeys, authentication and community tickets remain separate work.
 
 ## Direction
 
@@ -26,6 +26,12 @@ The requested UI UX Pro Max skill was consulted: its Accessible & Ethical style,
 ## RTL and motion
 
 Mirror row and tab order explicitly from locale; text alignment and writing direction follow language. URLs remain LTR. Arabic tracking is not artificially expanded. The startup animation waits for the reduced-motion preference and is omitted when reduction is requested; stack transitions are also disabled in that mode.
+
+## Plain language and optional detail
+
+Use short headings that name the task, familiar words and a concrete next action. Avoid API, server, hostname, feed and similar implementation vocabulary in the primary experience. Do not rewrite user-submitted messages, exact quoted evidence or attributed article excerpts. Results show next actions before additional evidence. Use the shared Details control for expanded explanations; it defaults closed, has an announced expanded state, supports keyboard activation and removes hidden content from reading order.
+
+Never hide consent, the named external recipient, essential uncertainty, a reported-scam warning, old/unavailable alert labels or the fictional-community notice. Keep technical setup instructions in repository documentation or optional connection help, not error messages. Simplification must not imply safety, verified identity, official endorsement or guaranteed recovery.
 
 ## Verification and limits
 
