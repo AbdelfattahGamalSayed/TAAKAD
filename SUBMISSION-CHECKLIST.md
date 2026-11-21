@@ -11,7 +11,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 | Entire MVP plus README on `master` | The submission branch is `master`. Review each final commit for complete source and keep it synchronized with the tested version. |
 | README problem and solution | Added explicit problem/solution section. |
 | README technical reasoning, trade-offs, omissions and future improvements | Added architecture/model rationale/privacy sections; features and prototype limits distinguish implemented behavior from plans. |
-| README build/run instructions | Lockfile install, private environment setup, one-command startup, tests and bundle export documented. Fresh-clone reproduction still required after publication. |
+| README build/run instructions | Lockfile install, private environment setup, one-command startup, tests and bundle export documented. Fresh GitHub clone installed and passed backend/browser checks on 2026-11-21; live analysis still needs a privately configured API key. |
 | Technical documentation and PPT covering architecture, model choice, privacy | Core technical details are in README. Separate report and PPT are outside the user's current requested scope and still required for submission. |
 | Respect third-party IP; no plagiarism | Existing Expo template and phishing-feed notices retained. Dependency license metadata reviewed; full redistribution obligations and custom-asset provenance require final team review. Do not represent third-party frameworks or pretrained models as team inventions. |
 | Responsible use of systems/network; privacy and confidentiality | No automated access to SMS/WhatsApp, no fetching user-submitted destinations, explicit AI consent, fixed feed allowlists, no intentional storage/logging of submitted content, synthetic tests. Production privacy/security review remains necessary before public deployment. |
@@ -33,7 +33,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 - [ ] Confirm team/asset provenance, intended project licensing and attribution. Retain original upstream notices; do not replace Expo's attribution with the team name.
 - [ ] Review `git status` and the actual staged diff. Include all app/backend source, assets, package lockfile, README, notices, tests, scripts, configuration and `server/.env.example`.
 - [ ] Exclude actual `.env` variants, credentials, private screenshots/messages, `.local`, `node_modules`, generated native folders and local exports. Check the complete Git history before publication, not only the current files.
-- [ ] Commit the complete MVP on `master`; push to the team's chosen GitHub repository. Confirm the submitted `master` commit matches the tested code.
+- [x] Commit the complete MVP on `master` and push to `AbdelfattahGamalSayed/T2AKKAD`. Recheck the final submitted commit after any later changes.
 - [ ] Verify reviewer access. The supplied terms require GitHub but do not state public visibility; confirm access expectations with the organizer.
 - [ ] Clone that repository into a separate clean directory; run `npm ci`, configure a private key, and verify the documented startup. No local-only file should be needed beyond private credentials and launcher-generated state.
 - [ ] Run `npm test`, `npm run typecheck`, `npm run lint`, `npm run test:ui`, and the documented bundle export. Use synthetic demo content and verify the final iPhone flow.
@@ -45,3 +45,9 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community is fictional and has no login/posting. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
 
 The source audit cannot establish when every contribution was created or certify all participant/asset rights. Do not mark these checks complete without evidence from the team. Prior successful automated checks and iPhone confirmations are useful evidence, but the final submitted commit must be verified again.
+
+## GitHub verification on 2026-11-21
+
+Repository created private; default branch is `master`. Source commit `7ece35895f3006174889e6fd6b768bf3fc95ae17` was cloned from GitHub into a separate verification directory. `npm ci`, all 51 backend tests, typecheck, lint and all 16 mocked browser tests passed. GitHub Actions also passed backend tests, typecheck and lint. The browser tests exercised launcher startup without copying private credentials. No new real-provider or physical-device test was performed in this GitHub setup step.
+
+Before the first push, the exact staged contents were checked for private environment/cache paths, the local OpenAI key, the local pairing token and common credential patterns; no matches were found. Only the blank environment example was committed. Reviewer access and competition submission remain outstanding.
