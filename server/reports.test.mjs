@@ -1,0 +1,51 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {once} from 'node:events';
+import {createReports,publicSummary,inspectNote} from './reports.mjs';
+import {createServer} from './index.mjs';
+const input={channel:'whatsapp',request:'code',outcome:'stopped',needsHelp:true,privateNote:'Synthetic private evidence',aiConsent:false};
+const session={ownerId:'owner-a',expiresAt:10000000},other={ownerId:'owner-b',expiresAt:10000000};
+test('approved exact public templates exclude every private field; consent is enforced',async()=>{
+ const reports=createReports({now:()=>0});const p=await reports.prepare(session,input,'ip');assert.equal(reports.list().items.length,0);
+ assert.throws(()=>reports.publish(session,{id:p.id,consent:false}),/REPORT_CONSENT/);
+ const saved=reports.publish(session,{id:p.id,consent:true});assert.equal(saved.status,'published');assert.deepEqual(saved.summary,p.summary);
+ assert.deepEqual(Object.keys(reports.list().items[0]).sort(),['createdAt','id','mode','summary']);
+ assert.ok(!JSON.stringify(reports.list()).includes(input.privateNote));assert.equal(reports.mine(session).items[0].needsHelp,true);
+ assert.equal(reports.mine(other).items.length,0);assert.throws(()=>reports.withdraw(other,{id:p.id}),/REPORT_NOT_FOUND/);
+ assert.throws(()=>reports.publish(other,{id:p.id,consent:true}),/REPORT_NOT_FOUND/);
+ assert.equal(reports.publish(session,{id:p.id,consent:true}).status,'published');
+ reports.withdraw(session,{id:p.id});assert.equal(reports.list().items.length,0);assert.equal(reports.mine(session).items[0].privateNote,'');
+});
+test('PII checks, optional AI, failure holding, and moderator decisions are real state transitions',async()=>{
+ let sent;const reports=createReports({now:()=>0,moderate:async summary=>{sent=summary;return 'allow';}});
+ const note='My name is Test Person +971 50 123 4567 test@example.com';
+ const p=await reports.prepare(session,{...input,privateNote:note,aiConsent:true},'ip');assert.deepEqual(sent,publicSummary(input));assert.ok(!JSON.stringify(sent).includes('Test Person'));
+ assert.equal(reports.publish(session,{id:p.id,consent:true}).status,'held');assert.equal(reports.list().items.length,0);
+ assert.equal(reports.queue().items.length,1);reports.review({id:p.id,action:'approve'});assert.equal(reports.list().items.length,1);
+ reports.flag({id:p.id,reason:'privacy'},'guest');assert.equal(reports.list().items.length,0);assert.equal(reports.mine(session).items[0].status,'flagged');
+ reports.review({id:p.id,action:'reject'});assert.equal(reports.mine(session).items[0].status,'rejected');
+ const unavailable=createReports({now:()=>0,moderate:async()=>{throw Error('offline');}});const d=await unavailable.prepare(session,{...input,aiConsent:true},'ip');assert.equal(unavailable.publish(session,{id:d.id,consent:true}).reason,'ai_unavailable');
+ assert.equal(inspectNote('050 ١٢٣ ٤٥٦٧').personal,true);
+});
+test('validation, duplicate/spam controls, expiry and pending AI cannot be bypassed',async()=>{
+ let now=0,resolve;const reports=createReports({now:()=>now,moderate:()=>new Promise(r=>{resolve=r;})});
+ await assert.rejects(()=>reports.prepare(session,{...input,channel:'<script>'},'ip'),/REPORT_INPUT/);
+ await assert.rejects(()=>reports.prepare(session,{...input,summary:'injected'},'ip'),/REPORT_INPUT/);
+ const pending=reports.prepare(session,{...input,aiConsent:true},'ip');const id=reports.mine(session).items[0].id;
+ assert.throws(()=>reports.publish(session,{id,consent:true}),/REPORT_WAIT/);resolve('hold');await pending;
+ assert.equal(reports.publish(session,{id,consent:true}).status,'held');
+ await assert.rejects(()=>reports.prepare(session,input,'ip'),/REPORT_DUPLICATE/);
+ now=session.expiresAt;assert.equal(reports.list().items.length,0);assert.throws(()=>reports.mine(session),/AUTH_REQUIRED/);
+ const limited=createReports({now:()=>0});for(let i=0;i<5;i++)await limited.prepare(session,{...input,privateNote:'Synthetic '+i},'ip');await assert.rejects(()=>limited.prepare(session,input,'ip'),/REPORT_RATE/);
+});
+test('HTTP private ownership and moderator boundary remain separate from public/guest access',async t=>{
+ const server=createServer({token:'paired',moderatorToken:'secret-moderator'});server.listen(0,'127.0.0.1');await once(server,'listening');t.after(()=>server.close());const base='http://127.0.0.1:'+server.address().port;
+ const post=(path,body={},token,moderator)=>fetch(base+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer paired',...(token?{'X-Session-Token':token}:{}),...(moderator?{'X-Moderator-Token':'Bearer '+moderator}:{})},body:JSON.stringify(body)});
+ assert.equal((await post('reports/list')).status,200);assert.equal((await post('reports/mine')).status,401);assert.equal((await post('reports/prepare',input)).status,401);
+ const ch=await(await post('auth/start',{phone:'+971500000333'})).json();const auth=await(await post('auth/verify',{challengeId:ch.challengeId,code:ch.demoCode})).json();
+ const preview=await(await post('reports/prepare',{...input,privateNote:'test@example.com'},auth.token)).json();
+ await post('reports/publish',{id:preview.id,consent:true},auth.token);
+ assert.equal((await post('reports/moderation',{action:'list'},auth.token)).status,403);
+ assert.equal((await post('reports/moderation',{action:'approve',id:preview.id},undefined,'secret-moderator')).status,200);
+ const feed=await(await post('reports/list')).json();assert.equal(feed.items.length,1);assert.ok(!JSON.stringify(feed).includes('test@example.com'));
+});

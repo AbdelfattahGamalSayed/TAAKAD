@@ -14,14 +14,14 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 | README build/run instructions | Lockfile install, private environment setup, one-command startup, tests and bundle export documented. Fresh GitHub clone installed and passed backend/browser checks on 2026-11-21; live analysis still needs a privately configured API key. |
 | Technical documentation and PPT covering architecture, model choice, privacy | Core technical details are in README. Separate report and PPT are outside the user's current requested scope and still required for submission. |
 | Respect third-party IP; no plagiarism | Existing Expo template and phishing-feed notices retained. Dependency license metadata reviewed; full redistribution obligations and custom-asset provenance require final team review. Do not represent third-party frameworks or pretrained models as team inventions. |
-| Responsible use of systems/network; privacy and confidentiality | No automated access to SMS/WhatsApp, no fetching user-submitted destinations, explicit AI consent, fixed feed allowlists, no intentional storage/logging of submitted content, synthetic tests. Production privacy/security review remains necessary before public deployment. |
+| Responsible use of systems/network; privacy and confidentiality | No automated access to SMS/WhatsApp, no fetching user-submitted destinations, explicit AI consent, fixed feed allowlists, no intentional logging of submitted content; temporary, separated private report records, synthetic tests. Production privacy/security review remains necessary before public deployment. |
 | Registration and team of 3-5 | Administrative: team must verify registration, truthful participant details, eligibility and agreement. Code cannot verify these. |
 | Submit before deadline; organizer changes | Team must confirm current deadline and later rule changes, then retain submission receipt and exact submitted commit. |
 
 ## Before each feature is accepted
 
 - Keep README and actual behavior consistent, including architecture, data recipients, persistence, external model calls and costs/limitations.
-- Preserve consent and editable screenshot review; keep optional native cropping and whole-image default.
+- Preserve informed photo-selection consent and optional screenshot editing; unclear readings require correction (user update 2026-11-22); keep optional native cropping and whole-image default.
 - Never promise safety, sender authentication or measured accuracy without evidence. Clearly label demonstration posts and unavailable/stale feeds.
 - Keep secrets server-side and outside Git. Include only blank/safe environment examples. Do not distribute `.local` exports containing development tokens.
 - Record permissions and attribution for added assets, libraries and data. RSS access approval does not authorize scraping the entire publisher website.
@@ -42,7 +42,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 
 ## Audited limitations
 
-The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community is fictional with a demo-only sign-in and local draft preview; it has no real SMS, verified accounts or public posting. UAE PASS is explicitly unavailable. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
+The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community now has structured reports, consented shared demo summaries, separate private notes and local moderation. It has no real SMS, verified accounts, durable reporting or authority integration. UAE PASS is explicitly unavailable. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
 
 The source audit cannot establish when every contribution was created or certify all participant/asset rights. Do not mark these checks complete without evidence from the team. Prior successful automated checks and iPhone confirmations are useful evidence, but the final submitted commit must be verified again.
 

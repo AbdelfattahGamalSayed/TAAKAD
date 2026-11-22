@@ -1,6 +1,6 @@
 # T2AKKAD: Trust Blue foundation
 
-User-approved direction, implemented 2026-11-21. Applies to Expo SDK 58 / React Native 0.88. The visual foundation and plain-language copy are implemented; new check journeys, authentication and community tickets remain separate work.
+User-approved direction, implemented 2026-11-21. Applies to Expo SDK 58 / React Native 0.88. The visual foundation and plain-language copy are implemented; guided checking/recovery, demo sign-in and structured reports are implemented; real identity and authority workflows remain separate work.
 
 ## Direction
 
@@ -35,7 +35,7 @@ Never hide consent, the named external recipient, essential uncertainty, a repor
 
 ## Guided Check journey
 
-Use one stage at a time: choose, photo consent (screenshots only), editable text review, optional context questions, and final consent. The screenshot tile is the dominant entry; message and link alternatives remain labelled and visible. Back preserves the draft and reviewed screenshot text. Questions have Yes, No, Not sure and Skip choices; they never authenticate a sender. Editing the message or sender resets answers and consent. Final confirmation uses a short preview with an Edit action for the complete text. Results retain warning level and next actions before optional evidence. Keep whole-photo selection and optional native cropping.
+Use one stage at a time: choose (with an informed photo-upload notice), automatic screenshot reading or pasted-text editing, optional context questions, and final consent. Clear photo readings skip mandatory review; unclear readings need correction. The screenshot tile is the dominant entry; message and link alternatives remain labelled and visible. Back preserves the draft and reviewed screenshot text. Questions have Yes, No, Not sure and Skip choices; they never authenticate a sender. Editing the message or sender resets answers and consent. Final confirmation uses a short preview with an Edit action for the complete text. Results retain warning level and next actions before optional evidence. Keep whole-photo selection and optional native cropping.
 
 ## Verification and limits
 

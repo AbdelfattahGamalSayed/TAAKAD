@@ -1,58 +1,89 @@
-import { Touch as Pressable , Icon as Ionicons , Button, Row, Screen, Txt, useTheme } from '../../components/ui';
-import { useState } from 'react';
-import { TextInput, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useApp } from '../../lib/state';
-import { Category, forumCopy, samplePosts } from '../../lib/community';
-import { router } from 'expo-router';
-import { authCopy, authRequest, useAuth } from '../../lib/auth';
-
-export default function CommunityScreen() {
- const { colors, styles } = useTheme();
- const { locale, rtl } = useApp();
- const f = forumCopy[locale];
- const a=authCopy[locale],{session,setSession,draft,setDraft,welcome}=useAuth();
- const [preview,setPreview]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
- async function submitPreview(){
-  if(busy)return;
-  if(!session||session.expiresAt<=Date.now()){setSession(null);welcome();router.push('/signin');return;}
-  setBusy(true);setError('');
-  try{await authRequest('/api/community/preview',{action:'preview'},session.token);setPreview(true);}
-  catch(err){const code=(err as Error).message;if(code==='AUTH_REQUIRED')setSession(null);setError(code);}
-  finally{setBusy(false);}
+import {useCallback,useRef,useState} from 'react';
+import {ActivityIndicator,TextInput,View} from 'react-native';
+import {router,useFocusEffect} from 'expo-router';
+import {Button,Details,Icon,Row,Screen,Touch,Txt,useTheme} from '../../components/ui';
+import {useApp} from '../../lib/state';
+import {authRequest,useAuth} from '../../lib/auth';
+import {emptyReport,reportCopy,type ScamReport} from '../../lib/reports';
+export default function CommunityScreen(){
+ const {locale,rtl}=useApp(),{colors,styles}=useTheme(),c=reportCopy[locale];
+ const {session,setSession,welcome,draft,setDraft,reportDraft,setReportDraft}=useAuth();
+ const [view,setView]=useState<'feed'|'mine'|'form'|'preview'>(reportDraft.channel?'form':'feed'),[step,setStep]=useState(reportDraft.channel?2:0);
+ const [items,setItems]=useState<ScamReport[]>([]),[itemsOwner,setItemsOwner]=useState(''),[itemsView,setItemsView]=useState('');
+ const [preview,setPreview]=useState<ScamReport|null>(null),[previewOwner,setPreviewOwner]=useState(''),[consent,setConsent]=useState(false);
+ const [busy,setBusy]=useState(false),[error,setError]=useState(''),[flag,setFlag]=useState(''),[notice,setNotice]=useState('');
+ const generation=useRef(0);
+ const request=async(path:string,body:object={})=>authRequest('/api/reports/'+path,body,session?.token,path==='prepare'?AbortSignal.timeout(55000):undefined);
+ const signin=()=>{welcome();router.push('/signin');};
+ const load=useCallback(async()=>{
+   const id=++generation.current;setBusy(true);setError('');
+   try{const result=await authRequest('/api/reports/'+(view==='mine'?'mine':'list'),{},session?.token);if(id===generation.current){setItems(result.items);setItemsView(view);setItemsOwner(session?.token||'');}}
+   catch(err){if(id===generation.current){setError((err as Error).message);if((err as Error).message==='AUTH_REQUIRED')setSession(null);}}
+   finally{if(id===generation.current)setBusy(false);}
+ },[view,session,setSession]);
+ useFocusEffect(useCallback(()=>{if(view==='feed'||(view==='mine'&&session))void load();return()=>{generation.current++;setBusy(false);};},[load,view,session]));
+ async function act(action:'prepare'|'publish'|'withdraw'|'flag',body:object={}){
+   if(busy)return;if(action!=='flag'&&!session){signin();return;}
+   const id=++generation.current;setBusy(true);setError('');setNotice('');
+   try{
+     const result=await request(action,body);if(id!==generation.current)return;
+     if(action==='prepare'){setPreview(result);setPreviewOwner(session!.token);setConsent(false);setView('preview');}
+     else if(action==='publish'){setDraft('');setReportDraft(emptyReport);setPreview(null);setView('mine');}
+     else if(action==='flag'){setFlag('');setNotice(c.flagSent);await load();}
+     else await load();
+   }catch(err){if(id===generation.current){setError((err as Error).message);if((err as Error).message==='AUTH_REQUIRED')setSession(null);}}
+   finally{if(id===generation.current)setBusy(false);}
  }
- const [category,setCategory] = useState<Category>('all');
- const [query,setQuery] = useState('');
- const [expanded,setExpanded] = useState<string|null>(null);
- const [helpful,setHelpful] = useState<string[]>([]);
- const [posting,setPosting] = useState(false);
- const posts = samplePosts.filter(p => (category === 'all' || p.category === category) && (p[locale].title+' '+p[locale].body).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
- return <Screen>
-  <Txt style={styles.heading}>{f.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{f.subtitle}</Txt>
-  <View style={[styles.card,{backgroundColor:colors.primarySoft,borderColor:colors.accentBorder,marginTop:20}]}><Row style={{alignItems:'flex-start',gap:10}}><Ionicons name="flask-outline" size={21} color={colors.primary}/><View style={{flex:1}}><Txt style={{fontWeight:'700',color:colors.primary}}>{f.preview}</Txt><Txt style={[styles.muted,{marginTop:5,fontSize:16,lineHeight:24}]}>{f.notice}</Txt></View></Row></View>
-  <Button title={f.start} icon="add-circle-outline" onPress={()=>setPosting(!posting)}/>
-  {(posting||!!draft)&&<View style={styles.card}><Txt style={styles.sectionTitle}>{a.draftTitle}</Txt><Txt style={styles.muted}>{a.draftHint}</Txt>
-    <Txt style={{marginTop:16}}>{a.draftLabel}</Txt><TextInput accessibilityLabel={a.draftLabel} value={draft} onChangeText={text=>{setDraft(text);setPreview(false);setError('');}} editable={!busy} multiline maxLength={1600} style={[styles.input,{minHeight:140,marginTop:12,textAlign:rtl?'right':'left',textAlignVertical:'top'}]}/>
-    <Txt style={[styles.muted,{marginTop:16}]}>{a.previewNote}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{a.draftSaved}</Txt>
-    {session&&<Txt style={{marginTop:16}}>{a.session}</Txt>}
-    <Button title={session?a.preview:a.loginPost} disabled={busy||!draft.trim()} icon="lock-closed-outline" onPress={submitPreview}/>
-    {preview&&<Txt accessibilityRole="alert" style={{marginTop:16}}>{a.previewDone}</Txt>}
-    {!!error&&<Txt accessibilityRole="alert" style={styles.error}>{a.errors[error as keyof typeof a.errors]||a.errors.NETWORK}</Txt>}
-    <Button title={a.clear} secondary disabled={busy} onPress={()=>{setDraft('');setPosting(false);setPreview(false);setError('');}}/>
+ function change(key:'channel'|'request'|'outcome',value:string){setReportDraft({...reportDraft,[key]:value});setConsent(false);setError('');}
+ function options(key:'channel'|'request'|'outcome'){
+   return Object.entries(c[key]).map(([value,label])=><Touch key={value} accessibilityRole="radio" accessibilityLabel={label} aria-checked={reportDraft[key]===value} accessibilityState={{checked:reportDraft[key]===value}} disabled={busy} onPress={()=>change(key,value)} style={{padding:16,marginTop:12,borderWidth:1,borderColor:colors.controlBorder,backgroundColor:reportDraft[key]===value?colors.primarySoft:colors.surface}}><Row><Icon name={reportDraft[key]===value?'radio-button-on':'radio-button-off'} size={24} color={colors.primary}/><Txt style={{flex:1}}>{label}</Txt></Row></Touch>);
+ }
+ const publicPreview=view==='preview'&&preview&&previewOwner===session?.token;
+ const form=view==='form'||(view==='preview'&&!publicPreview);
+ const visibleItems=itemsView!==view||(view==='mine'&&itemsOwner!==session?.token)?[]:items;
+ return <Screen key={`${view}:${step}`}>
+  <Txt style={styles.heading}>{c.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt>
+  <View style={[styles.card,{backgroundColor:colors.primarySoft}]}><Txt style={{fontWeight:'700'}}>{c.demo}</Txt><Txt style={[styles.muted,{marginTop:8}]}>{locale==='en'?'Shared within this demo. Reports expire within one hour.':'المشاركة ضمن هذه النسخة فقط. تنتهي البلاغات خلال ساعة.'}</Txt></View>
+  <Row style={{flexWrap:'wrap',marginTop:16}}><Button title={c.feed} secondary disabled={busy} onPress={()=>{setView('feed');setError('');}}/><Button title={c.mine} secondary disabled={busy} onPress={()=>{setView('mine');setError('');}}/></Row>
+  {(view==='feed'||view==='mine')&&<Button title={c.start} icon="add-circle-outline" disabled={busy} onPress={()=>{setView('form');setStep(reportDraft.channel?2:0);setError('');setNotice('');}}/>}
+  {form&&<View style={styles.card}>
+    <Txt style={styles.eyebrow}>{step+1} / 3</Txt><Txt style={styles.sectionTitle}>{c.questions[step]}</Txt>
+    {step===0&&options('channel')}{step===1&&options('request')}
+    {step===2&&<>{options('outcome')}<Txt style={[styles.sectionTitle,{marginTop:20}]}>{c.helpQuestion}</Txt>
+      <Row>{[true,false].map(value=><Button key={String(value)} title={value?c.yes:c.no} secondary={reportDraft.needsHelp!==value} disabled={busy} onPress={()=>setReportDraft({...reportDraft,needsHelp:value})}/>)}</Row>
+      {reportDraft.needsHelp&&<><Txt style={[styles.muted,{marginTop:16}]}>{c.helpNote}</Txt><Button title={c.help} secondary onPress={()=>router.push('/recovery')}/></>}
+      <Txt style={{marginTop:20,fontWeight:'700'}}>{c.note}</Txt><Txt style={[styles.muted,{marginTop:8}]}>{c.privateHint}</Txt>
+      <TextInput accessibilityLabel={c.note} value={draft} onChangeText={setDraft} editable={!busy} maxLength={1200} multiline style={[styles.input,{marginTop:12,minHeight:120,textAlign:rtl?'right':'left',textAlignVertical:'top'}]}/>
+      <Touch accessibilityRole="checkbox" accessibilityLabel={c.ai} aria-checked={reportDraft.aiConsent} accessibilityState={{checked:reportDraft.aiConsent}} disabled={busy} onPress={()=>setReportDraft({...reportDraft,aiConsent:!reportDraft.aiConsent})} style={{marginTop:20}}><Row><Icon name={reportDraft.aiConsent?'checkbox':'square-outline'} color={colors.primary} size={24}/><Txt style={{flex:1}}>{c.ai}</Txt></Row></Touch>
+      <Txt style={[styles.muted,{marginTop:12}]}>{c.aiLimit}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{c.saved}</Txt>
+    </>}
+    <Button title={c.back} secondary disabled={busy} onPress={()=>step?setStep(step-1):setView('feed')}/>
+    {step<2?<Button title={c.next} disabled={busy||!(step===0?reportDraft.channel:reportDraft.request)} onPress={()=>setStep(step+1)}/>:<Button title={session?c.prepare:c.signin} disabled={busy||!reportDraft.channel||!reportDraft.request||!reportDraft.outcome||reportDraft.needsHelp===null} onPress={()=>act('prepare',{...reportDraft,privateNote:draft})}/>}
   </View>}
-  <Row style={{...styles.input,marginTop:24,gap:9}}><Ionicons name="search-outline" size={20} color={colors.muted}/><TextInput accessibilityLabel={f.search} placeholder={f.search} placeholderTextColor={colors.placeholder} value={query} onChangeText={setQuery} maxLength={100} style={{flex:1,color:colors.text,minHeight:48,fontSize:16,textAlign:rtl?'right':'left',writingDirection:rtl?'rtl':'ltr'}}/></Row>
-  <Row style={{flexWrap:'wrap',gap:8,marginTop:14}}>{(['all','messages','links','accounts'] as Category[]).map(value=><Pressable accessibilityRole="radio" accessibilityState={{selected:category===value}} key={value} onPress={()=>setCategory(value)} style={{paddingHorizontal:13,paddingVertical:10,borderRadius:22,borderWidth:1,borderColor:category===value?colors.primary:colors.line,backgroundColor:category===value?colors.primarySoft:colors.surface}}><Txt style={{fontSize:16,fontWeight:'600',color:category===value?colors.primary:colors.muted}}>{f[value]}</Txt></Pressable>)}</Row>
-  {posts.length===0 && <View style={styles.card}><Txt style={styles.sectionTitle}>{f.empty}</Txt><Button title={f.reset} secondary onPress={()=>{setQuery('');setCategory('all');}}/></View>}
-  {posts.map(post=>{
-   const content=post[locale], open=expanded===post.id, marked=helpful.includes(post.id);
-   return <View key={post.id} style={styles.card}>
-    <Row style={{alignItems:'flex-start',marginBottom:15}}><View style={{width:40,height:40,borderRadius:14,backgroundColor:colors.subtle,alignItems:'center',justifyContent:'center'}}><Txt style={{fontWeight:'800',color:colors.primary}}>{post.author[locale][0]}</Txt></View><View style={{flex:1}}><Txt style={{fontWeight:'700',fontSize:16}}>{post.author[locale]} · {f.member}</Txt><Txt style={{color:colors.muted,fontSize:16}}>{f.example}</Txt></View><View style={{borderRadius:10,paddingHorizontal:8,paddingVertical:4,backgroundColor:colors.primarySoft}}><Txt style={{fontSize:16,color:colors.primary}}>{f[post.category]}</Txt></View></Row>
-    <Txt style={{fontSize:20,lineHeight:28,fontWeight:'700',marginBottom:10}}>{content.title}</Txt><Txt style={[styles.muted,{fontSize:16}]}>{content.body}</Txt>
-    <Pressable accessibilityRole="button" accessibilityState={{expanded:open}} onPress={()=>setExpanded(open?null:post.id)} style={{paddingVertical:15,marginTop:8}}><Row style={{justifyContent:'space-between'}}><Row style={{gap:7}}><Ionicons name="chatbubbles-outline" size={18} color={colors.primary}/><Txt style={{color:colors.primary,fontSize:16,fontWeight:'700'}}>{open?f.hide:f.read} · {content.replies.length}</Txt></Row><Ionicons name={open?'chevron-up':'chevron-down'} color={colors.primary} size={17}/></Row></Pressable>
-    {open && <View style={{borderTopWidth:1,borderTopColor:colors.line,paddingTop:16}}><Txt style={{fontWeight:'700',fontSize:16,marginBottom:12}}>{f.replies}</Txt>{content.replies.map((reply,index)=><View key={index} style={{backgroundColor:colors.input,borderRadius:14,padding:14,marginBottom:10}}><Txt style={{fontSize:16,color:colors.primary,fontWeight:'700',marginBottom:5}}>{f.member} {index+1}</Txt><Txt style={{fontSize:16,lineHeight:24}}>{reply}</Txt></View>)}<Pressable accessibilityRole="button" accessibilityState={{selected:marked}} onPress={()=>setHelpful(current=>marked?current.filter(id=>id!==post.id):[...current,post.id])} style={{alignSelf:rtl?'flex-end':'flex-start',paddingVertical:10}}><Row style={{gap:7}}><Ionicons name={marked?'heart':'heart-outline'} size={18} color={colors.primary}/><Txt style={{color:colors.primary,fontSize:16}}>{marked?f.marked:f.helpful}</Txt></Row></Pressable></View>}
-   </View>;
-  })}
-  <LinearGradient colors={[colors.tipStart,colors.tipEnd]} style={{padding:22,borderRadius:22,marginTop:24}}><Row style={{gap:9,marginBottom:9}}><Ionicons name="shield-checkmark-outline" color={colors.primary} size={22}/><Txt style={{fontSize:16,fontWeight:'700',flex:1}}>{f.guide}</Txt></Row><Txt style={{color:colors.tipText,fontSize:16,lineHeight:24}}>{f.guideBody}</Txt></LinearGradient>
-  <Txt style={{marginTop:20,color:colors.muted,fontSize:16,lineHeight:24,textAlign:'center'}}>{f.footer}</Txt>
+  {publicPreview&&<View style={styles.card}><Txt style={styles.sectionTitle}>{c.preview}</Txt><Txt>{preview.summary[locale]}</Txt><Txt style={[styles.muted,{marginTop:16}]}>{c.previewHelp}</Txt>
+    {(preview.checks?.personal||preview.checks?.harmful||['hold','unavailable'].includes(preview.ai||''))&&<Txt style={[styles.muted,{marginTop:16}]}>{c.noteHeld}</Txt>}
+    <Touch accessibilityRole="checkbox" accessibilityLabel={c.consent} aria-checked={consent} accessibilityState={{checked:consent}} disabled={busy} onPress={()=>setConsent(!consent)} style={{marginTop:20}}><Row><Icon name={consent?'checkbox':'square-outline'} color={colors.primary} size={24}/><Txt style={{flex:1}}>{c.consent}</Txt></Row></Touch>
+    <Button title={c.publish} disabled={busy||!consent} onPress={()=>act('publish',{id:preview.id,consent})}/><Button title={c.edit} secondary disabled={busy} onPress={()=>{setConsent(false);setView('form');setStep(0);}}/>
+  </View>}
+  {view==='mine'&&!session&&<Button title={c.login} onPress={signin}/>}
+  {(view==='feed'||(view==='mine'&&session))&&<>
+    <Button title={c.refresh} secondary disabled={busy} onPress={()=>void load()}/>
+    {!busy&&visibleItems.length===0&&<Txt style={[styles.muted,{marginTop:16}]}>{view==='mine'?c.noMine:c.empty}</Txt>}
+    {visibleItems.map(item=><View key={item.id} style={styles.card}>
+      <Txt>{item.summary[locale]}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{new Date(item.createdAt).toLocaleString(locale)}</Txt>
+      {view==='mine'?<>
+        <Txt style={[styles.sectionTitle,{marginTop:16}]}>{c.status}: {c.statuses[item.status as keyof typeof c.statuses]||item.status}</Txt>
+        <Txt>{c.reasons[item.reason as keyof typeof c.reasons]||c.noteHeld}</Txt>
+        <Details><Txt style={styles.sectionTitle}>{c.private}</Txt><Txt>{item.privateNote||'—'}</Txt><Txt>{c.helpQuestion} {item.needsHelp?c.yes:c.no}</Txt></Details>
+        {item.needsHelp&&<><Txt style={[styles.muted,{marginTop:12}]}>{c.helpNote}</Txt><Button title={c.help} secondary onPress={()=>router.push('/recovery')}/></>}
+        {item.status==='draft'&&<Button title={c.preview} secondary disabled={busy} onPress={()=>{setPreview(item);setPreviewOwner(session!.token);setConsent(false);setView('preview');}}/>}
+        {item.status!=='withdrawn'&&<Button title={c.withdraw} secondary disabled={busy} onPress={()=>act('withdraw',{id:item.id})}/>}
+      </>:<><Button title={c.flag} secondary disabled={busy} onPress={()=>setFlag(flag===item.id?'':item.id)}/>{flag===item.id&&<>{Object.entries(c.flagReasons).map(([reason,label])=><Button key={reason} title={label} secondary disabled={busy} onPress={()=>act('flag',{id:item.id,reason})}/>)}<Button title={c.cancel} secondary onPress={()=>setFlag('')}/></>}</>}
+    </View>)}
+  </>}
+  {busy&&<ActivityIndicator style={{marginTop:20}} color={colors.primary}/>}
+  {!!error&&<Txt accessibilityRole="alert" style={styles.error}>{c.errors[error as keyof typeof c.errors]||c.error}</Txt>}
+  {!!notice&&<Txt accessibilityRole="alert" style={{marginTop:20}}>{notice}</Txt>}
+  <Details><Txt>{c.demoInfo}</Txt><Txt style={{marginTop:16}}>{c.aiLimit}</Txt></Details>
  </Screen>;
 }

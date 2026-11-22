@@ -1,8 +1,10 @@
 import { alertsService } from './alerts.mjs';
 import { createDemoAuth } from './auth.mjs';
+import { createReports } from './reports.mjs';
 import http from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { analyze, extractText, AnalysisError, readConfig, validateInput } from './analysis.mjs';
 
@@ -28,11 +30,26 @@ async function readBody(req, maxBytes = 7_100_000) {
   catch { throw new AnalysisError('INVALID_INPUT'); }
 }
 
-export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth() } = {}) {
+export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth(), reports = createReports(), moderatorToken } = {}) {
   let windowStart = Date.now(), requestCount = 0, inFlight = 0;
   return http.createServer(async (req, res) => {
     try {
       if (req.url === '/api/health' && req.method === 'GET') return json(res, 200, { ok: true, configured: Boolean(getConfig().key), service: 'T2AKKAD' });
+      if(['/api/reports/list','/api/reports/mine','/api/reports/prepare','/api/reports/publish','/api/reports/withdraw','/api/reports/flag','/api/reports/moderation'].includes(req.url)&&req.method==='POST'){
+        if(!authorized(req.headers.authorization,token))return json(res,401,{error:'UNAUTHORIZED'});
+        const body=await readBody(req,12000),ip=req.socket.remoteAddress||'unknown';
+        if(req.url==='/api/reports/moderation'){
+          if(!authorized(req.headers['x-moderator-token'],moderatorToken))return json(res,403,{error:'FORBIDDEN'});
+          return json(res,200,body.action==='list'?reports.queue():reports.review(body));
+        }
+        if(req.url==='/api/reports/list')return json(res,200,reports.list());
+        if(req.url==='/api/reports/flag')return json(res,200,reports.flag(body,ip));
+        const session=auth.requireSession(req.headers['x-session-token']);
+        if(req.url==='/api/reports/mine')return json(res,200,reports.mine(session));
+        if(req.url==='/api/reports/prepare')return json(res,200,await reports.prepare(session,body,ip));
+        if(req.url==='/api/reports/publish')return json(res,200,reports.publish(session,body));
+        return json(res,200,reports.withdraw(session,body));
+      }
       if (['/api/auth/start','/api/auth/verify','/api/auth/logout','/api/community/preview'].includes(req.url) && req.method === 'POST') {
         if (!authorized(req.headers.authorization, token)) return json(res,401,{error:'UNAUTHORIZED'});
         const body = await readBody(req, 12000), ip = req.socket.remoteAddress || 'unknown';
@@ -69,7 +86,9 @@ export function createServer({ token, analyzeImpl = analyze, extractImpl = extra
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const session = JSON.parse(readFileSync(new URL('../.local/session.json', import.meta.url), 'utf8'));
-  const server = createServer({ token: session.token });
+  const moderatorFile=new URL('../.local/report-moderator.json',import.meta.url);
+  if(!existsSync(moderatorFile))writeFileSync(moderatorFile,JSON.stringify({token:randomBytes(32).toString('hex')}));
+  const server = createServer({ token: session.token, moderatorToken: JSON.parse(readFileSync(moderatorFile,'utf8')).token });
   server.requestTimeout = 60_000;
   server.on('listening',()=>alertsService.start());
   server.on('close',()=>alertsService.stop());

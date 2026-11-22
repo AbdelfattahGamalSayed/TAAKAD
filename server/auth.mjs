@@ -46,7 +46,7 @@ export function createDemoAuth({ now = Date.now } = {}) {
     challenges.delete(body.challengeId);
     const token = randomBytes(32).toString('hex'), expiresAt = now()+3600000;
     const session = { mode: 'demo', phoneVerified: false, expiresAt };
-    sessions.set(digest(token), session);
+    sessions.set(digest(token), { ...session, ownerId: randomBytes(24).toString('hex') });
     return { ...session, token };
   }
   function requireSession(token) {

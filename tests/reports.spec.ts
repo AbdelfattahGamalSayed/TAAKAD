@@ -1,0 +1,30 @@
+import {test,expect} from '@playwright/test';
+import {reportCopy} from '../src/lib/reports';
+import {authCopy} from '../src/lib/authCopy';
+import {fillReport} from './report-helpers';
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'});});
+for(const locale of ['en','ar'] as const)test(`${locale}: approved public report excludes private note and supports withdrawal`,async({page})=>{
+ const c=reportCopy[locale],a=authCopy[locale],note='Synthetic private incident note';
+ await page.addInitScript(locale=>localStorage.setItem('t2akkad-language',locale),locale);
+ await page.goto('/community');await fillReport(page,note,locale);await page.getByRole('button',{name:c.signin,exact:true}).click();
+ await page.getByRole('textbox',{name:a.number}).fill(locale==='en'?'+971500000201':'+971500000202');await page.getByRole('button',{name:a.send}).click();
+ await page.getByRole('textbox',{name:a.code}).fill(await page.getByTestId('demo-code').innerText());await page.getByRole('button',{name:a.verify}).click();
+ await expect(page.getByRole('textbox',{name:c.note})).toHaveValue(note);await expect(page.getByRole('checkbox',{name:c.ai})).not.toBeChecked();
+ await page.getByRole('button',{name:c.prepare,exact:true}).click();await expect(page.getByText(c.preview,{exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:c.publish,exact:true})).toBeDisabled();await expect(page.getByText(note,{exact:true})).toHaveCount(0);
+ await page.getByRole('checkbox',{name:c.consent}).click();await page.getByRole('button',{name:c.publish,exact:true}).click();
+ await expect(page.getByText(c.status+': '+c.statuses.published,{exact:true})).toBeVisible();
+ await page.screenshot({path:`.local/reports-private-${locale}.png`});
+ await page.getByRole('button',{name:c.feed,exact:true}).click();await expect(page.getByRole('button',{name:c.flag,exact:true}).first()).toBeVisible();
+ await expect(page.getByText(note,{exact:true})).toHaveCount(0);await expect(page.getByText(c.helpQuestion,{exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:c.mine,exact:true}).click();await page.getByRole('button',{name:c.withdraw,exact:true}).click();
+ await expect(page.getByText(c.status+': '+c.statuses.withdrawn,{exact:true})).toBeVisible();
+});
+test('guest flagging hides an awareness post and no discussions remain',async({page})=>{
+ const c=reportCopy.en;let flagged=false;await page.route('**/api/reports/list',r=>r.fulfill({json:{items:flagged?[]:[{id:'mock',summary:{en:'Synthetic public awareness summary.',ar:'مثال'},createdAt:Date.now(),mode:'demo'}]}}));
+ await page.route('**/api/reports/flag',r=>{expect(r.request().postDataJSON()).toEqual({id:'mock',reason:'spam'});flagged=true;return r.fulfill({json:{ok:true}});});
+ await page.goto('/community');await expect(page.getByText('Synthetic public awareness summary.',{exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:/Read discussion|Start a discussion/})).toHaveCount(0);
+ await page.getByRole('button',{name:c.flag,exact:true}).click();await page.getByRole('button',{name:c.flagReasons.spam,exact:true}).click();
+ await expect(page.getByText(c.flagSent,{exact:true})).toBeVisible();await expect(page.getByText('Synthetic public awareness summary.',{exact:true})).toHaveCount(0);
+});

@@ -51,8 +51,8 @@ export default function CheckScreen() {
     if (busy) { cancel(); return; }
     if (picking) return;
     setConsent(false); setError('');
-    if (step === 'confirm') { if (questions.length) { setQuestionIndex(questions.length - 1); setStep('context'); } else setStep('review'); }
-    else if (step === 'context') { if (questionIndex > 0) setQuestionIndex(questionIndex - 1); else setStep('review'); }
+    if (step === 'confirm') { if (questions.length) { setQuestionIndex(questions.length - 1); setStep('context'); } else setStep(mode === 'screenshot' ? 'photo' : 'review'); }
+    else if (step === 'context') { if (questionIndex > 0) setQuestionIndex(questionIndex - 1); else setStep(mode === 'screenshot' ? 'photo' : 'review'); }
     else if (step === 'review') setStep(mode === 'screenshot' && photo ? 'photo' : 'choose');
     else setStep('choose');
   }
@@ -82,7 +82,8 @@ export default function CheckScreen() {
       if (!image.base64 || image.base64.length > 7_000_000) { setError(t.imageLarge); return; }
       clearDraft(); setMode('screenshot');
       setPhoto({ uri: image.uri, width: image.width, height: image.height });
-      setPrepared('data:image/png;base64,' + image.base64); setStep('photo');
+      const data='data:image/png;base64,' + image.base64;
+      setPrepared(data); setStep('photo');setPicking(false);await readPhoto(data);
     } catch { if (version === pickerVersion.current) setError(t.imageError); }
     finally { if (version === pickerVersion.current) setPicking(false); }
   }
@@ -90,6 +91,19 @@ export default function CheckScreen() {
     if (!text.trim()) { setError(t.required); return; }
     setError(''); setConsent(false); setQuestionIndex(0);
     setStep(questions.length ? 'context' : 'confirm');
+  }
+  async function readPhoto(image:string){
+    if(controller.current)return;
+    setBusy(true);setError('');const id=++requestId.current,abort=new AbortController();controller.current=abort;
+    const timer=setTimeout(()=>abort.abort(),55000);
+    try{
+      const extracted=await requestExtraction({text:'',sender:'',image,prepared:true,locale,consent:true},abort.signal);
+      if(id!==requestId.current)return;
+      setText(extracted.text);setSender(extracted.sender);setHasRead(true);invalidateReview();
+      setWarnings(extracted.status==='unclear'?[f.unclear,...extracted.warnings]:extracted.warnings);
+      setStep(extracted.status==='unclear'||!extracted.text.trim()?'review':relevantQuestions(extracted.text).length?'context':'confirm');
+    }catch(err){if(id===requestId.current){const code=(err as Error).message as keyof typeof t.errors;setError(abort.signal.aborted?t.errors.AI_TIMEOUT:t.errors[code]||t.errors.DEFAULT);}}
+    finally{clearTimeout(timer);if(id===requestId.current){controller.current=null;setBusy(false);}}
   }
   function nextQuestion(skip = false) {
     if (!question || (!skip && !answers[question])) return;
@@ -101,28 +115,20 @@ export default function CheckScreen() {
   async function submit() {
     if (controller.current || busy || picking) return;
     const extracting = step === 'photo';
-    if (extracting && hasRead) { setConsent(false); setStep('review'); return; }
-    if (!extracting && step !== 'confirm') return;
-    if (!(extracting ? prepared : text.trim())) { setError(t.required); return; }
+    if (extracting) { if(hasRead){setConsent(false);setStep(questions.length?'context':'confirm');}else if(prepared)await readPhoto(prepared);return; }
+    if (step !== 'confirm') return;
+    if (!text.trim()) { setError(t.required); return; }
     if (!consent) { setError(t.consentRequired); return; }
     setBusy(true); setError(''); setResult(null);
     const id = ++requestId.current, abort = new AbortController(); controller.current = abort;
     const timer = setTimeout(() => abort.abort('timeout'), 55_000);
     try {
-      if (extracting) {
-        const extracted = await requestExtraction({ text: '', sender: '', image: prepared, prepared: true, locale, consent }, abort.signal);
-        if (id !== requestId.current) return;
-        setText(extracted.text); setSender(extracted.sender); setHasRead(true);
-        setWarnings(extracted.status === 'unclear' ? [f.unclear, ...extracted.warnings] : extracted.warnings);
-        invalidateReview(); setStep('review');
-      } else {
         const context: CheckContext = {};
         for (const key of questions) if (answers[key]) context[key] = answers[key];
         const result = await requestAssessment({ text, sender, image: null, locale, consent, context,
-          source: mode === 'screenshot' ? 'reviewed_screenshot' : 'text', reviewConfirmed: mode === 'screenshot' && hasRead }, abort.signal);
+          source: mode === 'screenshot' ? 'transcribed_screenshot' : 'text' }, abort.signal);
         if (id !== requestId.current) return;
         setResult(result); clearDraft(); setStep('choose'); setMode('screenshot'); router.push('/result');
-      }
     } catch (err) {
       if (id !== requestId.current) return;
       const code = (err as Error).message as keyof typeof t.errors;
@@ -144,6 +150,7 @@ export default function CheckScreen() {
     <Txt accessibilityLiveRegion="polite" style={[styles.heading, { marginTop: step === 'choose' ? 0 : 20 }]}>{heading}</Txt>
     {step === 'choose' && <>
       <Txt style={[styles.muted, { marginTop: 12 }]}>{t.subtitle}</Txt>
+      <Txt style={[styles.muted,{marginTop:16}]}>{locale==='en'?'Choosing a photo sends it to OpenAI to read the message and choose useful questions. By choosing it, you agree. Crop out private details first if needed.':'باختيار صورة، توافق على إرسالها إلى OpenAI لقراءة الرسالة واختيار الأسئلة المناسبة. اقتصّ التفاصيل الخاصة أولاً عند الحاجة.'}</Txt>
       <Touch accessibilityRole="button" accessibilityLabel={picking ? f.loadingPhoto : t.upload} disabled={picking} accessibilityState={{ disabled: picking }}
         onPress={() => pickImage()} style={{ marginTop: 24, backgroundColor: colors.upload, borderRadius: 24, borderWidth: 2, borderColor: colors.accentBorder, padding: 24, minHeight: 200, alignItems: 'center', gap: 16 }}>
         <View style={{ padding: 20, borderRadius: 24, backgroundColor: colors.accentSolid }}><Icon name="images-outline" size={48} color={colors.onAccent} /></View>
@@ -167,11 +174,8 @@ export default function CheckScreen() {
       <Button title={t.replace} secondary onPress={() => pickImage()} disabled={busy || picking} />
       {Platform.OS !== 'web' && <Button title={f.chooseCrop} secondary icon="crop-outline" onPress={() => pickImage(true)} disabled={busy || picking} />}
       <Button title={t.remove} secondary onPress={() => { clearDraft(); setStep('choose'); }} disabled={busy || picking} />
-      {hasRead ? <Txt style={[styles.muted, { marginTop: 16 }]}>{g.photoRead}</Txt> : <>
-        <Txt style={[styles.muted, { marginTop: 16 }]}>{t.privacySmall}</Txt>
-        {consentControl(f.extractConsent)}
-      </>}
-      {!busy && <Button title={hasRead ? g.next : f.extract} icon="arrow-forward-outline" onPress={submit} disabled={picking} />}
+      <Txt style={[styles.muted,{marginTop:16}]}>{t.privacySmall}</Txt>
+      {!busy && <Button title={g.next} icon="arrow-forward-outline" onPress={submit} disabled={picking} />}
     </View>}
     {step === 'review' && <View style={styles.card}>
       <Txt style={styles.muted}>{g.reviewHelp}</Txt>
@@ -203,6 +207,7 @@ export default function CheckScreen() {
     </View>}
     {step === 'confirm' && <View style={styles.card}>
       <Txt style={styles.muted}>{g.confirmHelp}</Txt>
+      {mode==='screenshot'&&<Txt style={[styles.muted,{marginTop:12}]}>{locale==='en'?'Words read from a photo can be wrong. Use Edit the message if anything looks incorrect.':'قد تخطئ قراءة الصورة. استخدم تعديل الرسالة إذا لاحظت خطأ.'}</Txt>}
       <Txt style={[styles.sectionTitle, { marginTop: 20 }]}>{g.message}</Txt>
       <Txt selectable numberOfLines={4} style={{ writingDirection: mode === 'link' ? 'ltr' : rtl ? 'rtl' : 'ltr', textAlign: mode === 'link' ? 'left' : rtl ? 'right' : 'left' }}>{text}</Txt>
       {!!sender && <Txt style={[styles.muted, { marginTop: 12 }]}>{t.sender}: {sender}</Txt>}
