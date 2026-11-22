@@ -42,7 +42,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 
 ## Audited limitations
 
-The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community is fictional and has no login/posting. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
+The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community is fictional with a demo-only sign-in and local draft preview; it has no real SMS, verified accounts or public posting. UAE PASS is explicitly unavailable. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
 
 The source audit cannot establish when every contribution was created or certify all participant/asset rights. Do not mark these checks complete without evidence from the team. Prior successful automated checks and iPhone confirmations are useful evidence, but the final submitted commit must be verified again.
 

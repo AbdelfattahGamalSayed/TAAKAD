@@ -106,7 +106,7 @@ export const copy = {
     },
     "moreDetails": "More details",
     "aboutDetails": "Link checks use a public list of reported scam websites. Alerts come from official UAE sources. Accounts, real Community posts, notifications and home-screen widgets are not available yet.",
-    "dataDetails": "Your result stays on screen until cleared or the app closes. Only your language and appearance choices are saved. Your phone may keep temporary copies of selected photos. OpenAI may retain submitted content under its own data policies.",
+    "dataDetails": "Your result stays on screen until cleared or the app closes. We save your language, appearance and whether you have seen the welcome screen. Demo sign-in and drafts are not saved. Your phone may keep temporary copies of selected photos. OpenAI may retain submitted content under its own data policies.",
     "shortLimit": "A low warning level does not mean a message is safe."
   },
   "ar": {
@@ -215,7 +215,7 @@ export const copy = {
     },
     "moreDetails": "مزيد من التفاصيل",
     "aboutDetails": "نقارن الروابط بقائمة عامة لمواقع أُبلغ عن استخدامها في الاحتيال. تأتي التنبيهات من مصادر إماراتية رسمية. الحسابات والمنشورات الحقيقية والإشعارات وأدوات الشاشة الرئيسية غير متاحة بعد.",
-    "dataDetails": "تبقى النتيجة على الشاشة حتى تمسحها أو تغلق التطبيق. نحفظ اختيار اللغة والمظهر فقط. قد يحتفظ هاتفك بنسخ مؤقتة من الصور المختارة. وقد تحتفظ OpenAI بالمحتوى وفق سياسة بياناتها.",
+    "dataDetails": "تبقى النتيجة على الشاشة حتى تمسحها أو تغلق التطبيق. نحفظ اللغة والمظهر وما إذا كنت قد رأيت شاشة الترحيب. لا نحفظ الدخول التجريبي أو المسودات. قد يحتفظ هاتفك بنسخ مؤقتة من الصور المختارة. وقد تحتفظ OpenAI بالمحتوى وفق سياسة بياناتها.",
     "shortLimit": "انخفاض مستوى التحذير لا يعني أن الرسالة آمنة."
   }
 };

@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Welcome } from '../../components/welcome';
+import { useAuth } from '../../lib/auth';
 import { ActivityIndicator, BackHandler, Image, Platform, TextInput, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
@@ -15,6 +17,7 @@ type Mode = 'screenshot' | 'message' | 'link';
 type Step = 'choose' | 'photo' | 'review' | 'context' | 'confirm';
 
 export default function CheckScreen() {
+  const {welcomed}=useAuth();
   const { colors, styles } = useTheme();
   const { t, locale, rtl, setResult } = useApp();
   const f = featureCopy[locale], g = flowCopy[locale];
@@ -135,6 +138,7 @@ export default function CheckScreen() {
       <Txt style={{ flex: 1 }}>{label}</Txt></Row>
   </Touch>;
   const heading = step === 'choose' ? t.title : step === 'photo' ? g.photo : step === 'review' ? g.review : step === 'context' ? g.context : g.confirm;
+  if (!welcomed) return <Welcome />;
   return <Screen key={step + ':' + questionIndex}>
     {step !== 'choose' && <Button title={g.back} secondary icon={rtl ? 'arrow-forward' : 'arrow-back'} onPress={back} disabled={picking} />}
     <Txt accessibilityLiveRegion="polite" style={[styles.heading, { marginTop: step === 'choose' ? 0 : 20 }]}>{heading}</Txt>

@@ -39,6 +39,8 @@ Use one stage at a time: choose, photo consent (screenshots only), editable text
 
 ## Verification and limits
 
+Welcome offers guest access as a primary action. Phone sign-in displays the demo limitation before inputs and on the code screen; UAE PASS stays disabled with an explanation. Use a single labelled six-digit field that supports paste/autofill, not six separate boxes. Show resend/expiry countdowns without announcing every second. Keep guest/cancel available during requests and preserve the in-memory Community draft. Never style a demo session as verified identity. All public features remain guest-accessible.
+
 Recovery starts with a plain-language entry and asks five questions, one per screen. Show progress, Back, Yes/No/Not sure and Next. Prioritize money, then codes, passwords, and device guidance; combine payment/card actions. Keep help reachable before completion. Illustrated blocking/reporting panels are labelled as simplified, with text equivalents and no interactive-looking unlabeled controls. Preserve evidence before reporting, distinguish app reports from police reports, and never equate completion ticks with safety.
 
 Automated checks cover semantic text contrast (at least 4.5:1 in light and dark), all five tabs in both languages/themes at 375px, 48-unit controls, keyboard focus, reduced-motion startup, tablet layouts and a browser 200% text stress test. The browser stress test approximates enlarged text; it is not a substitute for actual iOS Dynamic Type or VoiceOver testing.

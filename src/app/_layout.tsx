@@ -4,12 +4,14 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Icon as Ionicons , useTheme } from '../components/ui';
 import { AppProvider, useApp } from '../lib/state';
+import { AuthProvider, useAuth } from '../lib/auth';
 
-export default function Layout() { return <AppProvider><AppContent /></AppProvider>; }
+export default function Layout() { return <AppProvider><AuthProvider><AppContent /></AuthProvider></AppProvider>; }
 
 function AppContent() {
   const { colors, isDark } = useTheme();
   const { preferencesReady } = useApp();
+  const { ready } = useAuth();
   const [intro, setIntro] = useState(true);
   const [reducedMotion, setReducedMotion] = useState<boolean | null>(null);
   const [opacity] = useState(() => new Animated.Value(1));
@@ -25,7 +27,7 @@ function AppContent() {
     const timer = setTimeout(() => Animated.timing(opacity, { toValue: 0, duration: 300, useNativeDriver: Platform.OS !== 'web' }).start(() => { if (active) setIntro(false); }), 700);
     return () => { active = false; clearTimeout(timer); opacity.stopAnimation(); };
   }, [opacity, reducedMotion]);
-  if (!preferencesReady) return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  if (!preferencesReady || !ready) return <View style={{ flex: 1, backgroundColor: colors.background }} />;
   return <><StatusBar style={isDark ? "light" : "dark"} />
     <Stack screenOptions={{ headerShown: false, animation: reducedMotion !== false ? 'none' : 'default', contentStyle: { backgroundColor: colors.background } }} />
     {intro && reducedMotion === false && <Animated.View testID="intro" aria-hidden={true} accessibilityElementsHidden={true} pointerEvents="none" style={{ position: 'absolute', inset: 0, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', opacity }}>

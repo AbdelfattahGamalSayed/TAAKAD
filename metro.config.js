@@ -8,7 +8,7 @@ config.server = {
     if (!req.url?.startsWith('/api/')) return middleware(req, res, next);
     // One development origin for both the bundle and API; works with Expo's tunnel too.
     const upstream = http.request({ hostname: '127.0.0.1', port: 8787, path: req.url, method: req.method,
-      headers: { 'content-type': req.headers['content-type'] || 'application/json', authorization: req.headers.authorization || '' } }, response => {
+      headers: { 'content-type': req.headers['content-type'] || 'application/json', authorization: req.headers.authorization || '', 'x-session-token': req.headers['x-session-token'] || '' } }, response => {
       res.writeHead(response.statusCode, response.headers); response.pipe(res);
     });
     upstream.on('error', () => {

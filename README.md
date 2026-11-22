@@ -25,13 +25,13 @@ Expo / React Native UI (English + Arabic)
 - **Structured responses plus server validation:** constrain output shape and reject invented evidence quotes that do not occur in the input. This improves inspectability but cannot eliminate incorrect reasoning, mistranscription or prompt injection.
 - **Separate reputation evidence:** deterministic exact-hostname matching supplements the model. No browsing of suspicious destinations is performed; redirects and page contents remain unknown.
 - **Approved RSS feeds:** a fixed allowlist, robots checks, caching and backoff provide a narrow, attributable news integration. Keyword filtering and a single publisher limit coverage. There are no generated news stories or invented translations.
-- **No persistent scan history or live community yet:** limits stored personal information and keeps the MVP small. Accounts, moderation, notifications and widgets are deliberately deferred.
+- **No persistent scan history or live community yet:** limits stored personal information and keeps the MVP small. Demo sign-in exercises the flow without verifying phone ownership. Real accounts, moderation, notifications and widgets are deferred.
 
 ## Privacy design
 
 The user selects text or a photo; the app does not read SMS or WhatsApp in the background. Screenshot transcription requires explicit consent to send the selected image to OpenAI. The user then reviews/edits the extracted text and consents again to text assessment. Pasted text, the optional claimed sender and optional context answers are also sent only with consent. Remove sensitive details before transmission; cropping is optional, and without cropping the whole selected photo is used. The current photo and edited draft remain in app memory for Back navigation; they are cleared when removed/replaced or after successful assessment, and are not saved as history.
 
-The backend keeps requests in memory and does not intentionally persist or log message/image content. OpenAI requests set `store: false`; this does not promise zero retention by the provider. Only language and theme preferences persist in app storage. The OS/photo picker may retain temporary images. Feed requests disclose ordinary connection metadata to the source, but do not include the user's message, URL or image. Public feed caches are held in server memory.
+The backend keeps requests in memory and does not intentionally persist or log message/image content. OpenAI requests set `store: false`; this does not promise zero retention by the provider. Only language, theme and the welcome-dismissed flag persist in app storage. The OS/photo picker may retain temporary images. Feed requests disclose ordinary connection metadata to the source, but do not include the user's message, URL or image. Public feed caches are held in server memory. Demo sign-in and Community draft privacy are described below.
 
 The API key stays in private server configuration. The Expo bundle includes a development pairing token, so use a trusted demo network with synthetic examples. Current LAN traffic is HTTP. A public deployment requires HTTPS, real authentication, per-user abuse controls, a deployment-specific privacy review and appropriate retention/deletion controls before storing user content.
 
@@ -68,7 +68,7 @@ The API key is read on each request. The ignored `.local/session.json` is a deve
 
 ## Current features
 
-The Trust Blue visual foundation uses larger labelled controls, a prominent screenshot tile, shared light/dark colours, readable system typography and mirrored Arabic navigation across all five tabs. System font scaling remains enabled; reduced-motion preferences suppress the intro and stack animations. See [the design system](design-system/t2akkad/MASTER.md) for tokens, layout rules and accessibility testing limits. Check now uses a guided journey; authentication and ticket-based community remain separate, unimplemented phases.
+The Trust Blue visual foundation uses larger labelled controls, a prominent screenshot tile, shared light/dark colours, readable system typography and mirrored Arabic navigation across all five tabs. System font scaling remains enabled; reduced-motion preferences suppress the intro and stack animations. See [the design system](design-system/t2akkad/MASTER.md) for tokens, layout rules and accessibility testing limits. Check now uses a guided journey; production authentication and ticket-based community remain unimplemented phases.
 
 Check starts with screenshot upload or pasting a message/link, then proceeds through editable text review, useful optional questions, and final consent. Back retains the current draft. Local English/Arabic keyword rules select account and password-reset questions without sending data; these rules are intentionally limited and may miss unusual wording. Users can answer Yes, No, Not sure, or skip. Editing text or sender clears prior answers and consent. Leaving Check cancels pending requests and ignores late responses. The confirmation shows a short preview; Edit the message opens the complete text, and the entire reviewed text is submitted.
 
@@ -84,10 +84,22 @@ English and Arabic screens now use shorter, everyday wording. Results put severi
 - Original illustrated blocking/reporting guides for WhatsApp, iPhone Messages and Google Messages. Evidence preservation comes first. These simplified diagrams are not platform screenshots; menu labels and availability vary by version/carrier. Reporting to an app is not a police report.
 - Verified Abu Dhabi Police Aman contact options, separate formal-report guidance and emergency 999. Phone/SMS buttons hand off to the device; no call is made or message sent automatically. Help is available without finishing the questions. Sources and verification date are recorded in [recovery sources](docs/RECOVERY-SOURCES.md).
 - English and Arabic, saved language, Light/Dark/System appearance, accessible controls and a brief opening animation.
-- Fictional Community preview with search and filters. Live accounts and posting are not implemented.
+- Fictional Community preview with search and filters. Guests can read and draft; submitting a device-local demo preview requires a server-issued demo session. Live accounts and public posting are not implemented.
 - Practice messages, educational tips, cancellation and actionable error states.
 
 No automatic message monitoring, official police endorsement, scheduled notifications or native widgets are claimed.
+
+## Welcome and demo sign-in
+
+First-time Check visitors see **Continue as guest**, **Sign in with phone number**, and disabled **UAE PASS — unavailable**. All public tabs, analysis and recovery remain accessible without an account. Settings lets a guest sign in later or end a demo session. UAE PASS has no SDK, endpoint, identity assertion or verified-account behavior.
+
+The user selected a labelled demo because no SMS provider is configured. No SMS is sent. Use the supplied synthetic number `+971500000000`, then enter the six-digit code displayed in the app. The backend creates the code securely, keeps only its keyed digest, enforces a five-minute lifetime and one-time use, allows five attempts, and invalidates the previous challenge on resend. The resend delay is 30 seconds. Limits: five starts per normalized number/hour, 20 per socket IP/hour, 100 globally/hour, 30 verification requests per IP/ten minutes and 300 globally/hour. These limits are in server memory and reset on restart; the development proxy can make clients share an IP. Forwarded-IP headers are intentionally not trusted.
+
+Every successful demo response has `mode: demo` and `phoneVerified: false`. Demo codes are returned to the client deliberately; they cannot prove phone ownership and must never be accepted as production identity. A random opaque session expires after one hour, is stored only in app memory, and is checked by the backend for preview submission. The server stores a keyed token digest. Logout revokes it; restarting the server clears all sessions. If logout cannot reach the server, local sign-out still succeeds and the app discloses that the server session expires within one hour.
+
+Phone inputs go only to the local development backend; the server holds keyed phone digests for limits, not a phone directory. Do not use personal numbers for this demo. No external identity/SMS provider receives them. Session tokens and draft text are never placed in AsyncStorage or URLs. Drafts remain in React state while the user opens sign-in and returns; they clear when discarded or the app is closed/reloaded. Preview authorization sends only `{action: 'preview'}` and the session token, not the draft. A guest or forged/expired session is rejected server-side. No draft is stored or published, and no authority receives it.
+
+**Before real SMS:** choose and configure a provider, verify UAE delivery support and consent requirements, use its server-side verification API, remove demo-code responses from the production path, enforce a distinct real-session trust level, deploy HTTPS and shared durable abuse controls, add secure native token storage and account lifecycle/privacy controls, and test real delivery and failure cases. A phone verification proves control of a number at that time, not a person's identity. The current build intentionally cannot enable real SMS just by adding a key.
 
 ## Reputation and scoring
 
@@ -109,7 +121,7 @@ npm.cmd run test:ui
 npx.cmd expo-doctor
 ```
 
-The browser tests use installed Google Chrome with an isolated test profile at 390×844. They start the development launcher if needed or reuse a running instance. API responses are mocked in the repeatable browser suite; no real personal content or OpenAI charges are needed for those tests. Backend tests mock providers too. Screenshots and reports go to ignored .local/.
+The browser tests use installed Google Chrome with an isolated test profile at 390×844. They start the development launcher if needed or reuse a running instance. AI/feed responses are mocked; auth tests use the local demo server with synthetic numbers, plus mocked expiry/error cases. No real personal content, SMS delivery or OpenAI charges are needed. Backend tests mock external providers too. Most regression tests start with the welcome flag dismissed; dedicated welcome tests explicitly clear it. Screenshots and reports go to ignored .local/. Restart the launcher before rerunning auth tests so cooldowns from the prior run do not interfere.
 
 The November 19 verification also used seven live checks with synthetic content, OpenAI and the public feed. The user confirmed whole-photo selection and optional native cropping on an actual iPhone.
 

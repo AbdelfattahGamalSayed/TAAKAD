@@ -1,4 +1,5 @@
 import { alertsService } from './alerts.mjs';
+import { createDemoAuth } from './auth.mjs';
 import http from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -14,24 +15,33 @@ function authorized(given, expected) {
   const a = Buffer.from(given), b = Buffer.from(`Bearer ${expected}`);
   return a.length === b.length && timingSafeEqual(a, b);
 }
-async function readBody(req) {
+async function readBody(req, maxBytes = 7_100_000) {
   if (!req.headers['content-type']?.startsWith('application/json')) throw new AnalysisError('INVALID_INPUT', 415);
   let size = 0;
   const chunks = [];
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 7_100_000) throw new AnalysisError('IMAGE_TOO_LARGE', 413);
+    if (size > maxBytes) throw new AnalysisError('IMAGE_TOO_LARGE', 413);
     chunks.push(chunk);
   }
   try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
   catch { throw new AnalysisError('INVALID_INPUT'); }
 }
 
-export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService } = {}) {
+export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth() } = {}) {
   let windowStart = Date.now(), requestCount = 0, inFlight = 0;
   return http.createServer(async (req, res) => {
     try {
       if (req.url === '/api/health' && req.method === 'GET') return json(res, 200, { ok: true, configured: Boolean(getConfig().key), service: 'T2AKKAD' });
+      if (['/api/auth/start','/api/auth/verify','/api/auth/logout','/api/community/preview'].includes(req.url) && req.method === 'POST') {
+        if (!authorized(req.headers.authorization, token)) return json(res,401,{error:'UNAUTHORIZED'});
+        const body = await readBody(req, 12000), ip = req.socket.remoteAddress || 'unknown';
+        const session = req.headers['x-session-token'];
+        if (req.url === '/api/auth/start') return json(res,200,auth.start(body,ip));
+        if (req.url === '/api/auth/verify') return json(res,200,auth.verify(body,ip));
+        if (req.url === '/api/auth/logout') { auth.logout(session); return json(res,200,{ok:true}); }
+        return json(res,200,auth.preview(session,body,ip));
+      }
       if (req.url?.split('?')[0] === '/api/alerts' && req.method === 'GET') {
         if (!authorized(req.headers.authorization, token)) return json(res,401,{error:'UNAUTHORIZED'});
         const params=new URL(req.url,'http://localhost').searchParams;
