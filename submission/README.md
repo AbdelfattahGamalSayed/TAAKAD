@@ -6,6 +6,14 @@ Prepared 23 November 2026. App source baseline: `05bb195`. Submission branch: `m
 
 TAAKAD
 
+## Project Team
+
+Fatima Alhallak
+
+Abdelfattah Sayed
+
+Abdalrahman Moataz
+
 ## Brief Description
 
 TAAKAD is an Arabic and English app that helps people spot scams in messages, links and screenshots. It uses AI to explain warning signs, show a 1–5 warning level and suggest a clear next step, with guided help for people who have already clicked or shared information. Official UAE awareness updates, short learning guides and consent-based community reports support safer decisions.
@@ -30,7 +38,7 @@ https://github.com/AbdelfattahGamalSayed/TAAKAD/blob/master/submission/TAAKAD_Co
 
 ## Project Description Document
 
-Upload [TAAKAD_Project_Description.docx](TAAKAD_Project_Description.docx). The report explains the app, architecture, privacy, technical trade-offs, verification, limitations and judge setup. It is below the 20 MB limit.
+Upload [TAAKAD_Project_Description.docx](TAAKAD_Project_Description.docx). The 10-page report includes a team cover, contents page, numbered sections, page numbers and a styled privacy table. It explains the app, architecture, privacy, technical trade-offs, verification, limitations and judge setup. It is below the 20 MB limit.
 
 ## Demo Video
 
