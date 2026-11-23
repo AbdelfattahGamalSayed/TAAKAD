@@ -7,12 +7,12 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 | Supplied requirement | App/code evidence and status |
 | --- | --- |
 | Original prototype/MVP and complete source | App, backend, tests, configuration and lockfile are present locally. Team must confirm originality/contribution history and asset rights. Complete source is maintained on the GitHub repository linked in README. |
-| GitHub repository link submitted through the submission app | Repository: `AbdelfattahGamalSayed/TAAKAD` (private). Competition submission is outstanding; reviewer access, deadline and submission URL need confirmation. |
+| GitHub repository link submitted through the submission app | Repository: `AbdelfattahGamalSayed/TAAKAD` (public). Anonymous access verified on 2026-11-23; final competition submission, deadline and submission URL still need confirmation. |
 | Entire MVP plus README on `master` | The submission branch is `master`. Review each final commit for complete source and keep it synchronized with the tested version. |
 | README problem and solution | Added explicit problem/solution section. |
 | README technical reasoning, trade-offs, omissions and future improvements | Added architecture/model rationale/privacy sections; features and prototype limits distinguish implemented behavior from plans. |
 | README build/run instructions | Lockfile install, private environment setup, one-command startup, tests and bundle export documented. Fresh source copy installed and verified independent browser startup on 2026-11-23 with no author credentials. Physical iPhone Expo Go requires the reviewer's own matching Expo account; live AI needs their private API key. |
-| Technical documentation and PPT covering architecture, model choice, privacy | Core technical details are in README. Separate report and PPT are outside the user's current requested scope and still required for submission. |
+| Technical documentation and PPT covering architecture, model choice, privacy | README plus submission/TAAKAD_Competition_Presentation.pptx and submission/TAAKAD_Project_Description.docx cover these topics. Files are prepared; portal uploads remain outstanding. |
 | Respect third-party IP; no plagiarism | Existing Expo template and phishing-feed notices retained. Dependency license metadata reviewed; full redistribution obligations and custom-asset provenance require final team review. Do not represent third-party frameworks or pretrained models as team inventions. |
 | Responsible use of systems/network; privacy and confidentiality | No automated access to SMS/WhatsApp, no fetching user-submitted destinations, explicit AI consent, fixed feed allowlists, no intentional logging of submitted content; temporary, separated private report records, synthetic tests. Production privacy/security review remains necessary before public deployment. |
 | Registration and team of 3-5 | Administrative: team must verify registration, truthful participant details, eligibility and agreement. Code cannot verify these. |
@@ -34,11 +34,11 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 - [ ] Review `git status` and the actual staged diff. Include all app/backend source, assets, package lockfile, README, notices, tests, scripts, configuration and `server/.env.example`.
 - [ ] Exclude actual `.env` variants, credentials, private screenshots/messages, `.local`, `node_modules`, generated native folders and local exports. Check the complete Git history before publication, not only the current files.
 - [x] TAAKAD app source and reviewer documentation committed and pushed on `master` on 2026-11-23; Git remote confirmed source commit `7d89f9d`. Recheck after subsequent code changes. GitHub repository renamed to TAAKAD on 2026-11-23.
-- [ ] Verify reviewer access. The supplied terms require GitHub but do not state public visibility; confirm access expectations with the organizer.
+- [x] Repository made public at the user's request and read anonymously on 2026-11-23.
 - [ ] Clone that repository into a separate clean directory; run `npm ci`, configure a private key, and verify the documented startup. No local-only file should be needed beyond private credentials and launcher-generated state.
 - [ ] Run `npm test`, `npm run typecheck`, `npm run lint`, `npm run test:ui`, and the documented bundle export. Use synthetic demo content and verify the final iPhone flow.
 - [ ] Document unresolved issues, dataset/evaluation limitations and third-party dependencies. Do not claim production readiness or benchmark accuracy.
-- [ ] Coordinate the separate technical documentation and PPT, submit the repository link in the official submission app before the confirmed deadline, and keep a receipt/backup and commit ID.
+- [ ] Upload the prepared PPTX and project-description DOCX (each under 20 MB), enter the project card (description at most 600 characters), supply a non-AI-generated one-minute recorded demo URL, submit the public repository link before the confirmed deadline and retain the receipt and final commit.
 
 ## Audited limitations
 
@@ -57,3 +57,7 @@ Before the first push, the exact staged contents were checked for private enviro
 ## TAAKAD reviewer verification on 2026-11-23
 
 A separate staged-source archive was installed with `npm ci`, without copying author credentials or private runtime state. `setup` generated a blank configuration. An isolated Expo credential store contained no login; the public config had no owner or EAS project binding. Browser startup succeeded and missing-key analysis returned API_NOT_CONFIGURED. All 70 backend tests, typecheck, lint and iOS/Android/web exports passed. Final browser regression results are recorded in README. New physical-device verification remains outstanding. This source check does not certify team eligibility, asset ownership, reviewer repository access or final submission.
+
+## Prepared submission package on 2026-11-23
+
+The project-card text, editable 13-slide PPTX and Word project description are in submission/. The repository is public and anonymous access was checked. The team will handle the required one-minute recorded demonstration and discussion; AI-generated submission video is not permitted. Prepared files are not evidence that the portal submission has been completed.

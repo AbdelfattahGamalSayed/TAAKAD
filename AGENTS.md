@@ -11,7 +11,7 @@ Read `SUBMISSION-CHECKLIST.md` before changing submission behavior or scope. It 
 - Review provenance, licensing, attribution and source permissions when adding code, assets, datasets or feeds. Preserve third-party notices. UAE alerts stay restricted to approved official feeds; no social media or commercial news outlets.
 - Use synthetic test content. Run appropriate regression tests plus lint/typecheck; record device-testing limits honestly.
 - GitHub publication, submission delivery, team registration/eligibility, ownership confirmations and deadline verification must remain explicit outstanding items until verified. Do not mark the entry fully compliant from local tests alone.
-- The user has excluded PowerPoint and the separate report from the current task. Do not modify unrelated Maranee projects.
+- The competition presentation, Word project description and project-card text are in submission/. Keep them consistent with actual app behavior. Do not modify unrelated Maranee projects.
 
 ## Expo has changed — do not trust your training data
 

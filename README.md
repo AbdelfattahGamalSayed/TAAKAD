@@ -15,7 +15,7 @@ For **no Expo login at all**, use the browser review command below. For a future
 ### Prerequisites
 
 - Node.js **22.18 or newer** with npm; Node 22.18 is the CI baseline.
-- Git or a complete source ZIP. The repository is private, so reviewers need repository access or an organizer-provided source archive.
+- Git or a complete source ZIP. The repository is public and can be read or downloaded without signing in.
 - For phones: Expo Go compatible with **SDK 58**, and a trusted Wi-Fi network shared with the computer.
 - For browser preview: a modern browser. Automated UI tests specifically use installed **Google Chrome**.
 - For real AI transcription, assessment and optional AI moderation: internet access and an **OpenAI API key with model access and available quota**. A ChatGPT subscription is not API credit.
@@ -120,7 +120,7 @@ The app combines AI reasoning, exact quoted evidence, separate hostname-reputati
 
 ## Current brand and home screen
 
-The app/project name is TAAKAD. Home offers two large actions: Add a screenshot and Paste Text (messages or links). Optional native cropping is under More details. The user-provided blue/navy palette is used throughout; green/amber/red are reserved for result indicators, with readable text variants and a matching dark theme. Results show a primary next action, with extra guidance under More details. Low-risk copy never guarantees safety. Legacy local preference keys remain for continuity. The repository rename is deferred.
+The app/project name is TAAKAD. Home offers two large actions: Add a screenshot and Paste Text (messages or links). Optional native cropping is under More details. The user-provided blue/navy palette is used throughout; green/amber/red are reserved for result indicators, with readable text variants and a matching dark theme. Results show a primary next action, with extra guidance under More details. Low-risk copy never guarantees safety. Legacy local preference keys remain for continuity. The repository and local project folder are named TAAKAD.
 
 ## Implemented MVP
 
@@ -251,15 +251,15 @@ With more time: evaluate on a labelled bilingual scam/benign dataset; measure fa
 
 ## Competition requirements and submission checklist
 
-This README addresses the supplied requirements for **problem/solution, technical reasoning/trade-offs/omissions, architecture/model/privacy documentation, and reproducible build/run instructions**. It does not certify eligibility or claim the separate PPT/report have been delivered.
+This README addresses the supplied requirements for **problem/solution, technical reasoning/trade-offs/omissions, architecture/model/privacy documentation, and reproducible build/run instructions**. It does not certify team eligibility or confirm final delivery through the submission portal.
 
 - Keep the **entire MVP and README on `master`**, including source, lockfile, assets, tests, safe configuration example and third-party notices.
-- Repository: [AbdelfattahGamalSayed/TAAKAD](https://github.com/AbdelfattahGamalSayed/TAAKAD). It is private; arrange reviewer access. Keep the published `master` synchronized with the final tested source before submission.
+- Repository: [AbdelfattahGamalSayed/TAAKAD](https://github.com/AbdelfattahGamalSayed/TAAKAD). It is public; anonymous access was verified on 23 November 2026. Keep the published `master` synchronized with the final tested source before submission.
 - Submit the repository link through the organizer's submission application by the confirmed deadline. Repository creation alone is not submission; retain receipt and exact commit.
 - The team must confirm registration, truthful participant details, **3–5 members**, originality/contribution history, third-party rights, and any later organizer changes.
 - Participants retain ownership under the supplied terms. The repository's existing Expo template MIT notice does not establish authorship of team contributions. Review [third-party notices](THIRD_PARTY_NOTICES.md), [media provenance](docs/LEARNING-MEDIA.md) and asset permissions; retain upstream licenses.
 - AI coding assistance and external pretrained models are not claimed as team-trained models or wholly independent authorship. Confirm any additional organizer disclosure rules.
 - Do not submit credentials, private reports/screenshots, `.local/`, `node_modules/` or development tokens. Test a clean checkout of the exact submitted commit.
-- The separate technical document/report and PPT remain team deliverables outside this app/code task. Campus conduct, confidentiality and responsible-network rules still apply; no probing or unauthorized access is part of TAAKAD.
+- The editable presentation, Word project description and project-card text are in [submission/](submission/README.md). The team must upload these and supply its recorded one-minute demo video; AI-generated demo video is prohibited. Campus conduct, confidentiality and responsible-network rules still apply; no probing or unauthorized access is part of TAAKAD.
 
 See [SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md) for the full mapping and outstanding administrative/release checks.
