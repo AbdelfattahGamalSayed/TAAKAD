@@ -26,7 +26,7 @@ For **no Expo login at all**, use the browser review command below. For a future
 Run these commands in the downloaded project folder, not its parent. If using Git:
 
 ```powershell
-git clone --branch master https://github.com/AbdelfattahGamalSayed/T2AKKAD.git TAAKAD
+git clone --branch master https://github.com/AbdelfattahGamalSayed/TAAKAD.git TAAKAD
 cd TAAKAD
 npm.cmd ci
 npm.cmd run setup
@@ -69,7 +69,7 @@ Both run commands start the backend on **127.0.0.1:8787** and Metro on **8081**.
 The same source and launcher work with npm/npx:
 
 ```sh
-git clone --branch master https://github.com/AbdelfattahGamalSayed/T2AKKAD.git TAAKAD
+git clone --branch master https://github.com/AbdelfattahGamalSayed/TAAKAD.git TAAKAD
 cd TAAKAD
 npm ci
 npm run setup
@@ -254,7 +254,7 @@ With more time: evaluate on a labelled bilingual scam/benign dataset; measure fa
 This README addresses the supplied requirements for **problem/solution, technical reasoning/trade-offs/omissions, architecture/model/privacy documentation, and reproducible build/run instructions**. It does not certify eligibility or claim the separate PPT/report have been delivered.
 
 - Keep the **entire MVP and README on `master`**, including source, lockfile, assets, tests, safe configuration example and third-party notices.
-- Repository: [AbdelfattahGamalSayed/T2AKKAD](https://github.com/AbdelfattahGamalSayed/T2AKKAD). The GitHub repository retains its old T2AKKAD name until the deferred rename. It is private; arrange reviewer access. Keep the published `master` synchronized with the final tested source before submission.
+- Repository: [AbdelfattahGamalSayed/TAAKAD](https://github.com/AbdelfattahGamalSayed/TAAKAD). It is private; arrange reviewer access. Keep the published `master` synchronized with the final tested source before submission.
 - Submit the repository link through the organizer's submission application by the confirmed deadline. Repository creation alone is not submission; retain receipt and exact commit.
 - The team must confirm registration, truthful participant details, **3–5 members**, originality/contribution history, third-party rights, and any later organizer changes.
 - Participants retain ownership under the supplied terms. The repository's existing Expo template MIT notice does not establish authorship of team contributions. Review [third-party notices](THIRD_PARTY_NOTICES.md), [media provenance](docs/LEARNING-MEDIA.md) and asset permissions; retain upstream licenses.

@@ -7,7 +7,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 | Supplied requirement | App/code evidence and status |
 | --- | --- |
 | Original prototype/MVP and complete source | App, backend, tests, configuration and lockfile are present locally. Team must confirm originality/contribution history and asset rights. Complete source is maintained on the GitHub repository linked in README. |
-| GitHub repository link submitted through the submission app | Repository: `AbdelfattahGamalSayed/T2AKKAD` (private). Competition submission is outstanding; reviewer access, deadline and submission URL need confirmation. |
+| GitHub repository link submitted through the submission app | Repository: `AbdelfattahGamalSayed/TAAKAD` (private). Competition submission is outstanding; reviewer access, deadline and submission URL need confirmation. |
 | Entire MVP plus README on `master` | The submission branch is `master`. Review each final commit for complete source and keep it synchronized with the tested version. |
 | README problem and solution | Added explicit problem/solution section. |
 | README technical reasoning, trade-offs, omissions and future improvements | Added architecture/model rationale/privacy sections; features and prototype limits distinguish implemented behavior from plans. |
@@ -33,7 +33,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 - [ ] Confirm team/asset provenance, intended project licensing and attribution. Retain original upstream notices; do not replace Expo's attribution with the team name.
 - [ ] Review `git status` and the actual staged diff. Include all app/backend source, assets, package lockfile, README, notices, tests, scripts, configuration and `server/.env.example`.
 - [ ] Exclude actual `.env` variants, credentials, private screenshots/messages, `.local`, `node_modules`, generated native folders and local exports. Check the complete Git history before publication, not only the current files.
-- [x] TAAKAD app source and reviewer documentation committed and pushed on `master` on 2026-11-23; Git remote confirmed source commit `7d89f9d`. Recheck after subsequent code changes. Remote repository renaming remains a separate pending task.
+- [x] TAAKAD app source and reviewer documentation committed and pushed on `master` on 2026-11-23; Git remote confirmed source commit `7d89f9d`. Recheck after subsequent code changes. GitHub repository renamed to TAAKAD on 2026-11-23.
 - [ ] Verify reviewer access. The supplied terms require GitHub but do not state public visibility; confirm access expectations with the organizer.
 - [ ] Clone that repository into a separate clean directory; run `npm ci`, configure a private key, and verify the documented startup. No local-only file should be needed beyond private credentials and launcher-generated state.
 - [ ] Run `npm test`, `npm run typecheck`, `npm run lint`, `npm run test:ui`, and the documented bundle export. Use synthetic demo content and verify the final iPhone flow.
