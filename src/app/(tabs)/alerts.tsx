@@ -3,10 +3,12 @@ import { ActivityIndicator,Linking,View } from 'react-native';
 import { Button,Details,Row,Screen,Txt,useTheme } from '../../components/ui';
 import { useApp } from '../../lib/state';
 import { alertsCopy,getAlerts,type AlertFeed } from '../../lib/alerts';
+import {InterestFilter} from '../../components/interests';
+import {interestCopy,matchesInterest} from '../../lib/interests';
 const SOURCE='https://www.mediaoffice.abudhabi';
 export default function AlertsScreen(){const {locale}=useApp();return <AlertsContent key={locale}/>;}
 function AlertsContent(){
- const {locale}=useApp();const {colors,styles}=useTheme();const t=alertsCopy[locale];
+ const {locale,interest,setInterest}=useApp();const {colors,styles}=useTheme();const t=alertsCopy[locale];
  const [feed,setFeed]=useState<AlertFeed|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[recent,setRecent]=useState(false);
  const reload=useRef<()=>void>(()=>{});
  useEffect(()=>{
@@ -27,10 +29,12 @@ function AlertsContent(){
   catch{setError(t.linkError);}
  }
  const date=(value:string)=>new Date(value).toLocaleString(locale==='ar'?'ar-AE':'en-GB',{timeZone:'Asia/Dubai',dateStyle:'medium',timeStyle:'short'});
- const items=feed?.items.filter(i=>!recent||!i.older)||[];
+ const items=feed?.items.filter(i=>(!recent||!i.older)&&matchesInterest(i.title+' '+i.excerpt,interest))||[];
  return <Screen>
   <Txt style={styles.heading}>{t.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{t.intro}</Txt>
   <Button title={t.refresh} icon="refresh-outline" onPress={()=>reload.current()} disabled={busy}/>
+  <InterestFilter/>
+  {interest!=='all'&&<><Txt style={[styles.muted,{marginTop:12}]}>{interestCopy[locale].filtered}</Txt><Button title={interestCopy[locale].all} secondary onPress={()=>setInterest('all')}/></>}
   {(busy||feed?.refreshing)&&<Row style={{marginTop:18}}><ActivityIndicator color={colors.primary}/><Txt style={styles.muted}>{t.loading}</Txt></Row>}
   {!!error&&<Txt accessibilityRole="alert" style={styles.error}>{error}</Txt>}
   {feed&&!feed.refreshing&&feed.sources.some(s=>s.status!=='ready')&&<Txt style={styles.error}>{t.partial}</Txt>}
@@ -38,16 +42,16 @@ function AlertsContent(){
 
    <Row><View style={{flex:1}}><Button title={t.all} secondary={recent} onPress={()=>setRecent(false)}/></View><View style={{flex:1}}><Button title={t.recent} secondary={!recent} onPress={()=>setRecent(true)}/></View></Row>
   </View>}
-  {feed&&!feed.refreshing&&feed.recentCount===0&&feed.items.length>0&&<Txt style={[styles.muted,{marginTop:18}]}>{t.noRecent}</Txt>}
+  {feed&&!feed.refreshing&&!recent&&feed.recentCount===0&&feed.items.length>0&&<Txt style={[styles.muted,{marginTop:18}]}>{t.noRecent}</Txt>}
   {feed&&!feed.refreshing&&items.length===0&&<Txt style={[styles.muted,{marginTop:22}]}>{t.empty}</Txt>}
   {items.map(item=><View key={item.id} style={styles.card}>
    <Txt style={styles.eyebrow}>{item.older?t.older:t.update}</Txt>
    <Txt style={styles.sectionTitle}>{item.title}</Txt>
    <Txt style={{color:colors.primary,fontSize:16,fontWeight:'700'}}>{locale==='ar'?"مكتب أبوظبي الإعلامي":item.publisher}</Txt>
    <Txt style={[styles.muted,{fontSize:16,marginTop:8}]}>{t.published}: {date(item.publishedAt)}</Txt>
-   {!!item.excerpt&&<View style={{marginTop:14}}><Txt style={{fontSize:16,color:colors.muted,marginBottom:5}}>{t.excerpt}</Txt><Txt style={{fontSize:16}}>{item.excerpt}</Txt></View>}
    {(item.stale||!!error)&&<Txt style={[styles.muted,{fontSize:16,marginTop:10}]}>{t.stale}</Txt>}
    <Button title={t.open} icon="open-outline" secondary onPress={()=>open(item.url)}/>
+   {!!item.excerpt&&<Details title={t.excerpt}><Txt style={{fontSize:16}}>{item.excerpt}</Txt></Details>}
   </View>)}
   <Txt style={[styles.muted,{marginTop:18}]}>{t.note}</Txt>
   <Details testID="alerts-details">

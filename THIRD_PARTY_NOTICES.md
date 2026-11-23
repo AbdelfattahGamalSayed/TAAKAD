@@ -12,6 +12,8 @@ The direct runtime dependencies declare MIT licenses. Playwright and TypeScript 
 
 ## External services and official feeds
 
+The added learning clips use original project-created geometric storyboards and text, with no downloaded footage or audio. See `docs/LEARNING-MEDIA.md` and `assets/learning/LICENSE.txt` for source, reproduction and scoped reuse permission. `expo-video` declares MIT licensing; its upstream license must accompany redistributed dependencies. No TTS or voice-cloning service is included.
+
 OpenAI provides inference through its Responses API; no model weights are included in this source. A separate API account/key and available quota are required. Provider terms and data policies apply independently of source-code licenses.
 
 Abu Dhabi Media Office feed titles and excerpts remain attributed to the publisher. See `ALERTS-SOURCES.md` for the RSS-specific permission basis and approved endpoints. Do not treat the publisher's entire website or content as MIT-licensed or broadly open for reuse.

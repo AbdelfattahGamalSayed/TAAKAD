@@ -67,14 +67,14 @@ export function Button({ title, onPress, disabled = false, secondary = false, ic
     </Row>
   </Touch>;
 }
-export function Details({ children, testID }: { children: React.ReactNode; testID?: string }) {
+export function Details({ children, testID, title }: { children: React.ReactNode; testID?: string; title?: string }) {
   const { t } = useApp();
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
   return <View testID={testID} style={{ marginTop: 24 }}>
-    <Touch accessibilityRole="button" accessibilityLabel={t.moreDetails} accessibilityState={{ expanded }} aria-expanded={expanded}
+    <Touch accessibilityRole="button" accessibilityLabel={title||t.moreDetails} accessibilityState={{ expanded }} aria-expanded={expanded}
       onPress={() => setExpanded(value => !value)} style={{ padding: 16, backgroundColor: colors.primarySoft, borderRadius: 16 }}>
-      <Row style={{ justifyContent: 'space-between' }}><Txt style={{ color: colors.primary, fontWeight: '700' }}>{t.moreDetails}</Txt><Icon name={expanded ? 'chevron-up' : 'chevron-down'} color={colors.primary} size={24} /></Row>
+      <Row style={{ justifyContent: 'space-between' }}><Txt style={{ color: colors.primary, fontWeight: '700' }}>{title||t.moreDetails}</Txt><Icon name={expanded ? 'chevron-up' : 'chevron-down'} color={colors.primary} size={24} /></Row>
     </Touch>
     {expanded && <View style={{ paddingTop: 16 }}><View style={{ gap: 16 }}>{children}</View></View>}
   </View>;

@@ -1,0 +1,22 @@
+MIT License
+
+Applies only to the original T2AKKAD learning storyboards, generated MP4 clips,
+and their generation script supplied with this project. No third-party footage,
+music, logos, voices or font files are included in these assets. This permission
+does not relicense dependencies, official feed content or other project assets.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of these assets and associated source files, to deal in them without restriction,
+including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies, and to permit persons to whom they
+are furnished to do so, subject to the following conditions:
+
+The above permission notice shall be included in all copies or substantial
+portions of these assets and source files.
+
+THE ASSETS AND SOURCE FILES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THESE ASSETS OR SOURCE FILES OR THE USE OR OTHER DEALINGS IN THEM.

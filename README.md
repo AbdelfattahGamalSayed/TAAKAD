@@ -149,6 +149,8 @@ Native Android behavior has not been exercised on a physical device. Successful 
 
 ## Next milestones
 
+Alerts now use concise cards with optional excerpts, retaining publisher, original link, dates and stale warnings. Optional on-device topics filter Alerts and Learn; All topics restores general updates. Learn includes four bilingual illustrated guides and two original silent 24-second videos per language, with playback controls and written alternatives. Settings groups language, appearance, account and privacy, including topic reset and report-access controls. See [learning media provenance](docs/LEARNING-MEDIA.md). Voice cloning and TTS remain outside the MVP.
+
 Support handoff is now an explicitly labelled local demonstration: separate opt-in consent, a fixed fictional contact, private support-role access, access history and revocation. No receiving authority has agreed a process; real contact collection and external delivery remain disabled. Guests can open verified official help routes. See [support handoff design and organizer gates](docs/SUPPORT-HANDOFF.md) for the local support commands, privacy boundaries and production requirements.
 
 1. Evaluate detection and transcription on a labeled bilingual dataset.

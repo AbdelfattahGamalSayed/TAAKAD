@@ -1,15 +1,19 @@
 import {useCallback,useRef,useState} from 'react';
 import {ActivityIndicator,TextInput,View} from 'react-native';
-import {router,useFocusEffect} from 'expo-router';
+import {router,useFocusEffect,useLocalSearchParams} from 'expo-router';
 import {Button,Details,Icon,Row,Screen,Touch,Txt,useTheme} from '../../components/ui';
 import {useApp} from '../../lib/state';
 import {authRequest,useAuth} from '../../lib/auth';
 import {emptyReport,reportCopy,type ScamReport} from '../../lib/reports';
 import {OfficialHelp,SupportHandoff} from '../../components/support';
 export default function CommunityScreen(){
+ const params=useLocalSearchParams<{view?:string;open?:string}>();
+ return <CommunityContent key={params.open||'default'} initialMine={params.view==='mine'}/>;
+}
+function CommunityContent({initialMine}:{initialMine:boolean}){
  const {locale,rtl}=useApp(),{colors,styles}=useTheme(),c=reportCopy[locale];
  const {session,setSession,welcome,draft,setDraft,reportDraft,setReportDraft}=useAuth();
- const [view,setView]=useState<'feed'|'mine'|'form'|'preview'>(reportDraft.channel?'form':'feed'),[step,setStep]=useState(reportDraft.channel?2:0);
+ const [view,setView]=useState<'feed'|'mine'|'form'|'preview'>(initialMine?'mine':reportDraft.channel?'form':'feed'),[step,setStep]=useState(reportDraft.channel?2:0);
  const [items,setItems]=useState<ScamReport[]>([]),[itemsOwner,setItemsOwner]=useState(''),[itemsView,setItemsView]=useState('');
  const [preview,setPreview]=useState<ScamReport|null>(null),[previewOwner,setPreviewOwner]=useState(''),[consent,setConsent]=useState(false);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[flag,setFlag]=useState(''),[notice,setNotice]=useState('');
