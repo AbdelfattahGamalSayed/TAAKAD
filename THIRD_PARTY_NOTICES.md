@@ -1,6 +1,6 @@
 # Third-party components and provenance
 
-T2AKKAD includes third-party frameworks and uses an externally hosted pretrained model. These are not claimed as original team inventions. The repository's root LICENSE preserves the Expo template MIT notice. The team's project licensing and custom-asset ownership must be confirmed before release; ownership cannot be inferred from the template notice.
+TAAKAD includes third-party frameworks and uses an externally hosted pretrained model. These are not claimed as original team inventions. The repository's root LICENSE preserves the Expo template MIT notice. The team's project licensing and custom-asset ownership must be confirmed before release; ownership cannot be inferred from the template notice.
 
 ## Software dependencies
 

@@ -33,11 +33,11 @@ export default function SettingsScreen() {
     </View>
     <InterestFilter/>
     <View style={styles.card}><Row style={{ marginBottom: 12 }}><Ionicons name="lock-closed-outline" color={colors.primary} size={23} /><Txt style={{ fontSize: 18, fontWeight: '700' }}>{t.privacyTitle}</Txt></Row><Txt style={styles.muted}>{t.privacyBody}</Txt><Txt style={[styles.muted,{marginTop:16}]}>{c.privacyHint}</Txt><Button secondary title={c.manage} onPress={()=>router.push({pathname:'/community',params:{view:'mine',open:String(Date.now())}})}/><Button secondary title={c.clearTopic} onPress={()=>setInterest('all')}/><Button secondary title={cleared ? t.cleared : t.clear} onPress={() => { setResult(null); setCleared(true); }} /></View>
-    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.prototype}</Txt><Txt style={styles.muted}>{t.prototypeBody}</Txt><Txt style={{ color: colors.primary, fontWeight: '600', marginTop: 18, fontSize:16 }}>T2AKKAD · 0.1.0</Txt></View>
+    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.prototype}</Txt><Txt style={styles.muted}>{t.prototypeBody}</Txt><Txt style={{ color: colors.primary, fontWeight: '600', marginTop: 18, fontSize:16 }}>TAAKAD · 0.1.0</Txt></View>
     <Details testID="settings-details">
 
 
-    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.connection}</Txt><Row>{connection === 'checking' ? <ActivityIndicator color={colors.primary} /> : <><View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: connection === 'ready' ? colors.primary : colors.amber }} /><Txt style={{ fontWeight: '600' }}>{t[connection]}</Txt></>}</Row><Button title={t.refresh} secondary onPress={refresh} disabled={connection === 'checking'} /><Txt style={{ color: colors.muted, fontSize:16, lineHeight:24, marginTop: 15 }}>{t.localNetwork}</Txt></View>
+    <View style={styles.card}><Txt style={styles.sectionTitle}>{t.connection}</Txt><Row>{connection === 'checking' ? <ActivityIndicator color={colors.primary} /> : <><View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: connection === 'ready' ? colors.primary : colors.muted }} /><Txt style={{ fontWeight: '600' }}>{t[connection]}</Txt></>}</Row><Button title={t.refresh} secondary onPress={refresh} disabled={connection === 'checking'} /><Txt style={{ color: colors.muted, fontSize:16, lineHeight:24, marginTop: 15 }}>{t.localNetwork}</Txt></View>
       <Txt style={styles.muted}>{t.dataDetails}</Txt><Txt style={styles.muted}>{t.aboutDetails}</Txt>
     </Details>
   </Screen>;

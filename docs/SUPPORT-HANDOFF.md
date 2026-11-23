@@ -13,7 +13,7 @@ Community offers these options to guests and signed-in users. Buttons open the p
 
 ## Implemented demonstration
 
-My reports offers a separate support preview, including for unpublished drafts. Public-post consent, AI consent and support consent are independent. Support consent starts unchecked and names **T2AKKAD local demo support**, the purpose, exact summary, fictional contact and expiry. It is not consent to share with a future organization.
+My reports offers a separate support preview, including for unpublished drafts. Public-post consent, AI consent and support consent are independent. Support consent starts unchecked and names **TAAKAD local demo support**, the purpose, exact summary, fictional contact and expiry. It is not consent to share with a future organization.
 
 The backend accepts only a report ID, action, affirmative consent and `demo-handoff-v1` consent version. It fixes the recipient and contact (`demo-person@example.invalid`); arbitrary contacts, recipients and extra fields are rejected. No phone number, identity, private note or evidence enters the support view. No external delivery code exists. Real contact entry is intentionally unavailable while the recipient is unconfirmed.
 

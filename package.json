@@ -1,5 +1,5 @@
 {
-  "name": "t2akkad",
+  "name": "taakad",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
@@ -37,6 +37,8 @@
     "typescript": "~6.0.3"
   },
   "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "review": "node scripts/dev.mjs --web --offline",
     "start": "node scripts/dev.mjs",
     "dev": "node scripts/dev.mjs",
     "typecheck": "tsc --noEmit",
@@ -47,5 +49,6 @@
     "web": "node scripts/dev.mjs --web",
     "test:ui": "playwright test"
   },
+  "engines": { "node": ">=22.18.0" },
   "private": true
 }

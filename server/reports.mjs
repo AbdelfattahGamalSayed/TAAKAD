@@ -58,7 +58,7 @@ export function createReports({now=Date.now,moderate=assist}={}){
     if(body.action!=='request'||r.status==='withdrawn'||r.status==='checking')fail('HANDOFF_INPUT');
     if(body.consent!==true||body.consentVersion!=='demo-handoff-v1')fail('HANDOFF_CONSENT');
     const previous=handoffs.get(r.id);if(previous&&previous.status!=='revoked')return {ok:true};
-    const h={mode:'demo',status:'demo_requested',recipient:'T2AKKAD local demo support',contact:'demo-person@example.invalid',consentVersion:'demo-handoff-v1',consentedAt:now(),events:[]};
+    const h={mode:'demo',status:'demo_requested',recipient:'TAAKAD local demo support',contact:'demo-person@example.invalid',consentVersion:'demo-handoff-v1',consentedAt:now(),events:[]};
     event(h,'consented','owner');handoffs.set(r.id,h);return {ok:true};
   }
   function support(body){

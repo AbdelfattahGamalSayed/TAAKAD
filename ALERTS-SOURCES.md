@@ -28,7 +28,7 @@ No additional publisher is enabled merely because it has an open-data page. For 
 ## Collector controls
 
 - Fixed URL allowlist; clients cannot submit a source URL.
-- Honest T2AKKADAlerts/1.0 user agent.
+- Honest TAAKADAlerts/1.0 user agent.
 - robots.txt checked before each collection cycle; unavailable/challenge responses stop collection.
 - A disallow removes affected cached entries from the public response.
 - Sequential requests, minimum 500 ms spacing, and longer robots crawl-delay respected up to 60 seconds; longer requirements disable collection.

@@ -59,10 +59,10 @@ test('skipped questions are explicit and do not block a check',async({page})=>{
 test('pasted links skip unrelated context and keep the entire URL',async({page})=>{
   let sent:Record<string,unknown>={};const url='https://example.com/path?a=1&b=2';
   await page.route('**/api/analyze',r=>{sent=r.request().postDataJSON();return r.fulfill({json:{...result,status:'insufficient_information',riskLevel:null,messageRiskLevel:null}});});
-  await page.goto('/');await page.getByRole('button',{name:'Paste a link',exact:true}).click();
-  await page.getByRole('textbox',{name:'Link',exact:true}).fill(url);
-  await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Paste a link',exact:true}).click();
-  await expect(page.getByRole('textbox',{name:'Link',exact:true})).toHaveValue(url);
+  await page.goto('/');await page.getByRole('button',{name:'Paste Text',exact:true}).click();
+  await page.getByRole('textbox',{name:'Message',exact:true}).fill(url);
+  await page.getByRole('button',{name:'Back',exact:true}).click();await page.getByRole('button',{name:'Paste Text',exact:true}).click();
+  await expect(page.getByRole('textbox',{name:'Message',exact:true})).toHaveValue(url);
   await finishReview(page);await page.getByRole('checkbox').click();await page.getByRole('button',{name:'Check for warning signs',exact:true}).click();
   await expect(page.getByText('What to do next',{exact:true})).toBeVisible();expect(sent.text).toBe(url);expect(sent.context).toEqual({});
 });

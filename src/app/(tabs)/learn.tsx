@@ -20,8 +20,8 @@ function LearnContent(){
    <Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt><InterestFilter/>
    {interest!=='all'&&<Button title={interestCopy[locale].all} secondary onPress={()=>setInterest('all')}/>}
    {visible.map(l=><View key={l.id} style={styles.card}><Row><Icon name={l.icon as 'key-outline'} color={colors.primary} size={36}/><Txt style={[styles.sectionTitle,{flex:1}]}>{l[locale].title}</Txt></Row>
-    <Button title={c.guide+' — '+l[locale].title} secondary onPress={()=>{setSelected(l.id);setStep(0);setVideo(false);}}/>
-    {l.video&&<Button title={c.watch+' — '+l[locale].title} icon="play-circle-outline" onPress={()=>{setSelected(l.id);setVideo(true);}}/>}
+    <Button title={c.guide} accessibilityLabel={c.guide+' — '+l[locale].title} secondary onPress={()=>{setSelected(l.id);setStep(0);setVideo(false);}}/>
+    {l.video&&<Button title={c.watch} accessibilityLabel={c.watch+' — '+l[locale].title} icon="play-circle-outline" onPress={()=>{setSelected(l.id);setVideo(true);}}/>}
    </View>)}
    {!visible.length&&<Txt>{c.filtered}</Txt>}
    <Details title={c.credits}><Txt>{c.creditText}</Txt></Details>

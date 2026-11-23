@@ -43,7 +43,7 @@ export function Brand() {
   return <Row style={{ justifyContent: 'space-between', marginBottom: 28, gap: 8 }}>
     <Row style={{ gap: 12, flex: 1 }}>
       <View style={styles.logo}><Icon name="shield-checkmark-outline" size={30} color={colors.onAccent} /></View>
-      <View style={{ flex: 1 }}><Txt style={{ fontSize: 21, fontWeight: '800', writingDirection: 'ltr' }}>T2AKKAD</Txt><Txt style={{ fontSize: 16, color: colors.primary, fontWeight: '600' }}>تأكّد</Txt></View>
+      <View style={{ flex: 1 }}><Txt style={{ fontSize: 21, fontWeight: '800', writingDirection: 'ltr' }}>TAAKAD</Txt><Txt style={{ fontSize: 16, color: colors.primary, fontWeight: '600' }}>تأكّد</Txt></View>
     </Row>
     <Touch accessibilityRole="button" accessibilityLabel={locale === 'en' ? 'Switch to Arabic' : 'Switch to English'} onPress={() => setLocale(locale === 'en' ? 'ar' : 'en')} style={styles.language}>
       <Txt style={{ color: colors.primary, fontSize: 16, fontWeight: '700', textAlign: 'center' }}>{locale === 'en' ? 'عربي' : 'EN'}</Txt>
@@ -58,9 +58,9 @@ export function Screen({ children, brand = true }: { children: React.ReactNode; 
     </ScrollView>
   </SafeAreaView>;
 }
-export function Button({ title, onPress, disabled = false, secondary = false, icon }: { title: string; onPress: () => void; disabled?: boolean; secondary?: boolean; icon?: keyof typeof Ionicons.glyphMap }) {
+export function Button({ title, accessibilityLabel, onPress, disabled = false, secondary = false, icon }: { title: string; accessibilityLabel?:string; onPress: () => void; disabled?: boolean; secondary?: boolean; icon?: keyof typeof Ionicons.glyphMap }) {
   const { colors, styles } = useTheme();
-  return <Touch accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ disabled }} onPress={onPress} disabled={disabled}
+  return <Touch accessibilityRole="button" accessibilityLabel={accessibilityLabel||title} accessibilityState={{ disabled }} onPress={onPress} disabled={disabled}
     style={[styles.button, secondary && styles.secondary, disabled && { opacity: 0.5 }]}>
     <Row style={{ justifyContent: 'center', gap: 12 }}>{icon && <Icon name={icon} size={24} color={secondary ? colors.primary : colors.onAccent} />}
       <Txt style={{ flexShrink: 1, color: secondary ? colors.primary : colors.onAccent, fontSize: 17, fontWeight: '700', textAlign: 'center' }}>{title}</Txt>

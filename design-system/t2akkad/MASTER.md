@@ -1,8 +1,12 @@
-# T2AKKAD: Trust Blue foundation
+# TAAKAD: Trust Blue foundation
 
 User-approved direction, implemented 2026-11-21. Applies to Expo SDK 58 / React Native 0.88. The visual foundation and plain-language copy are implemented; guided checking/recovery, demo sign-in and structured reports are implemented; real identity and authority workflows remain separate work.
 
 ## Direction
+
+23 November update: the public name is **TAAKAD**. Trust blue #1F6FEB, navy #0F1B3D, calm background #F5F8FF and soft grey #E6EAF2 follow the user's reference. Result accents are green #15875A, amber #F5A623 and red #D91E23. Dark mode has corresponding readable variants. Blue/green text and amber icon strokes use darker accessible tones where the supplied accent would fail text contrast; amber remains the result border accent. General errors are blue/navy, not scam red. Result cards combine icons, text and an ordinal score; a low score says Few warning signs, never guaranteed safe.
+
+Home has two equal large tiles: Add a screenshot and Paste Text (also accepts links). Native cropping and practice examples sit under More details. Keep the short OpenAI photo-selection consent visible before the upload tile. Recovery entry: I already clicked something. Help me! Results show the first action, with remaining actions/evidence in More details. Shorten repetition without hiding consent, stale labels, demo boundaries or essential uncertainty. Existing internal storage keys and this historical design folder retain their old name to preserve preferences/references; the GitHub rename is deferred.
 
 Friendly, spacious, clearly labelled controls for the general public, especially older users. Use blue, pale blue and white rather than the previous teal/green palette. Preserve a separately designed dark palette. Avoid decorative complexity, icon-only primary actions and colour-only risk information.
 

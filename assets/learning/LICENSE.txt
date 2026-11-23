@@ -1,6 +1,6 @@
 MIT License
 
-Applies only to the original T2AKKAD learning storyboards, generated MP4 clips,
+Applies only to the original TAAKAD learning storyboards, generated MP4 clips,
 and their generation script supplied with this project. No third-party footage,
 music, logos, voices or font files are included in these assets. This permission
 does not relicense dependencies, official feed content or other project assets.

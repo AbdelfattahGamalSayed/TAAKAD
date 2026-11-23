@@ -34,7 +34,7 @@ export function createServer({ token, analyzeImpl = analyze, extractImpl = extra
   let windowStart = Date.now(), requestCount = 0, inFlight = 0;
   return http.createServer(async (req, res) => {
     try {
-      if (req.url === '/api/health' && req.method === 'GET') return json(res, 200, { ok: true, configured: Boolean(getConfig().key), service: 'T2AKKAD' });
+      if (req.url === '/api/health' && req.method === 'GET') return json(res, 200, { ok: true, configured: Boolean(getConfig().key), service: 'TAAKAD' });
       if(['/api/reports/list','/api/reports/mine','/api/reports/prepare','/api/reports/publish','/api/reports/withdraw','/api/reports/flag','/api/reports/moderation','/api/reports/handoff','/api/reports/support'].includes(req.url)&&req.method==='POST'){
         if(!authorized(req.headers.authorization,token))return json(res,401,{error:'UNAUTHORIZED'});
         const body=await readBody(req,12000),ip=req.socket.remoteAddress||'unknown';
@@ -99,5 +99,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   server.requestTimeout = 60_000;
   server.on('listening',()=>alertsService.start());
   server.on('close',()=>alertsService.stop());
-  server.listen(8787, '127.0.0.1', () => console.log('T2AKKAD analysis backend listening on localhost:8787. Keys and submitted content are not logged.'));
+  server.listen(8787, '127.0.0.1', () => console.log('TAAKAD analysis backend listening on localhost:8787. Keys and submitted content are not logged.'));
 }

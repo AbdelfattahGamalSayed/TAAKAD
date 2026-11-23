@@ -21,7 +21,7 @@ export const helpSources = {
 } as const;
 export const recoveryCopy = {
   en: {
-    title: 'I already clicked or shared something', intro: 'We will help you choose your next steps. You do not need to enter private details.',
+    title: 'I already clicked something. Help me!', intro: 'Choose what happened. No private details needed.',
     local: 'Your answers stay on this screen. No AI request or police report is sent.', start: 'Help me take action',
     next: 'Next', back: 'Back', yes: 'Yes', no: 'No', unsure: 'Not sure', question: 'Question', of: 'of',
     questions: {payment:'Did you send money or approve a payment?', card:'Did you share your card number, expiry date or security code?', otp:'Did you share a verification code or approve a sign-in?', password:'Did you enter or share a password?', opened:'Did you open a link or install something from it?'},
@@ -41,11 +41,11 @@ export const recoveryCopy = {
     },
     original:'Open the official instructions', helpTitle:'Get help from a real person', bank:'Money or card details involved? Contact your bank or payment provider first, through its real app or a trusted number.',
     aman:'Abu Dhabi Police — Aman', amanText:'Share information about a suspected scam. Aman is not the service for opening a formal criminal report.', call:'Open phone: 8002626', sms:'Open SMS: 2828', manual:'In the UAE: call 8002626 or text 2828. Outside the UAE: +971 8002626. No message is filled in or sent by this app.',
-    police:'To make a formal criminal report, go to the nearest police station. Keep the messages and receipts.', emergency:'Immediate danger or an emergency in the UAE? Call 999. Aman is not an emergency service.', emergencyCall:'Open phone: 999', source:'Official contact details', scope:'About Aman and police reports', checked:'Official sources checked 21 November 2026. T2AKKAD is not a police service and does not send reports or arrange callbacks.',
+    police:'To make a formal criminal report, go to the nearest police station. Keep the messages and receipts.', emergency:'Immediate danger or an emergency in the UAE? Call 999. Aman is not an emergency service.', emergencyCall:'Open phone: 999', source:'Official contact details', scope:'About Aman and police reports', checked:'Official sources checked 21 November 2026. TAAKAD is not a police service and does not send reports or arrange callbacks.',
     error:'Could not open this option. Use the number shown in your Phone or Messages app, or open the official website in your browser.', home:'Back to Check',
   },
   ar: {
-    title:'لقد ضغطت أو شاركت شيئاً بالفعل', intro:'سنساعدك على اختيار الخطوات التالية. لا تحتاج إلى إدخال معلومات خاصة.',
+    title:'ضغطت على شيء. أحتاج مساعدة!', intro:'اختر ما حدث. لا نحتاج إلى تفاصيل خاصة.',
     local:'تبقى إجاباتك في هذه الشاشة. لا نرسلها للذكاء الاصطناعي ولا نقدّم بلاغاً للشرطة.', start:'ساعدني على التصرف',
     next:'التالي', back:'رجوع', yes:'نعم', no:'لا', unsure:'لست متأكداً', question:'السؤال', of:'من',
     questions:{payment:'هل أرسلت مالاً أو وافقت على دفعة؟',card:'هل شاركت رقم بطاقتك أو تاريخ انتهائها أو رمز الأمان؟',otp:'هل شاركت رمز تحقق أو وافقت على تسجيل دخول؟',password:'هل أدخلت كلمة مرور أو شاركتها؟',opened:'هل فتحت رابطاً أو ثبّتّ شيئاً منه؟'},

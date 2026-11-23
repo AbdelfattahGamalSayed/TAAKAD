@@ -14,7 +14,7 @@ test('whole photo goes straight to context; optional edit and text-only assessme
  let extracted:Record<string,unknown>={},analyzed:Record<string,unknown>={},extractCalls=0,analysisCalls=0;
  await page.route('**/api/extract',route=>{extractCalls++;extracted=route.request().postDataJSON();return route.fulfill({json:{status:'readable',text:message,sender:'Sample',warnings:[]}});});
  await page.route('**/api/analyze',route=>{analysisCalls++;analyzed=route.request().postDataJSON();return route.fulfill({json:result});});
- await start(page);await expect(page.getByText(/Choosing a photo sends it to OpenAI/)).toBeVisible();await uploadSynthetic(page);
+ await start(page);await expect(page.getByText(/By choosing a photo, you agree to send it to OpenAI/)).toBeVisible();await uploadSynthetic(page);
  await expect(page.getByText('Do you have an account with the service mentioned in this message?',{exact:true})).toBeVisible();
  await expect(page.getByRole('button',{name:'Read screenshot text'})).toHaveCount(0);await expect(page.getByRole('textbox',{name:'Message',exact:true})).toHaveCount(0);
  const pixels=await page.evaluate(async(uri:string)=>{const img=new Image();img.src=uri;await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d')!;x.drawImage(img,0,0);return{width:img.width,height:img.height,top:[...x.getImageData(5,5,1,1).data],bottom:[...x.getImageData(595,395,1,1).data]};},extracted.image as string);
@@ -52,7 +52,7 @@ test('insufficient information shows no numeric rating',async({page})=>{
  await start(page);await fillMessage(page);await page.getByRole('button',{name:'Check for warning signs'}).click();await expect(page.getByText('More context is needed.',{exact:true})).toBeVisible();await expect(page.getByTestId('warning-score')).toHaveCount(0);
 });
 test('recovery journey and completion reminders work offline',async({page})=>{
- await start(page);await page.getByRole('button',{name:'I already clicked or shared something'}).click();await page.getByRole('button',{name:'Help me take action'}).click();
+ await start(page);await page.getByRole('button',{name:'I already clicked something. Help me!'}).click();await page.getByRole('button',{name:'Help me take action'}).click();
  await page.context().setOffline(true);
  for(let i=0;i<5;i++){await page.getByRole('radio',{name:'Yes',exact:true}).click();await page.getByRole('button',{name:'Next',exact:true}).click();}
  await expect(page.getByText('Protect your money',{exact:true})).toBeVisible();const step=page.getByRole('checkbox');await step.click();await expect(step).toBeChecked();await step.click();await expect(step).not.toBeChecked();await page.screenshot({path:'.local/recovery-mobile.png'});

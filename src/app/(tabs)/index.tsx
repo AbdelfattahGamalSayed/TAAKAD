@@ -149,20 +149,21 @@ export default function CheckScreen() {
     {step !== 'choose' && <Button title={g.back} secondary icon={rtl ? 'arrow-forward' : 'arrow-back'} onPress={back} disabled={picking} />}
     <Txt accessibilityLiveRegion="polite" style={[styles.heading, { marginTop: step === 'choose' ? 0 : 20 }]}>{heading}</Txt>
     {step === 'choose' && <>
-      <Txt style={[styles.muted, { marginTop: 12 }]}>{t.subtitle}</Txt>
-      <Txt style={[styles.muted,{marginTop:16}]}>{locale==='en'?'Choosing a photo sends it to OpenAI to read the message and choose useful questions. By choosing it, you agree. Crop out private details first if needed.':'باختيار صورة، توافق على إرسالها إلى OpenAI لقراءة الرسالة واختيار الأسئلة المناسبة. اقتصّ التفاصيل الخاصة أولاً عند الحاجة.'}</Txt>
+      <Txt style={[styles.muted,{marginTop:12,fontSize:16}]}>{locale==='en'?'By choosing a photo, you agree to send it to OpenAI. Remove private details first.':'باختيار صورة، توافق على إرسالها إلى OpenAI. احذف التفاصيل الخاصة أولاً.'}</Txt>
       <Touch accessibilityRole="button" accessibilityLabel={picking ? f.loadingPhoto : t.upload} disabled={picking} accessibilityState={{ disabled: picking }}
-        onPress={() => pickImage()} style={{ marginTop: 24, backgroundColor: colors.upload, borderRadius: 24, borderWidth: 2, borderColor: colors.accentBorder, padding: 24, minHeight: 200, alignItems: 'center', gap: 16 }}>
-        <View style={{ padding: 20, borderRadius: 24, backgroundColor: colors.accentSolid }}><Icon name="images-outline" size={48} color={colors.onAccent} /></View>
+        testID="home-screenshot" onPress={() => pickImage()} style={{ marginTop: 20, backgroundColor: colors.upload, borderRadius: 24, borderWidth: 2, borderColor: colors.accentBorder, padding: 20, minHeight: 166, alignItems: 'center', gap: 12 }}>
+        <View style={{ padding: 14, borderRadius: 20, backgroundColor: colors.accentSolid }}><Icon name="images-outline" size={44} color={colors.onAccent} /></View>
         <Txt style={{ fontSize: 22, fontWeight: '700', textAlign: 'center', color: colors.primary }}>{picking ? f.loadingPhoto : t.upload}</Txt>
       </Touch>
-      {Platform.OS !== 'web' && <Button title={f.chooseCrop} secondary icon="crop-outline" onPress={() => pickImage(true)} disabled={picking} />}
-      {photo && <Button title={g.continuePhoto} secondary onPress={() => { setConsent(false); setStep('photo'); }} disabled={picking} />}
-      <Button title={g.pasteMessage} icon="chatbubble-outline" secondary onPress={() => chooseText('message')} disabled={picking} />
-      <Button title={g.pasteLink} icon="link-outline" secondary onPress={() => chooseText('link')} disabled={picking} />
-      <Txt style={[styles.muted, { marginTop: 16 }]}>{t.privacySmall}</Txt>
+      <Touch testID="home-paste" accessibilityRole="button" accessibilityLabel={g.pasteMessage} disabled={picking} onPress={()=>chooseText('message')} style={{marginTop:16,backgroundColor:colors.surface,borderRadius:24,borderWidth:2,borderColor:colors.accentBorder,padding:20,minHeight:166,alignItems:'center',gap:12}}>
+        <View style={{padding:14,borderRadius:20,backgroundColor:colors.primarySoft}}><Icon name="clipboard-outline" size={44} color={colors.primary}/></View>
+        <Txt style={{fontSize:22,fontWeight:'700',textAlign:'center',color:colors.primary}}>{g.pasteMessage}</Txt>
+      </Touch>
       <Button title={f.recovery} secondary icon="help-buoy-outline" onPress={() => router.push('/recovery')} disabled={picking} />
-      <Details><Txt style={styles.sectionTitle}>{g.practice}</Txt>
+      <Details>
+        {Platform.OS !== 'web' && <Button title={f.chooseCrop} secondary icon="crop-outline" onPress={() => pickImage(true)} disabled={picking} />}
+        {photo && <Button title={g.continuePhoto} secondary onPress={() => { setConsent(false); setStep('photo'); }} disabled={picking} />}
+        <Txt style={styles.sectionTitle}>{g.practice}</Txt>
         {[t.delivery, t.bank, t.everyday].map((label, i) => <Button key={label} title={label} secondary disabled={picking} onPress={() => {
           clearDraft(); setMode('message'); setText(samples[locale][i]); setSample(true); setStep('review');
         }} />)}
@@ -220,7 +221,7 @@ export default function CheckScreen() {
       {!busy && <Button title={t.analyze} icon="shield-checkmark-outline" onPress={submit} />}
       <Txt style={[styles.muted, { marginTop: 16 }]}>{g.confirmLimit}</Txt>
     </View>}
-    {!!error && <View accessibilityRole="alert" style={styles.error}><Txt style={{ color: colors.red }}>{error}</Txt></View>}
+    {!!error && <View accessibilityRole="alert" style={styles.error}><Txt style={{ color: colors.primary }}>{error}</Txt></View>}
     {busy && <View style={{ alignItems: 'center', paddingTop: 24 }}>
       <ActivityIndicator color={colors.primary} size="large" />
       <Txt accessibilityLiveRegion="polite" style={{ marginTop: 12 }}>{step === 'photo' ? f.reading : t.analyzing}</Txt>

@@ -15,24 +15,26 @@ export default function ResultScreen() {
   function reset() { setResult(null); router.replace('/'); }
   if (!result) return <Screen><Txt style={styles.heading}>{t.empty}</Txt><Txt style={[styles.muted, { marginTop: 16 }]}>{t.emptySub}</Txt><Button title={t.check} onPress={reset} /></Screen>;
   const score = result.riskLevel;
-  const riskColor = score === null ? colors.muted : score >= 4 ? colors.red : score >= 2 ? colors.amber : colors.primary;
+  const riskColor = score === null ? colors.muted : score >= 4 ? colors.red : score >= 2 ? colors.amber : colors.green;
   const riskBg = score === null ? colors.subtle : score >= 4 ? colors.riskHigh : score >= 2 ? colors.riskMedium : colors.riskLow;
   return <Screen>
     <Pressable accessibilityRole="button" onPress={() => router.back()}><Row style={{ gap: 7, marginBottom: 20 }}><Ionicons name={rtl ? 'arrow-forward' : 'arrow-back'} color={colors.primary} size={20} /><Txt style={{ color: colors.primary, fontSize:16 }}>{t.back}</Txt></Row></Pressable>
     <Txt style={[styles.heading, { fontSize: 31 }]}>{t.result}</Txt>
     <View style={[styles.card, { backgroundColor: riskBg, borderColor: riskBg, alignItems: 'center', paddingVertical: 28 }]}>
+      <View style={{width:104,height:104,borderRadius:52,alignItems:'center',justifyContent:'center',marginBottom:20,borderWidth:2,borderColor:score===null?colors.line:score>=4?colors.red:score>=2?colors.resultAmber:colors.resultGreen}}><Ionicons name={score===null?'help-circle-outline':score>=4?'close-circle-outline':score>=2?'warning-outline':'checkmark-circle-outline'} size={64} color={riskColor}/></View>
       <Txt style={{ fontSize: 22, fontWeight: '700', color: riskColor, textAlign: 'center' }}>{score === null ? t.unable : t.riskLabels[score - 1]}</Txt>
       {score !== null && <Txt testID="warning-score" accessibilityLabel={t.score+': '+score+' / 5'} style={{fontSize:32,fontWeight:'800',color:riskColor,writingDirection:'ltr',textAlign:'center',marginVertical:12}}>{score+' / 5'}</Txt>}
       {score !== null && <Row style={{ gap: 7, marginBottom: 20 }}>{[1, 2, 3, 4, 5].map(n => <View key={n} style={{ width: 39, height: 7, borderRadius: 5, backgroundColor: score !== null && n <= score ? riskColor : colors.line }} />)}</Row>}
       <Txt style={{ textAlign: 'center', fontSize:16, marginTop: 13, lineHeight:24 }}>{result.summary}</Txt>
     </View>
     {result.urlEvidence.some(entry=>entry.reputation.status==='listed') && <Txt style={[styles.error,{color:colors.red}]}>{f.listedNotice}</Txt>}
-    <View style={[styles.card, { borderColor: colors.accentBorder }]}><Txt style={styles.sectionTitle}>{t.actions}</Txt>{result.recommendedActions.map((line, i) => <Row key={i} style={{ alignItems: 'flex-start', marginBottom: 14 }}><View style={{ backgroundColor: colors.primarySoft, width: 25, height: 25, borderRadius: 13 }}><Txt style={{ textAlign: 'center', color: colors.primary, fontSize:16, fontWeight: '700' }}>{i + 1}</Txt></View><Txt style={{ flex: 1, fontSize:16 }}>{line}</Txt></Row>)}</View>
+    <View style={[styles.card, { borderColor: colors.accentBorder }]}><Txt style={styles.sectionTitle}>{t.actions}</Txt><Txt>{result.recommendedActions[0]}</Txt></View>
     <Button title={f.recovery} icon="help-buoy-outline" secondary onPress={()=>router.push('/recovery')}/>
     <Txt style={[styles.muted,{marginTop:16}]}>{t.noGuarantee}</Txt>
     {score !== null && score <= 2 && <Txt style={styles.muted}>{t.shortLimit}</Txt>}
     <Button title={t.newCheck} icon="add-circle-outline" onPress={reset} />
     <Details testID="result-details">
+    {result.recommendedActions.length>1&&<View><Txt style={styles.sectionTitle}>{t.actions}</Txt>{result.recommendedActions.slice(1).map((line,i)=><Txt key={i} style={{marginBottom:12}}>{i+2}. {line}</Txt>)}</View>}
     <Txt style={[styles.muted,{marginTop:14,fontSize:16}]}>{f.scale}</Txt>
     <Txt style={{marginTop:12,fontWeight:'600'}}>{f.quality}: {f[result.evidenceQuality]}</Txt>
     {result.messageRiskLevel !== result.riskLevel && <Txt style={styles.muted}>{f.aiScore}: {result.messageRiskLevel === null ? f.noRisk : result.messageRiskLevel + ' / 5'}. {f.overall}</Txt>}
