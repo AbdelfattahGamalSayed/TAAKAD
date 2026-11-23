@@ -42,6 +42,8 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 
 ## Audited limitations
 
+Support handoff remains a demonstration at the user's explicit direction: no receiving authority or agreed process exists. Separate demo consent, a fictional contact and a local support role do not establish a partnership. Real sharing is disabled. [Organizer confirmation gates and staff-access design](docs/SUPPORT-HANDOFF.md) must be completed before real case/contact delivery.
+
 The current AI model is externally hosted and not trained by the team. The alerts integration covers one official UAE publisher, not comprehensive threat intelligence. Community now has structured reports, consented shared demo summaries, separate private notes and local moderation. It has no real SMS, verified accounts, durable reporting or authority integration. UAE PASS is explicitly unavailable. Notifications and widgets are not implemented. The LAN server/token setup is for development, not a production identity/security system. These are disclosed scope decisions; the supplied terms do not require these optional features.
 
 The source audit cannot establish when every contribution was created or certify all participant/asset rights. Do not mark these checks complete without evidence from the team. Prior successful automated checks and iPhone confirmations are useful evidence, but the final submitted commit must be verified again.

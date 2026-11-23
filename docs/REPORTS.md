@@ -22,6 +22,8 @@ Free-text notes, the help-needed answer, ownership and moderation information ar
 
 No status implies police receipt, investigation, assignment or contact. Requesting help only records that choice; the app links to recovery and verified official help instead of promising a callback.
 
+An independent, optional [support handoff demonstration](SUPPORT-HANDOFF.md) shares only the generated summary and a fixed fictional contact with a separately authorized local support role. It requires separate consent; public posting is not required. Private notes, sign-in numbers and evidence are excluded. Support status and public-report status are separate. Withdrawing the report revokes demo support access too.
+
 Records live only in server memory, for at most the originating session's remaining one-hour lifetime. Restarting the server removes them. Signing out loses access to that session's private reports; signing into the same demo number does not prove ownership or recover them. This restriction avoids letting an unverified number claim someone else's private data. Published summaries can remain visible until expiry even after sign-out; withdraw first if desired. A production service needs real authentication, durable secure storage, retention/deletion controls and a staffed moderation process.
 
 ## Moderation and abuse controls

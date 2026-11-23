@@ -30,14 +30,18 @@ async function readBody(req, maxBytes = 7_100_000) {
   catch { throw new AnalysisError('INVALID_INPUT'); }
 }
 
-export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth(), reports = createReports(), moderatorToken } = {}) {
+export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth(), reports = createReports(), moderatorToken, supportToken } = {}) {
   let windowStart = Date.now(), requestCount = 0, inFlight = 0;
   return http.createServer(async (req, res) => {
     try {
       if (req.url === '/api/health' && req.method === 'GET') return json(res, 200, { ok: true, configured: Boolean(getConfig().key), service: 'T2AKKAD' });
-      if(['/api/reports/list','/api/reports/mine','/api/reports/prepare','/api/reports/publish','/api/reports/withdraw','/api/reports/flag','/api/reports/moderation'].includes(req.url)&&req.method==='POST'){
+      if(['/api/reports/list','/api/reports/mine','/api/reports/prepare','/api/reports/publish','/api/reports/withdraw','/api/reports/flag','/api/reports/moderation','/api/reports/handoff','/api/reports/support'].includes(req.url)&&req.method==='POST'){
         if(!authorized(req.headers.authorization,token))return json(res,401,{error:'UNAUTHORIZED'});
         const body=await readBody(req,12000),ip=req.socket.remoteAddress||'unknown';
+        if(req.url==='/api/reports/support'){
+          if(!authorized(req.headers['x-support-token'],supportToken))return json(res,403,{error:'FORBIDDEN'});
+          return json(res,200,reports.support(body));
+        }
         if(req.url==='/api/reports/moderation'){
           if(!authorized(req.headers['x-moderator-token'],moderatorToken))return json(res,403,{error:'FORBIDDEN'});
           return json(res,200,body.action==='list'?reports.queue():reports.review(body));
@@ -45,6 +49,7 @@ export function createServer({ token, analyzeImpl = analyze, extractImpl = extra
         if(req.url==='/api/reports/list')return json(res,200,reports.list());
         if(req.url==='/api/reports/flag')return json(res,200,reports.flag(body,ip));
         const session=auth.requireSession(req.headers['x-session-token']);
+        if(req.url==='/api/reports/handoff')return json(res,200,reports.handoff(session,body));
         if(req.url==='/api/reports/mine')return json(res,200,reports.mine(session));
         if(req.url==='/api/reports/prepare')return json(res,200,await reports.prepare(session,body,ip));
         if(req.url==='/api/reports/publish')return json(res,200,reports.publish(session,body));
@@ -88,7 +93,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const session = JSON.parse(readFileSync(new URL('../.local/session.json', import.meta.url), 'utf8'));
   const moderatorFile=new URL('../.local/report-moderator.json',import.meta.url);
   if(!existsSync(moderatorFile))writeFileSync(moderatorFile,JSON.stringify({token:randomBytes(32).toString('hex')}));
-  const server = createServer({ token: session.token, moderatorToken: JSON.parse(readFileSync(moderatorFile,'utf8')).token });
+  const supportFile=new URL('../.local/report-support.json',import.meta.url);
+  if(!existsSync(supportFile))writeFileSync(supportFile,JSON.stringify({token:randomBytes(32).toString('hex')}));
+  const server = createServer({ token: session.token, moderatorToken: JSON.parse(readFileSync(moderatorFile,'utf8')).token, supportToken: JSON.parse(readFileSync(supportFile,'utf8')).token });
   server.requestTimeout = 60_000;
   server.on('listening',()=>alertsService.start());
   server.on('close',()=>alertsService.stop());

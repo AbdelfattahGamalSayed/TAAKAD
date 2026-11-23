@@ -1,0 +1,35 @@
+import {test,expect} from '@playwright/test';
+import {handoffCopy} from '../src/lib/handoff';
+import {reportCopy} from '../src/lib/reports';
+import {authCopy} from '../src/lib/authCopy';
+import {fillReport} from './report-helpers';
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'});});
+for(const locale of ['en','ar'] as const)test(`${locale}: handoff consent is separate, optional, revocable and uses only fictional contact`,async({page})=>{
+ const c=reportCopy[locale],h=handoffCopy[locale],a=authCopy[locale];
+ await page.addInitScript(l=>localStorage.setItem('t2akkad-language',l),locale);
+ await page.goto('/community');await fillReport(page,'Synthetic private handoff note',locale);
+ await page.getByRole('button',{name:c.signin,exact:true}).click();await page.getByRole('textbox',{name:a.number}).fill(locale==='en'?'+971500000451':'+971500000452');
+ await page.getByRole('button',{name:a.send}).click();await page.getByRole('textbox',{name:a.code}).fill(await page.getByTestId('demo-code').innerText());await page.getByRole('button',{name:a.verify}).click();
+ await page.getByRole('button',{name:c.prepare,exact:true}).click();await expect(page.getByText(c.preview,{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:c.mine,exact:true}).click();await page.getByRole('button',{name:h.show,exact:true}).click();
+ await expect(page.getByText(h.intro,{exact:true})).toBeVisible();await expect(page.getByText(h.contact,{exact:true})).toBeVisible();
+ await expect(page.getByRole('checkbox',{name:h.consent})).not.toBeChecked();await expect(page.getByRole('button',{name:h.send,exact:true})).toBeDisabled();
+ await page.getByRole('checkbox',{name:h.consent}).click();await page.getByRole('button',{name:h.cancel,exact:true}).click();await page.getByRole('button',{name:h.show,exact:true}).click();
+ await expect(page.getByRole('checkbox',{name:h.consent})).not.toBeChecked();
+ await page.getByRole('checkbox',{name:h.consent}).click();await page.getByRole('button',{name:h.send,exact:true}).scrollIntoViewIfNeeded();
+ await page.screenshot({path:`.local/handoff-consent-${locale}.png`});
+ const sent=page.waitForRequest(r=>r.url().endsWith('/api/reports/handoff'));
+ await page.getByRole('button',{name:h.send,exact:true}).click();expect((await sent).postDataJSON()).toMatchObject({action:'request',consent:true,consentVersion:'demo-handoff-v1'});
+ expect(Object.keys((await sent).postDataJSON()).sort()).toEqual(['action','consent','consentVersion','id']);
+ await expect(page.getByText(h.statuses.demo_requested,{exact:true})).toBeVisible();
+ await expect(page.getByText(c.status+': '+c.statuses.draft,{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:h.revoke,exact:true}).click();await expect(page.getByText(h.statuses.revoked,{exact:true})).toBeVisible();
+});
+test('official routes are available to guests without transmitting a report',async({page})=>{
+ const h=handoffCopy.en;let handoffs=0;page.on('request',r=>{if(r.url().endsWith('/handoff'))handoffs++;});
+ await page.goto('/community');await page.getByRole('button',{name:h.help,exact:true}).click();
+ await expect(page.getByText(h.aman,{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:h.policeCall,exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:h.emergencyCall,exact:true})).toBeVisible();
+ await page.getByRole('button',{name:h.faq,exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:'.local/handoff-official-help.png'});
+ expect(handoffs).toBe(0);
+});

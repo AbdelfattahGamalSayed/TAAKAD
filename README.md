@@ -149,6 +149,8 @@ Native Android behavior has not been exercised on a physical device. Successful 
 
 ## Next milestones
 
+Support handoff is now an explicitly labelled local demonstration: separate opt-in consent, a fixed fictional contact, private support-role access, access history and revocation. No receiving authority has agreed a process; real contact collection and external delivery remain disabled. Guests can open verified official help routes. See [support handoff design and organizer gates](docs/SUPPORT-HANDOFF.md) for the local support commands, privacy boundaries and production requirements.
+
 1. Evaluate detection and transcription on a labeled bilingual dataset.
 2. Add more official alert publishers after reviewing their automation and reuse permissions.
 3. Add real accounts, durable report storage and an authorized, staffed response workflow.

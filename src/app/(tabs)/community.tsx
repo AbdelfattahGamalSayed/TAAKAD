@@ -5,6 +5,7 @@ import {Button,Details,Icon,Row,Screen,Touch,Txt,useTheme} from '../../component
 import {useApp} from '../../lib/state';
 import {authRequest,useAuth} from '../../lib/auth';
 import {emptyReport,reportCopy,type ScamReport} from '../../lib/reports';
+import {OfficialHelp,SupportHandoff} from '../../components/support';
 export default function CommunityScreen(){
  const {locale,rtl}=useApp(),{colors,styles}=useTheme(),c=reportCopy[locale];
  const {session,setSession,welcome,draft,setDraft,reportDraft,setReportDraft}=useAuth();
@@ -22,7 +23,7 @@ export default function CommunityScreen(){
    finally{if(id===generation.current)setBusy(false);}
  },[view,session,setSession]);
  useFocusEffect(useCallback(()=>{if(view==='feed'||(view==='mine'&&session))void load();return()=>{generation.current++;setBusy(false);};},[load,view,session]));
- async function act(action:'prepare'|'publish'|'withdraw'|'flag',body:object={}){
+ async function act(action:'prepare'|'publish'|'withdraw'|'flag'|'handoff',body:object={}){
    if(busy)return;if(action!=='flag'&&!session){signin();return;}
    const id=++generation.current;setBusy(true);setError('');setNotice('');
    try{
@@ -44,6 +45,7 @@ export default function CommunityScreen(){
  return <Screen key={`${view}:${step}`}>
   <Txt style={styles.heading}>{c.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt>
   <View style={[styles.card,{backgroundColor:colors.primarySoft}]}><Txt style={{fontWeight:'700'}}>{c.demo}</Txt><Txt style={[styles.muted,{marginTop:8}]}>{locale==='en'?'Shared within this demo. Reports expire within one hour.':'المشاركة ضمن هذه النسخة فقط. تنتهي البلاغات خلال ساعة.'}</Txt></View>
+  <OfficialHelp/>
   <Row style={{flexWrap:'wrap',marginTop:16}}><Button title={c.feed} secondary disabled={busy} onPress={()=>{setView('feed');setError('');}}/><Button title={c.mine} secondary disabled={busy} onPress={()=>{setView('mine');setError('');}}/></Row>
   {(view==='feed'||view==='mine')&&<Button title={c.start} icon="add-circle-outline" disabled={busy} onPress={()=>{setView('form');setStep(reportDraft.channel?2:0);setError('');setNotice('');}}/>}
   {form&&<View style={styles.card}>
@@ -77,6 +79,7 @@ export default function CommunityScreen(){
         <Details><Txt style={styles.sectionTitle}>{c.private}</Txt><Txt>{item.privateNote||'—'}</Txt><Txt>{c.helpQuestion} {item.needsHelp?c.yes:c.no}</Txt></Details>
         {item.needsHelp&&<><Txt style={[styles.muted,{marginTop:12}]}>{c.helpNote}</Txt><Button title={c.help} secondary onPress={()=>router.push('/recovery')}/></>}
         {item.status==='draft'&&<Button title={c.preview} secondary disabled={busy} onPress={()=>{setPreview(item);setPreviewOwner(session!.token);setConsent(false);setView('preview');}}/>}
+        {item.status!=='withdrawn'&&item.status!=='checking'&&<SupportHandoff key={`${item.id}:${session?.token}`} summary={item.summary[locale]} handoff={item.handoff} busy={busy} onAction={body=>act('handoff',{id:item.id,...body})}/>}
         {item.status!=='withdrawn'&&<Button title={c.withdraw} secondary disabled={busy} onPress={()=>act('withdraw',{id:item.id})}/>}
       </>:<><Button title={c.flag} secondary disabled={busy} onPress={()=>setFlag(flag===item.id?'':item.id)}/>{flag===item.id&&<>{Object.entries(c.flagReasons).map(([reason,label])=><Button key={reason} title={label} secondary disabled={busy} onPress={()=>act('flag',{id:item.id,reason})}/>)}<Button title={c.cancel} secondary onPress={()=>setFlag('')}/></>}</>}
     </View>)}
