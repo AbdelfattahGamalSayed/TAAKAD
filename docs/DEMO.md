@@ -14,11 +14,11 @@ Official sources, reviewed 24 November 2026:
 
 ## Before presenting
 
-1. Open the **TAAKAD** project folder and run `npm start`. This starts both the backend and Metro. Running `npx expo start` alone does not start the backend.
+1. Open the **TAAKAD** project folder and run `npm.cmd run demo` in Windows PowerShell (`npm run demo` on macOS/Linux). For this configured committee preview, it starts the backend and app server if needed, or recognises the existing matching session, then displays the published QR and opens its browser page. It suppresses the development-server QR to avoid confusing the two routes. Running `npx expo start` alone does not start the backend.
 2. Keep that terminal and computer running. Connect the computer and demo phones to the same trusted Wi-Fi. Guest/client isolation or a changed LAN address can stop phone access.
 3. In a second terminal run `npm run check:demo`. This checks backend reachability, the proxy and Community pairing. It does not make a paid model request.
 4. Optionally run `npm run check:demo -- --live` to verify model access with a synthetic message. This makes one real API request and may incur a small charge.
-5. Use `.local/committee-preview.png`, **not the development-server QR**, for the published preview. Scan with Camera and open in Expo Go. Test while signed out before the committee arrives.
+5. Use the QR displayed by `npm run demo` or `.local/committee-preview.png`, **not the development-server QR**, for the published preview. Scan with Camera and open in Expo Go. Test while signed out before the committee arrives.
 6. Try a synthetic screenshot, recovery, a learning guide/video and a structured demo report. Use no real personal data and do not place test calls to official services.
 
 ## Preview publishing
@@ -51,3 +51,7 @@ When changing network/IP, regenerating local pairing state or changing app code,
 - `UNAUTHORIZED`: an old bundle may have a different pairing token; reload from the current published QR or republish after replacing local state.
 
 On 24 November 2026 a live provider request and synthetic screenshot extraction succeeded; the latter completed in about 1.2 seconds. The user confirmed that the earlier errors cleared after restarting the combined server. This establishes a working session, not a promise of provider availability during the event.
+
+## Starting twice
+
+`npm start` and `npm run demo` check both local ports and this checkout's pairing before starting children. A healthy matching app is reused without launching another server. A partial or different session produces clear instructions; no existing process is killed. If the launcher started the servers, keep that terminal open and use Ctrl+C to stop them. If it reused them, keep the original server terminal open. Direct backend startup also reports an occupied port without an unhandled Node stack trace.

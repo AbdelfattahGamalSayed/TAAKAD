@@ -48,6 +48,7 @@ Choose one run mode:
 | Mode | Command | Account requirement |
 | --- | --- | --- |
 | Expo Go on a phone | `npm.cmd start` | Physical iPhone: your own matching Expo account in CLI and Expo Go; Android: no author account |
+| Configured committee preview | `npm.cmd run demo` | Published Expo Go QR; maintainer preview settings and same trusted Wi-Fi required |
 | Browser review | `npm.cmd run review` | No Expo login; opens localhost web preview |
 | Normal web preview | `npm.cmd run web` | No author account; normal Expo network checks |
 
@@ -60,7 +61,7 @@ npx.cmd expo whoami
 
 Sign in to Expo Go on the iPhone with **that same reviewer-owned account**, then scan the terminal QR with the iPhone Camera and open it in Expo Go. On Android, scan from Expo Go. Keep the terminal running and allow the phone to access the local network.
 
-Both run commands start the backend on **127.0.0.1:8787** and Metro on **8081**. The client reaches the backend through Metro's `/api` proxy; do not expose port 8787. Browser review is available at **http://localhost:8081**. The launcher clears Metro's transform cache so a fresh checkout uses its own development token. Stop both processes with **Ctrl+C**. Do not run two launchers on the same ports.
+Both run commands start the backend on **127.0.0.1:8787** and Metro on **8081**. The client reaches the backend through Metro's `/api` proxy; do not expose port 8787. Browser review is available at **http://localhost:8081**. The launcher clears Metro's transform cache so a fresh checkout uses its own development token. Stop both processes with **Ctrl+C**. A second launcher reuses a healthy matching session; partial or unrelated listeners are refused with clear instructions.
 
 `review` uses Expo CLI's `--offline` option to avoid Expo account/network services; **this does not make AI or official feeds offline**. Those still need their normal internet connections. Open the browser preview at localhost. Expo offline mode still advertises a LAN development server; use a trusted network and stop it after review. Use `npm start` for the normal phone workflow.
 
@@ -271,3 +272,5 @@ The combined backend and Metro must be running; `npx expo start` alone starts no
 Use `npm run check:demo` before presenting; `npm run check:demo -- --live` makes one real synthetic assessment and may incur a small API charge. The new published preview uses a different QR from the development server; see [docs/DEMO.md](docs/DEMO.md) for network and publishing requirements. Normal source startup has no fixed author/project binding.
 
 Reliability validation: all 77 backend/helper tests and 64 browser regressions passed, with a further 26 targeted browser checks after the final backend adjustment. Typecheck and lint passed; Expo Update exported iOS, Android and web bundles. A live synthetic assessment passed after excluding unmatched metadata quotes. These checks do not replace physical signed-out iPhone verification.
+
+Duplicate-start protection was verified on 24 November 2026. `npm run demo` starts or reuses the configured demo and opens its published QR; `npm start` remains the development route. All 80 backend/helper tests passed, including matching-session reuse and refusing partial/unrelated listeners. A fresh demo launch, duplicate start, proxy health, Community pairing and direct occupied-port recovery were checked.

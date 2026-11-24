@@ -99,5 +99,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   server.requestTimeout = 60_000;
   server.on('listening',()=>alertsService.start());
   server.on('close',()=>alertsService.stop());
+  server.on('error',error=>{
+    console.error(error.code==='EADDRINUSE'?'TAAKAD backend port 8787 is already in use. Use the running app or stop its original terminal before restarting.':'TAAKAD backend could not start. Check the port and local configuration.');
+    process.exitCode=1;
+  });
   server.listen(8787, '127.0.0.1', () => console.log('TAAKAD analysis backend listening on localhost:8787. Keys and submitted content are not logged.'));
 }

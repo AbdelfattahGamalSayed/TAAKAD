@@ -38,6 +38,7 @@
     "typescript": "~6.0.3"
   },
   "scripts": {
+    "demo": "node scripts/dev.mjs --demo",
     "publish:preview": "node scripts/publish-preview.mjs",
     "check:demo": "node scripts/check-demo.mjs",
     "setup": "node scripts/setup.mjs",
