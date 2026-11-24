@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { inspectRunningApp } from './dev-preflight.mjs';
 import { showPreview } from './show-preview.mjs';
 import { showBrowserDemo } from './show-browser-demo.mjs';
+import { showExpoGo } from './show-expo-go.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const args=process.argv.slice(2),demo=args.includes('--demo'),open=!args.includes('--no-open');
@@ -34,7 +35,8 @@ try{
   if(state.status==='running'){
     console.log('TAAKAD is already running on ports 8081 and 8787. No second server was started.');
     if(demo)await (memberPreview?showPreview({open}):showBrowserDemo({open}));
-    else console.log('Expo Go previews require account access. For account-free browser review, open http://localhost:8081 or use npm run review.');
+    else if(expoArgs.includes('--web'))console.log('Browser review: open http://localhost:8081. For a phone browser QR, run npm run demo.');
+    else await showExpoGo({open});
     process.exit(0);
   }
   if(state.status==='conflict')throw Error('Port '+state.ports.join(' / ')+' is already in use by a partial or different session. Stop that server in its original terminal, then run this command again. No existing process was stopped.');

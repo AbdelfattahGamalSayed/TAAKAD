@@ -19,10 +19,10 @@ Open the **TAAKAD** folder in VS Code, then choose **Terminal > New Terminal**. 
 
 1. Install Expo Go compatible with SDK 58 on the iPhone.
 2. Run `npx.cmd expo login` once, and sign into Expo Go with that **same Expo account**. A reviewer can use their own account for local development.
-3. Start from a stopped app: if it is already running, press **Ctrl+C in the original server terminal**. Then run `npm.cmd start` and wait for the terminal QR.
+3. Run `npm.cmd start`. A fresh start shows the terminal QR. If the browser session is already running, the launcher reuses it and shows a new Expo Go QR in the terminal and a separate QR page.
 4. Scan that **development QR** with the phone Camera and open Expo Go. Do not scan the older published preview QR: it has separate owner-membership restrictions.
 
-Keep the original server terminal open and the laptop awake. Press **Ctrl+C in that terminal** to stop both servers. If startup says it reused a running app, the original terminal still owns those servers; stop them there before requesting a fresh Expo Go development QR.
+Keep the original server terminal open and the laptop awake. Press **Ctrl+C in that terminal** to stop both servers. If startup says it reused a running app, the original terminal still owns those servers; the command displaying the new QR can exit normally without stopping them.
 
 **First run on a new computer only:** install Node.js 22.18 or later, run `npm.cmd ci`, then `npm.cmd run setup`. Add a working OpenAI key to the generated private `server/.env` and save it. The app needs internet and available API credit for live AI checks. Never put the key in the public repository. On macOS/Linux, use `npm` and `npx` without `.cmd`.
 
@@ -99,7 +99,7 @@ On 24 November 2026 a live provider request and synthetic screenshot extraction 
 
 ## Starting twice
 
-`npm start` and `npm run demo` check both local ports and this checkout's pairing before starting children. A healthy matching app is reused without launching another server. A partial or different session produces clear instructions; no existing process is killed. If the launcher started the servers, keep that terminal open and use Ctrl+C to stop them. If it reused them, keep the original server terminal open. Direct backend startup also reports an occupied port without an unhandled Node stack trace.
+`npm start` and `npm run demo` check both local ports and this checkout's pairing before starting children. A healthy matching app is reused without launching another server. `npm start` now generates an Expo Go development QR even when it reuses a browser session; `npm run demo` generates the browser QR. The new native QR files are `.local/expo-go.html` and `.local/expo-go.png`. They are private development outputs, not published EAS Update links. A partial or different session produces clear instructions; no existing process is killed. If the launcher started the servers, keep that terminal open and use Ctrl+C to stop them. If it reused them, keep the original server terminal open. Direct backend startup also reports an occupied port without an unhandled Node stack trace.
 
 ## Confirmed access failure on 24 November 2026
 
