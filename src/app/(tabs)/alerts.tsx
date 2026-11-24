@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import { ActivityIndicator,Linking,View } from 'react-native';
-import { Button,Details,Row,Screen,Txt,useTheme } from '../../components/ui';
+import { Button,Details,Icon,Row,Screen,Txt,useTheme } from '../../components/ui';
 import { useApp } from '../../lib/state';
 import { alertsCopy,getAlerts,type AlertFeed } from '../../lib/alerts';
 import {InterestFilter} from '../../components/interests';
@@ -31,7 +31,7 @@ function AlertsContent(){
  const date=(value:string)=>new Date(value).toLocaleString(locale==='ar'?'ar-AE':'en-GB',{timeZone:'Asia/Dubai',dateStyle:'medium',timeStyle:'short'});
  const items=feed?.items.filter(i=>(!recent||!i.older)&&matchesInterest(i.title+' '+i.excerpt,interest))||[];
  return <Screen>
-  <Txt style={styles.heading}>{t.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{t.intro}</Txt>
+  <Row><Icon name="notifications" color={colors.iconRed} size={34}/><Txt style={styles.heading}>{t.title}</Txt></Row><Txt style={[styles.muted,{marginTop:12}]}>{t.intro}</Txt>
   <Button title={t.refresh} icon="refresh-outline" onPress={()=>reload.current()} disabled={busy}/>
   <InterestFilter/>
   {interest!=='all'&&<><Txt style={[styles.muted,{marginTop:12}]}>{interestCopy[locale].filtered}</Txt><Button title={interestCopy[locale].all} secondary onPress={()=>setInterest('all')}/></>}
@@ -45,7 +45,7 @@ function AlertsContent(){
   {feed&&!feed.refreshing&&!recent&&feed.recentCount===0&&feed.items.length>0&&<Txt style={[styles.muted,{marginTop:18}]}>{t.noRecent}</Txt>}
   {feed&&!feed.refreshing&&items.length===0&&<Txt style={[styles.muted,{marginTop:22}]}>{t.empty}</Txt>}
   {items.map(item=><View key={item.id} style={styles.card}>
-   <Txt style={styles.eyebrow}>{item.older?t.older:t.update}</Txt>
+   <Row style={{marginBottom:12}}><Icon name={item.older||item.stale?'time':'warning'} size={28} color={item.older||item.stale?colors.iconAmber:colors.iconRed}/><Txt style={{fontWeight:'700',color:item.older||item.stale?colors.iconAmber:colors.iconRed}}>{item.older?t.older:t.update}</Txt></Row>
    <Txt style={styles.sectionTitle}>{item.title}</Txt>
    <Txt style={{color:colors.primary,fontSize:16,fontWeight:'700'}}>{locale==='ar'?"مكتب أبوظبي الإعلامي":item.publisher}</Txt>
    <Txt style={[styles.muted,{fontSize:16,marginTop:8}]}>{t.published}: {date(item.publishedAt)}</Txt>

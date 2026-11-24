@@ -114,12 +114,8 @@ test('invalid, oversized and unavailable feeds are explicitly unavailable',async
  for(const response of [()=>new Response('',{status:503}),()=>new Response('bad/feed'),()=>new Response('fraud.example',{headers:{'content-length':String(50*1024*1024)}})]){
  const check=createReputationService({fetchImpl:async()=>response()});assert.equal((await check(urlEvidence('fraud.example')))[0].reputation.status,'unavailable');}
 });
-test('whole-photo selection is the default and native cropping is optional',()=>{
+test('one image selection leaves editing to the local preview and excludes EXIF',()=>{
  assert.equal(screenshot.pickerOptions().allowsEditing,false);
- assert.equal(screenshot.pickerOptions(false,'ios').allowsEditing,false);
- assert.equal(screenshot.pickerOptions(true,'ios').allowsEditing,true);
- assert.equal(screenshot.pickerOptions(true,'android').allowsEditing,true);
- assert.equal(screenshot.pickerOptions(true,'web').allowsEditing,false);
  assert.equal(screenshot.pickerOptions().allowsMultipleSelection,false);
  assert.equal(screenshot.pickerOptions().exif,false);
 });

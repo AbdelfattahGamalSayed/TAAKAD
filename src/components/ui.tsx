@@ -37,12 +37,19 @@ export function Row({ children, style }: { children: React.ReactNode; style?: Vi
   const { rtl } = useApp();
   return <View style={[{ flexDirection: rtl ? 'row-reverse' : 'row', alignItems: 'center', gap: 12, minWidth: 0 }, style]}>{children}</View>;
 }
+export function BrandMark({size=56}:{size?:number}){
+ const {colors}=useTheme();
+ return <View accessible={false} aria-hidden style={{width:size,height:size,alignItems:'center',justifyContent:'center'}}>
+  <Icon name="shield-checkmark-outline" size={size*.86} color={colors.brand}/>
+  <View style={{position:'absolute',width:size*1.05,height:size*.375,borderRadius:size*.54,borderBottomWidth:size*.071,borderLeftWidth:size*.071,borderRightWidth:size*.054,borderColor:colors.dangerSolid,transform:[{rotate:'-22deg'}],top:size*.41,left:-size*.054}}/>
+ </View>;
+}
 export function Brand() {
   const { locale, setLocale } = useApp();
   const { colors, styles } = useTheme();
   return <Row style={{ justifyContent: 'space-between', marginBottom: 28, gap: 8 }}>
     <Row style={{ gap: 12, flex: 1 }}>
-      <View style={styles.logo}><Icon name="shield-checkmark-outline" size={30} color={colors.onAccent} /></View>
+      <BrandMark/>
       <View style={{ flex: 1 }}><Txt style={{ fontSize: 21, fontWeight: '800', writingDirection: 'ltr' }}>TAAKAD</Txt><Txt style={{ fontSize: 16, color: colors.primary, fontWeight: '600' }}>تأكّد</Txt></View>
     </Row>
     <Touch accessibilityRole="button" accessibilityLabel={locale === 'en' ? 'Switch to Arabic' : 'Switch to English'} onPress={() => setLocale(locale === 'en' ? 'ar' : 'en')} style={styles.language}>
@@ -58,12 +65,13 @@ export function Screen({ children, brand = true }: { children: React.ReactNode; 
     </ScrollView>
   </SafeAreaView>;
 }
-export function Button({ title, accessibilityLabel, onPress, disabled = false, secondary = false, icon }: { title: string; accessibilityLabel?:string; onPress: () => void; disabled?: boolean; secondary?: boolean; icon?: keyof typeof Ionicons.glyphMap }) {
+export function Button({ title, accessibilityLabel, onPress, disabled = false, secondary = false, icon, tone }: { title: string; accessibilityLabel?:string; onPress: () => void; disabled?: boolean; secondary?: boolean; icon?: keyof typeof Ionicons.glyphMap; tone?:'danger'|'success' }) {
   const { colors, styles } = useTheme();
+  const foreground=secondary?(tone==='danger'?colors.iconRed:tone==='success'?colors.iconGreen:colors.primary):colors.onAccent;
   return <Touch accessibilityRole="button" accessibilityLabel={accessibilityLabel||title} accessibilityState={{ disabled }} onPress={onPress} disabled={disabled}
-    style={[styles.button, secondary && styles.secondary, disabled && { opacity: 0.5 }]}>
-    <Row style={{ justifyContent: 'center', gap: 12 }}>{icon && <Icon name={icon} size={24} color={secondary ? colors.primary : colors.onAccent} />}
-      <Txt style={{ flexShrink: 1, color: secondary ? colors.primary : colors.onAccent, fontSize: 17, fontWeight: '700', textAlign: 'center' }}>{title}</Txt>
+    style={[styles.button, secondary && styles.secondary, tone&&{backgroundColor:secondary?colors.surface:tone==='danger'?colors.dangerSolid:colors.upload,borderWidth:1,borderColor:foreground}, disabled && { opacity: 0.5 }]}>
+    <Row style={{ justifyContent: 'center', gap: 12 }}>{icon && <Icon name={icon} size={24} color={foreground} />}
+      <Txt style={{ flexShrink: 1, color: foreground, fontSize: 17, fontWeight: '700', textAlign: 'center' }}>{title}</Txt>
     </Row>
   </Touch>;
 }
@@ -82,7 +90,6 @@ export function Details({ children, testID, title }: { children: React.ReactNode
 const createStyles = (colors: ThemeColors) => StyleSheet.create({
   text: { color: colors.text, fontSize: 17, lineHeight: 26, flexShrink: 1 },
   page: { width: '100%', maxWidth: 680, alignSelf: 'center', padding: 20, paddingBottom: 48 },
-  logo: { backgroundColor: colors.accentSolid, width: 52, height: 56, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   language: { backgroundColor: colors.surface, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 16, borderWidth: 1, borderColor: colors.controlBorder },
   heading: { fontSize: 32, lineHeight: 42, fontWeight: '800' },
   eyebrow: { fontSize: 14, fontWeight: '700', color: colors.primary, marginBottom: 8 },

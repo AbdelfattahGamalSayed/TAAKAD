@@ -81,7 +81,7 @@ export default function RecoveryScreen() {
         <Button title={c.original} secondary icon="open-outline" onPress={() => open(helpSources[guide])} />
       </>}
     </> : stage === 'intro' ? <>
-      <View style={styles.card}><Icon name="help-buoy-outline" size={48} color={colors.primary} /><Txt style={{ marginTop: 16 }}>{c.intro}</Txt>
+      <View style={styles.card}><Icon name="warning" size={48} color={colors.iconRed} /><Txt style={{ marginTop: 16 }}>{c.intro}</Txt>
         <Button title={c.start} onPress={() => { setStage('questions'); setIndex(0); }} /></View>
       <Txt style={[styles.muted, { marginTop: 20 }]}>{c.urgent}</Txt><Txt style={[styles.muted, { marginTop: 16 }]}>{c.local}</Txt>
     </> : stage === 'questions' ? <View style={styles.card}>
@@ -101,7 +101,7 @@ export default function RecoveryScreen() {
         {uncertain && index === 0 && <Txt style={[styles.muted, { marginBottom: 16 }]}>{c.uncertain}</Txt>}
         {steps.map((text, i) => <Txt key={i} style={{ marginBottom: 20 }}>{text}</Txt>)}
         <Touch accessibilityRole="checkbox" accessibilityLabel={c.done} aria-checked={done.includes(topic)} accessibilityState={{ checked: done.includes(topic) }} onPress={() => setDone(current => current.includes(topic) ? current.filter(key => key !== topic) : [...current, topic])}>
-          <Row><Icon name={done.includes(topic) ? 'checkbox' : 'square-outline'} size={26} color={colors.primary} /><Txt style={{ flex: 1 }}>{c.done}</Txt></Row>
+          <Row><Icon name={done.includes(topic) ? 'checkbox' : 'square-outline'} size={26} color={done.includes(topic)?colors.iconGreen:colors.primary} /><Txt style={{ flex: 1 }}>{c.done}</Txt></Row>
         </Touch>
         {topic === 'protect' && <Button title={c.guides} secondary icon="images-outline" onPress={() => show('guides')} />}
         <Button title={index === topics.length - 1 ? c.finish : c.next} onPress={next} />

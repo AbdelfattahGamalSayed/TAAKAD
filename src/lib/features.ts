@@ -1,8 +1,6 @@
 export const featureCopy = {
   "en": {
     "prepared": "Review your screenshot",
-    "chooseCrop": "Choose & crop (optional)",
-    "cropOptional": "Cropping is optional. If you skip it, we use the whole photo.",
     "loadingPhoto": "Opening photo…",
     "extract": "Read screenshot text",
     "extractConsent": "I agree to send this photo to OpenAI to read the message.",
@@ -53,8 +51,6 @@ export const featureCopy = {
   },
   "ar": {
     "prepared": "راجع لقطة الشاشة",
-    "chooseCrop": "اختيار واقتصاص (اختياري)",
-    "cropOptional": "الاقتصاص اختياري. إذا تخطّيته، نستخدم الصورة كاملة.",
     "loadingPhoto": "جارٍ فتح الصورة…",
     "extract": "قراءة نص الصورة",
     "extractConsent": "أوافق على إرسال الصورة إلى OpenAI لقراءة الرسالة.",

@@ -10,7 +10,7 @@ npm.cmd run demo
 
 This starts the backend and app server, or reuses this checkout's healthy running session, then opens a **browser QR**. Scan it with the phone's Camera and open it in **Safari or Chrome**. No Expo account, Expo Go installation or app sign-in is required to use the public features. Posting still requires the clearly labelled demo sign-in.
 
-The phone and computer must use the same trusted Wi-Fi with device-to-device traffic allowed. Keep the computer awake and the original server terminal open. The QR uses the computer's current LAN address; rerun the command after changing networks. It is not an internet-hosted link. Browser screenshot upload keeps the whole photo; the native optional crop editor is available only in the native app.
+The phone and computer must use the same trusted Wi-Fi with device-to-device traffic allowed. Keep the computer awake and the original server terminal open. The QR uses the computer's current LAN address; rerun the command after changing networks. It is not an internet-hosted link. Select a photo once, optionally crop it in the local preview, then tap Scan photo. Browser and native apps share this flow; no crop means the whole photo. Selecting/cropping alone does not send it to OpenAI.
 
 The generated QR page and image are `.local/browser-demo.html` and `.local/browser-demo.png`. Do not use the old Expo preview QR for the committee. If multiple network adapters are present, set `TAAKAD_DEMO_HOST` to this computer's reachable IPv4 address before running the command. Never put secrets in that variable or QR.
 

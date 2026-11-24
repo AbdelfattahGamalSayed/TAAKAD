@@ -7,7 +7,7 @@ function luminance(hex: string) {
 }
 test('light and dark semantic text pairs meet minimum contrast', () => {
   for (const c of [lightColors, darkColors]) {
-    const pairs = [[c.text,c.background],[c.text,c.surface],[c.muted,c.surface],[c.muted,c.background],[c.primary,c.primarySoft],[c.primary,c.surface],[c.onAccent,c.accentSolid],[c.placeholder,c.input],[c.text,c.errorBg],[c.red,c.riskHigh],[c.amber,c.riskMedium],[c.green,c.riskLow],[c.tipText,c.tipStart],[c.tipText,c.tipEnd]];
+    const pairs = [[c.text,c.background],[c.text,c.surface],[c.muted,c.surface],[c.muted,c.background],[c.primary,c.primarySoft],[c.primary,c.surface],[c.onAccent,c.accentSolid],[c.onUpload,c.upload],[c.onPaste,c.paste],[c.onRisk,c.dangerSolid],[c.onAmber,c.resultAmber],[c.onRisk,c.resultGreen],[c.iconRed,c.surface],[c.iconAmber,c.surface],[c.iconGreen,c.surface],[c.placeholder,c.input],[c.text,c.errorBg],[c.red,c.riskHigh],[c.amber,c.riskMedium],[c.green,c.riskLow],[c.tipText,c.tipStart],[c.tipText,c.tipEnd]];
     for (const [foreground,background] of pairs) {
       const a=luminance(foreground),b=luminance(background);
       expect((Math.max(a,b)+0.05)/(Math.min(a,b)+0.05), `${foreground} on ${background}`).toBeGreaterThanOrEqual(4.5);

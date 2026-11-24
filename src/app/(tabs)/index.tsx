@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Welcome } from '../../components/welcome';
 import { useAuth } from '../../lib/auth';
-import { ActivityIndicator, BackHandler, Image, Platform, TextInput, View } from 'react-native';
+import { ActivityIndicator, BackHandler, TextInput, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { router, useFocusEffect } from 'expo-router';
 import { Touch, Icon, Button, Details, Row, Screen, Txt, useTheme } from '../../components/ui';
-import { pickerOptions, resizedWidth, type Photo } from '../../lib/screenshot';
+import { pickerOptions, resizedWidth, cropPixels, WHOLE_PHOTO, type CropRect, type Photo } from '../../lib/screenshot';
+import {PhotoCrop} from '../../components/photo-crop';
+import {cropCopy} from '../../lib/cropCopy';
 import { useApp } from '../../lib/state';
 import { requestAssessment, requestExtraction } from '../../lib/api';
 import { samples } from '../../lib/copy';
@@ -25,6 +27,7 @@ export default function CheckScreen() {
   const [step, setStep] = useState<Step>('choose');
   const [text, setText] = useState(''), [sender, setSender] = useState('');
   const [photo, setPhoto] = useState<Photo | null>(null), [prepared, setPrepared] = useState<string | null>(null);
+  const [crop,setCrop]=useState<CropRect>({...WHOLE_PHOTO});
   const [hasRead, setHasRead] = useState(false), [warnings, setWarnings] = useState<string[]>([]);
   const [answers, setAnswers] = useState<CheckContext>({}), [questionIndex, setQuestionIndex] = useState(0);
   const [consent, setConsent] = useState(false), [busy, setBusy] = useState(false), [picking, setPicking] = useState(false);
@@ -40,7 +43,7 @@ export default function CheckScreen() {
 
   function invalidateReview() { setConsent(false); setAnswers({}); setQuestionIndex(0); setError(''); }
   function clearDraft() {
-    setPhoto(null); setPrepared(null); setHasRead(false); setText(''); setSender('');
+    setPhoto(null); setCrop({...WHOLE_PHOTO}); setPrepared(null); setHasRead(false); setText(''); setSender('');
     setWarnings([]); setSample(false); invalidateReview();
   }
   function chooseText(nextMode: 'message' | 'link') {
@@ -66,24 +69,16 @@ export default function CheckScreen() {
     return () => subscription.remove();
   }, [step, busy, picking]));
 
-  async function pickImage(crop = false) {
+  async function pickImage() {
     if (picking || busy) return;
     const version = ++pickerVersion.current;
     setError(''); setPicking(true);
     try {
-      const picked = await ImagePicker.launchImageLibraryAsync(pickerOptions(crop, Platform.OS));
+      const picked = await ImagePicker.launchImageLibraryAsync(pickerOptions());
       if (picked.canceled || version !== pickerVersion.current) return;
-      const asset = picked.assets[0], context = ImageManipulator.manipulate(asset.uri);
-      const width = resizedWidth(asset.width, asset.height);
-      if (width) context.resize({ width });
-      const rendered = await context.renderAsync();
-      const image = await rendered.saveAsync({ format: SaveFormat.PNG, base64: true });
-      if (version !== pickerVersion.current) return;
-      if (!image.base64 || image.base64.length > 7_000_000) { setError(t.imageLarge); return; }
+      const asset = picked.assets[0];resizedWidth(asset.width,asset.height);
       clearDraft(); setMode('screenshot');
-      setPhoto({ uri: image.uri, width: image.width, height: image.height });
-      const data='data:image/png;base64,' + image.base64;
-      setPrepared(data); setStep('photo');setPicking(false);await readPhoto(data);
+      setPhoto({uri:asset.uri,width:asset.width,height:asset.height});setStep('photo');
     } catch { if (version === pickerVersion.current) setError(t.imageError); }
     finally { if (version === pickerVersion.current) setPicking(false); }
   }
@@ -92,17 +87,30 @@ export default function CheckScreen() {
     setError(''); setConsent(false); setQuestionIndex(0);
     setStep(questions.length ? 'context' : 'confirm');
   }
-  async function readPhoto(image:string){
-    if(controller.current)return;
+  async function readPhoto(){
+    if(controller.current||!photo)return;
     setBusy(true);setError('');const id=++requestId.current,abort=new AbortController();controller.current=abort;
     const timer=setTimeout(()=>abort.abort(),55000);
+    let preparing=true;
     try{
+      let image=prepared;
+      if(!image){
+        const pixels=cropPixels(crop,photo.width,photo.height),context=ImageManipulator.manipulate(photo.uri);
+        if(pixels.originX||pixels.originY||pixels.width!==photo.width||pixels.height!==photo.height)context.crop(pixels);
+        const width=resizedWidth(pixels.width,pixels.height);if(width)context.resize({width});
+        const rendered=await context.renderAsync(),saved=await rendered.saveAsync({format:SaveFormat.PNG,base64:true});
+        if(id!==requestId.current)return;
+        if(abort.signal.aborted){setError(t.errors.AI_TIMEOUT);return;}
+        if(!saved.base64||saved.base64.length>7_000_000){setError(t.imageLarge);return;}
+        image='data:image/png;base64,'+saved.base64;setPrepared(image);
+      }
+      preparing=false;
       const extracted=await requestExtraction({text:'',sender:'',image,prepared:true,locale,consent:true},abort.signal);
       if(id!==requestId.current)return;
       setText(extracted.text);setSender(extracted.sender);setHasRead(true);invalidateReview();
       setWarnings(extracted.status==='unclear'?[f.unclear,...extracted.warnings]:extracted.warnings);
       setStep(extracted.status==='unclear'||!extracted.text.trim()?'review':relevantQuestions(extracted.text).length?'context':'confirm');
-    }catch(err){if(id===requestId.current){const code=(err as Error).message as keyof typeof t.errors;setError(abort.signal.aborted?t.errors.AI_TIMEOUT:t.errors[code]||t.errors.DEFAULT);}}
+    }catch(err){if(id===requestId.current){const code=(err as Error).message as keyof typeof t.errors;setError(abort.signal.aborted?t.errors.AI_TIMEOUT:preparing?t.imageError:t.errors[code]||t.errors.DEFAULT);}}
     finally{clearTimeout(timer);if(id===requestId.current){controller.current=null;setBusy(false);}}
   }
   function nextQuestion(skip = false) {
@@ -115,7 +123,7 @@ export default function CheckScreen() {
   async function submit() {
     if (controller.current || busy || picking) return;
     const extracting = step === 'photo';
-    if (extracting) { if(hasRead){setConsent(false);setStep(questions.length?'context':'confirm');}else if(prepared)await readPhoto(prepared);return; }
+    if (extracting) { if(hasRead){setConsent(false);setStep(questions.length?'context':'confirm');}else await readPhoto();return; }
     if (step !== 'confirm') return;
     if (!text.trim()) { setError(t.required); return; }
     if (!consent) { setError(t.consentRequired); return; }
@@ -149,19 +157,18 @@ export default function CheckScreen() {
     {step !== 'choose' && <Button title={g.back} secondary icon={rtl ? 'arrow-forward' : 'arrow-back'} onPress={back} disabled={picking} />}
     <Txt accessibilityLiveRegion="polite" style={[styles.heading, { marginTop: step === 'choose' ? 0 : 20 }]}>{heading}</Txt>
     {step === 'choose' && <>
-      <Txt style={[styles.muted,{marginTop:12,fontSize:16}]}>{locale==='en'?'By choosing a photo, you agree to send it to OpenAI. Remove private details first.':'باختيار صورة، توافق على إرسالها إلى OpenAI. احذف التفاصيل الخاصة أولاً.'}</Txt>
+      <Txt style={[styles.muted,{marginTop:12,fontSize:16}]}>{locale==='en'?'Photos go to OpenAI only when you tap Scan photo.':'تُرسل الصور إلى OpenAI فقط عند الضغط على فحص الصورة.'}</Txt>
       <Touch accessibilityRole="button" accessibilityLabel={picking ? f.loadingPhoto : t.upload} disabled={picking} accessibilityState={{ disabled: picking }}
-        testID="home-screenshot" onPress={() => pickImage()} style={{ marginTop: 20, backgroundColor: colors.upload, borderRadius: 24, borderWidth: 2, borderColor: colors.accentBorder, padding: 20, minHeight: 166, alignItems: 'center', gap: 12 }}>
-        <View style={{ padding: 14, borderRadius: 20, backgroundColor: colors.accentSolid }}><Icon name="images-outline" size={44} color={colors.onAccent} /></View>
-        <Txt style={{ fontSize: 22, fontWeight: '700', textAlign: 'center', color: colors.primary }}>{picking ? f.loadingPhoto : t.upload}</Txt>
+        testID="home-screenshot" onPress={() => pickImage()} style={{ marginTop: 20, backgroundColor: colors.upload, borderRadius: 24, padding: 20, minHeight: 166, alignItems: 'center', gap: 12 }}>
+        <View style={{ padding: 14 }}><Icon name="images-outline" size={44} color={colors.onUpload} /></View>
+        <Txt style={{ fontSize: 22, fontWeight: '700', textAlign: 'center', color: colors.onUpload }}>{picking ? f.loadingPhoto : t.upload}</Txt>
       </Touch>
-      <Touch testID="home-paste" accessibilityRole="button" accessibilityLabel={g.pasteMessage} disabled={picking} onPress={()=>chooseText('message')} style={{marginTop:16,backgroundColor:colors.surface,borderRadius:24,borderWidth:2,borderColor:colors.accentBorder,padding:20,minHeight:166,alignItems:'center',gap:12}}>
-        <View style={{padding:14,borderRadius:20,backgroundColor:colors.primarySoft}}><Icon name="clipboard-outline" size={44} color={colors.primary}/></View>
-        <Txt style={{fontSize:22,fontWeight:'700',textAlign:'center',color:colors.primary}}>{g.pasteMessage}</Txt>
+      <Touch testID="home-paste" accessibilityRole="button" accessibilityLabel={g.pasteMessage} disabled={picking} onPress={()=>chooseText('message')} style={{marginTop:16,backgroundColor:colors.paste,borderRadius:24,padding:20,minHeight:166,alignItems:'center',gap:12}}>
+        <View style={{padding:14}}><Icon name="clipboard-outline" size={44} color={colors.onPaste}/></View>
+        <Txt style={{fontSize:22,fontWeight:'700',textAlign:'center',color:colors.onPaste}}>{g.pasteMessage}</Txt>
       </Touch>
-      <Button title={f.recovery} secondary icon="help-buoy-outline" onPress={() => router.push('/recovery')} disabled={picking} />
+      <Button title={f.recovery} tone="danger" secondary icon="warning" onPress={() => router.push('/recovery')} disabled={picking} />
       <Details>
-        {Platform.OS !== 'web' && <Button title={f.chooseCrop} secondary icon="crop-outline" onPress={() => pickImage(true)} disabled={picking} />}
         {photo && <Button title={g.continuePhoto} secondary onPress={() => { setConsent(false); setStep('photo'); }} disabled={picking} />}
         <Txt style={styles.sectionTitle}>{g.practice}</Txt>
         {[t.delivery, t.bank, t.everyday].map((label, i) => <Button key={label} title={label} secondary disabled={picking} onPress={() => {
@@ -170,13 +177,13 @@ export default function CheckScreen() {
       </Details>
     </>}
     {step === 'photo' && photo && <View style={styles.card}>
-      <Image source={{ uri: photo.uri }} style={{ width: '100%', height: 240, backgroundColor: colors.subtle, borderRadius: 16 }} resizeMode="contain" accessibilityLabel={f.prepared} />
-      <Txt style={[styles.muted, { marginTop: 16 }]}>{f.cropOptional}</Txt>
-      <Button title={t.replace} secondary onPress={() => pickImage()} disabled={busy || picking} />
-      {Platform.OS !== 'web' && <Button title={f.chooseCrop} secondary icon="crop-outline" onPress={() => pickImage(true)} disabled={busy || picking} />}
-      <Button title={t.remove} secondary onPress={() => { clearDraft(); setStep('choose'); }} disabled={busy || picking} />
-      <Txt style={[styles.muted,{marginTop:16}]}>{t.privacySmall}</Txt>
-      {!busy && <Button title={g.next} icon="arrow-forward-outline" onPress={submit} disabled={picking} />}
+      <PhotoCrop key={photo.uri} photo={photo} crop={crop} disabled={busy||picking} onChange={value=>{setCrop(value);setPrepared(null);setHasRead(false);setText('');setSender('');setWarnings([]);invalidateReview();}}/>
+      <Txt style={[styles.muted,{marginTop:16}]}>{cropCopy[locale].privacy}</Txt>
+      {!busy && <Button title={hasRead?g.next:cropCopy[locale].scan} tone="success" icon="scan-outline" onPress={submit} disabled={picking} />}
+      <Details>
+       <Button title={t.replace} secondary onPress={() => pickImage()} disabled={busy || picking} />
+       <Button title={t.remove} secondary onPress={() => { clearDraft(); setStep('choose'); }} disabled={busy || picking} />
+      </Details>
     </View>}
     {step === 'review' && <View style={styles.card}>
       <Txt style={styles.muted}>{g.reviewHelp}</Txt>

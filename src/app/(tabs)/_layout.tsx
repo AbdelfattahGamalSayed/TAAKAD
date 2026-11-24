@@ -28,7 +28,7 @@ export default function TabsLayout() {
   </View>} screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primary, tabBarInactiveTintColor: colors.muted,
     tabBarStyle: { backgroundColor: colors.background, borderTopColor: colors.line }, tabBarLabelStyle: { fontWeight: '600', fontSize:16 } }}>
     <Tabs.Screen name="index" options={{ title: t.check, tabBarIcon: ({ color, size }) => <Ionicons name="shield-checkmark-outline" color={typeof color === 'string' ? color : colors.primary} size={size} /> }} />
-    <Tabs.Screen name="alerts" options={{ title: locale === "ar" ? "التنبيهات" : "Alerts", tabBarIcon: ({ color, size }) => <Ionicons name="notifications-outline" color={typeof color === "string" ? color : colors.primary} size={size} /> }} />
+    <Tabs.Screen name="alerts" options={{ title: locale === "ar" ? "التنبيهات" : "Alerts", tabBarIcon: ({ size }) => <Ionicons name="notifications" color={colors.iconRed} size={size} /> }} />
     <Tabs.Screen name="learn" options={{ title: t.learn, tabBarIcon: ({ color, size }) => <Ionicons name="book-outline" color={typeof color === 'string' ? color : colors.primary} size={size} /> }} />
     <Tabs.Screen name="community" options={{ title: t.community, tabBarIcon: ({ color, size }) => <Ionicons name="people-outline" color={typeof color === 'string' ? color : colors.primary} size={size} /> }} />
     <Tabs.Screen name="settings" options={{ title: t.settings, tabBarIcon: ({ color, size }) => <Ionicons name="options-outline" color={typeof color === 'string' ? color : colors.primary} size={size} /> }} />

@@ -93,7 +93,7 @@ Screenshot reading and live message analysis require the key. **Missing keys do 
 
 1. Continue as guest; switch Arabic/English and light/dark mode.
 2. With an API key configured, paste a practice message in Check, answer the relevant questions, consent and view the warning level/actions. A score is not a probability.
-3. Select a **non-private synthetic screenshot**. The whole photo is used unless native cropping is chosen. The pre-picker notice covers external transcription; clear readings proceed to context questions, while unclear readings require correction. Optional text editing remains available before final consent.
+3. Select a **non-private synthetic screenshot** once. In the local preview, optionally tap **Crop photo**, drag the corners, or continue with the whole photo. Tap **Scan photo** to send the chosen region to OpenAI; selection/cropping alone sends nothing. Clear readings proceed to context questions, while unclear readings require correction. Optional text editing remains available before final consent.
 4. Open “I already clicked something. Help me!” and follow the relevant recovery steps. Do not place test calls to police/emergency services.
 5. Inspect Alerts: source/date, earlier/stale labels, optional excerpts and topic filters. Availability reflects the source, not the absence of scams.
 6. Open Learn: three-step guides and silent 24-second videos with written alternatives.
@@ -122,13 +122,13 @@ The app combines AI reasoning, exact quoted evidence, separate hostname-reputati
 
 ## Current brand and home screen
 
-The app/project name is TAAKAD. Home offers two large actions: Add a screenshot and Paste Text (messages or links). Optional native cropping is under More details. The user-provided blue/navy palette is used throughout; green/amber/red are reserved for result indicators, with readable text variants and a matching dark theme. Results show a primary next action, with extra guidance under More details. Low-risk copy never guarantees safety. Legacy local preference keys remain for continuity. The repository and local project folder are named TAAKAD.
+The app/project name is TAAKAD. Home offers two large solid-color actions: deep-green Add a screenshot and navy Paste Text (messages or links), plus a red recovery entry. The user's updated direction adds strong green/red/amber symbols alongside blue/navy navigation, including a shield-and-red-orbit brand mark. Results combine a distinct symbol, written warning level and score; low-risk copy never guarantees safety. Optional cropping edits the already-selected image in the preview on browser, iOS and Android. Legacy local preference keys remain for continuity. The repository and local project folder are named TAAKAD.
 
 ## Implemented MVP
 
 | Area | Current behavior |
 | --- | --- |
-| Check | Screenshot-first journey; optional native crop; background transcription; correction when unclear; optional context questions; consented text assessment; warning level 1–5 or insufficient information |
+| Check | Screenshot-first journey; select once and optionally crop locally; explicit Scan photo action; background transcription; correction when unclear; optional context questions; consented text assessment; warning level 1–5 or insufficient information |
 | Results | Plain-language next actions first; optional quoted evidence, separate URL/reputation clues and limitations; low risk never means guaranteed safe |
 | Recovery | One question at a time; relevant password/code/payment/card/link steps; original blocking/reporting illustrations; user-initiated official contact routes |
 | Alerts | Only approved Abu Dhabi Media Office RSS feeds; publisher/link/date retained; earlier, stale, empty and unavailable states; optional local topic filtering |
@@ -138,7 +138,7 @@ The app/project name is TAAKAD. Home offers two large actions: Add a screenshot 
 | Identity | Guest access to all public features; demo phone-code flow for posting/private reports; UAE PASS explicitly unavailable |
 | Settings/accessibility | Arabic RTL/English LTR, large labelled controls, light/dark/system appearance, reduced-motion support, local topics, clear-result and report-access controls |
 
-Native crop behavior differs by platform: Expo Go's iOS crop editor uses a square selection; Android uses its native picker/editor. Browser upload uses the whole photo. These are prototype constraints, not a custom editor.
+The shared crop preview supports a rectangular frame with draggable corners and movement, whole-photo reset, and button alternatives to dragging. It uses the already-selected photo; it never reopens the picker for cropping. Cropping is optional and performed locally with Expo ImageManipulator. This is an in-app crop editor, not the operating system's editor. The photo is cropped before resizing/encoding for transcription. Physical iOS/Android touch behavior still needs device verification; browser checks alone do not establish it.
 
 ## Architecture, model choices and trade-offs
 
@@ -165,7 +165,7 @@ Expo SDK 58 / React Native / Expo Router (iOS, Android, web)
 
 | Data | Destination and retention |
 | --- | --- |
-| Selected screenshot | Sent to OpenAI only after the visible pre-picker notice and confirmed selection; cancel sends nothing. Optional crop, otherwise whole photo. Backend does not intentionally log/save it; OS caches can persist |
+| Selected screenshot | Selection and optional cropping stay local. Scan photo sends the cropped region, or the whole photo if no crop was chosen, to OpenAI after the visible notice. Leaving the preview before Scan sends nothing. Backend does not intentionally log/save it; OS/browser caches can persist |
 | Message, claimed sender, context | Sent to OpenAI on final assessment consent. Image is not sent again for text assessment. Current drafts/results are temporary app state, not scan history |
 | Language, appearance, topic, welcome flag | Saved on this device; topic choice is not sent to the server |
 | Demo number/code/session | Local backend only; keyed digests, temporary challenges and opaque one-hour sessions. No SMS provider, no verified identity. Session tokens are not in AsyncStorage or URLs |
@@ -276,6 +276,12 @@ Reliability validation: all 77 backend/helper tests and 64 browser regressions p
 
 Duplicate-start protection was verified on 24 November 2026. `npm run demo` starts or reuses the app and opens its **browser QR**; `npm start` remains the Expo development route. All 82 backend/helper tests passed, including LAN address selection, matching-session reuse and refusing partial/unrelated listeners. A fresh demo launch, duplicate start, proxy health, Community pairing and direct occupied-port recovery were checked.
 
-Access correction on 24 November 2026: the user's physical signed-out Expo Go test returned HTTP 403. Published EAS Update access is limited to owners/account members under [Expo's policy](https://expo.dev/changelog/expo-go-loading-changes-may-2026). Earlier tentative references to a signed-out published preview are superseded. The user selected the browser QR route: `npm run demo` opens Safari/Chrome without Expo login or installation. Keep the server computer running and both devices on the same trusted Wi-Fi. This is a LAN demo, not public hosting; browser upload uses the whole photo. Physical-phone browser verification remains a separate check.
+Access correction on 24 November 2026: the user's physical signed-out Expo Go test returned HTTP 403. Published EAS Update access is limited to owners/account members under [Expo's policy](https://expo.dev/changelog/expo-go-loading-changes-may-2026). Earlier tentative references to a signed-out published preview are superseded. The user selected the browser QR route: `npm run demo` opens Safari/Chrome without Expo login or installation. Keep the server computer running and both devices on the same trusted Wi-Fi. This is a LAN demo, not public hosting. The user subsequently confirmed browser startup works; the new crop editor still needs physical-phone verification.
 
 The selected browser route was tested in a fresh Chrome session at the laptop's actual LAN address: guest Check, live synthetic screenshot extraction/assessment, Learn guide/video playback and Community's real API pairing passed. All 82 backend/helper tests, typecheck and lint passed after the launcher change. Desktop browser automation does not certify physical iPhone/Safari or event-network access.
+
+## UI and photo-preview update on 24 November 2026
+
+The user confirmed browser startup works. The latest UI keeps the layout with deep green/navy action tiles, strong red/amber/green symbols and a shared shield-and-red-orbit mark. Photo selection now stays local until Scan photo: choose once, crop optionally with corners or buttons, reset to the whole image if desired, then scan. Cropping never launches the picker again. Editing the crop invalidates earlier transcription, context answers and consent; only the newly prepared image reaches transcription.
+
+Validation: 84 backend/helper tests, the 75-test browser regression suite, and 23 final targeted browser checks passed. The latter include mobile touch input, keyboard alternatives, exact output pixels, whole-image reset, pre-scan request isolation and Arabic/light/dark coverage. Typecheck, lint and iOS/Android exports passed. A real synthetic LAN-browser check selected once, cropped from 750×420 to 750×399, obtained OpenAI transcription and displayed the assessment. The new crop interaction still needs physical iPhone/Android verification; successful exports and Chrome touch emulation are not device certification.

@@ -1,0 +1,4 @@
+export const cropCopy={
+ en:{crop:'Crop photo',hint:'Drag the corners to keep just the message.',whole:'Use whole photo',reset:'Reset crop',scan:'Scan photo',adjust:'Adjust without dragging',top:'Trim top',bottom:'Trim bottom',left:'Trim left',right:'Trim right',expand:'Expand crop',preview:'Selected photo',frame:'Crop selection',privacy:'Scan photo sends this image to OpenAI. Remove private details first.'},
+ ar:{crop:'اقتصاص الصورة',hint:'اسحب الزوايا للاحتفاظ بالرسالة فقط.',whole:'استخدام الصورة كاملة',reset:'إعادة ضبط الاقتصاص',scan:'فحص الصورة',adjust:'تعديل دون سحب',top:'قص من الأعلى',bottom:'قص من الأسفل',left:'قص من اليسار',right:'قص من اليمين',expand:'توسيع الإطار',preview:'الصورة المختارة',frame:'إطار الاقتصاص',privacy:'فحص الصورة يرسلها إلى OpenAI. أزل التفاصيل الخاصة أولاً.'}
+};

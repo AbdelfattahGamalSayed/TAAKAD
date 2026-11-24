@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AccessibilityInfo, Animated, Platform, Text, View } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Icon as Ionicons , useTheme } from '../components/ui';
+import { BrandMark, useTheme } from '../components/ui';
 import { AppProvider, useApp } from '../lib/state';
 import { AuthProvider, useAuth } from '../lib/auth';
 
@@ -31,7 +31,7 @@ function AppContent() {
   return <><StatusBar style={isDark ? "light" : "dark"} />
     <Stack screenOptions={{ headerShown: false, animation: reducedMotion !== false ? 'none' : 'default', contentStyle: { backgroundColor: colors.background } }} />
     {intro && reducedMotion === false && <Animated.View testID="intro" aria-hidden={true} accessibilityElementsHidden={true} pointerEvents="none" style={{ position: 'absolute', inset: 0, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', opacity }}>
-      <View style={{ padding: 28, backgroundColor: colors.accentSolid, borderRadius: 32 }}><Ionicons name="shield-checkmark" color={colors.onAccent} size={65} /></View>
+      <BrandMark size={112}/>
       <Text style={{ color: colors.text, fontWeight: '900', fontSize: 30, marginTop: 25, letterSpacing: 3 }}>TAAKAD</Text>
       <Text style={{ color: colors.primary, fontSize: 22, marginTop: 8 }}>تأكّد</Text>
     </Animated.View>}

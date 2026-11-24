@@ -21,7 +21,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 ## Before each feature is accepted
 
 - Keep README and actual behavior consistent, including architecture, data recipients, persistence, external model calls and costs/limitations.
-- Preserve informed photo-selection consent and optional screenshot editing; unclear readings require correction (user update 2026-11-22); keep optional native cropping and whole-image default.
+- Preserve informed photo-processing consent and optional screenshot editing; unclear readings require correction. User update 2026-11-24: select once, crop optionally in the local preview or use the whole image, then explicitly Scan photo. Selection/cropping alone must not send the image to OpenAI.
 - Never promise safety, sender authentication or measured accuracy without evidence. Clearly label demonstration posts and unavailable/stale feeds.
 - Keep secrets server-side and outside Git. Include only blank/safe environment examples. Do not distribute `.local` exports containing development tokens.
 - Record permissions and attribution for added assets, libraries and data. RSS access approval does not authorize scraping the entire publisher website.
@@ -70,4 +70,8 @@ Live model access, screenshot extraction and synthetic assessment were checked w
 
 The user confirmed HTTP 403 while signed out: the EAS Update preview requires owner/account membership. Anonymous manifest download was not proof of Expo Go access. The account-free published-preview route is unavailable under Expo policy. The user selected the browser QR route. `npm run demo` now starts/reuses the app and generates a plain HTTP LAN QR for Safari/Chrome, without an Expo account or installation. The computer must remain running on the same trusted Wi-Fi. Physical-phone browser verification remains outstanding; do not claim a signed-out Expo Go success.
 
-Browser-route checks: 82 backend/helper tests, typecheck and lint passed. A fresh Chrome session at the laptop's actual LAN origin passed guest Check, live synthetic screenshot extraction/AI assessment, Learn guide/video playback and Community API access. The launcher reused the matching running servers without another port binding. These are desktop checks, not physical Safari or event-network certification.
+Browser-route checks: 82 backend/helper tests, typecheck and lint passed. A fresh Chrome session at the laptop's actual LAN origin passed guest Check, live synthetic screenshot extraction/AI assessment, Learn guide/video playback and Community API access. The launcher reused the matching running servers without another port binding. The user subsequently confirmed the browser app works. New crop interaction and native-device checks remain separate from that startup confirmation.
+
+## UI and crop-preview verification on 2026-11-24
+
+The updated user direction permits strong red/green/amber accents beyond result cards. The shared photo preview replaces the repeat-picker crop flow on browser and native targets. Selection/cropping remain local until Scan photo; whole-photo use remains the default. Validation passed: 84 backend/helper tests, 75 browser regressions plus 23 final targeted checks, typecheck/lint and iOS/Android exports. Exact crop pixels, whole-image reset, touch dragging, keyboard alternatives, Arabic and both themes were checked. A real synthetic cropped screenshot completed transcription and assessment through the LAN browser app. Physical-device interaction remains a separate acceptance check. Submission documents retain their earlier dated baseline and should be refreshed before final delivery if they describe the previous native-only crop flow.

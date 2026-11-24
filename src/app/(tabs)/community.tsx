@@ -47,7 +47,7 @@ function CommunityContent({initialMine}:{initialMine:boolean}){
  const form=view==='form'||(view==='preview'&&!publicPreview);
  const visibleItems=itemsView!==view||(view==='mine'&&itemsOwner!==session?.token)?[]:items;
  return <Screen key={`${view}:${step}`}>
-  <Txt style={styles.heading}>{c.title}</Txt><Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt>
+  <Row><Icon name="people" color={colors.iconGreen} size={34}/><Txt style={styles.heading}>{c.title}</Txt></Row><Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt>
   <View style={[styles.card,{backgroundColor:colors.primarySoft}]}><Txt style={{fontWeight:'700'}}>{c.demo}</Txt><Txt style={[styles.muted,{marginTop:8}]}>{locale==='en'?'Shared within this demo. Reports expire within one hour.':'المشاركة ضمن هذه النسخة فقط. تنتهي البلاغات خلال ساعة.'}</Txt></View>
   <OfficialHelp/>
   <Row style={{flexWrap:'wrap',marginTop:16}}><Button title={c.feed} secondary disabled={busy} onPress={()=>{setView('feed');setError('');}}/><Button title={c.mine} secondary disabled={busy} onPress={()=>{setView('mine');setError('');}}/></Row>

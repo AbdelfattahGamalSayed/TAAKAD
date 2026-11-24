@@ -17,19 +17,20 @@ export default function ResultScreen() {
   const score = result.riskLevel;
   const riskColor = score === null ? colors.muted : score >= 4 ? colors.red : score >= 2 ? colors.amber : colors.green;
   const riskBg = score === null ? colors.subtle : score >= 4 ? colors.riskHigh : score >= 2 ? colors.riskMedium : colors.riskLow;
+  const symbolBg = score === null ? colors.subtle : score >= 4 ? colors.dangerSolid : score >= 2 ? colors.resultAmber : colors.resultGreen;
   return <Screen>
     <Pressable accessibilityRole="button" onPress={() => router.back()}><Row style={{ gap: 7, marginBottom: 20 }}><Ionicons name={rtl ? 'arrow-forward' : 'arrow-back'} color={colors.primary} size={20} /><Txt style={{ color: colors.primary, fontSize:16 }}>{t.back}</Txt></Row></Pressable>
     <Txt style={[styles.heading, { fontSize: 31 }]}>{t.result}</Txt>
     <View style={[styles.card, { backgroundColor: riskBg, borderColor: riskBg, alignItems: 'center', paddingVertical: 28 }]}>
-      <View style={{width:104,height:104,borderRadius:52,alignItems:'center',justifyContent:'center',marginBottom:20,borderWidth:2,borderColor:score===null?colors.line:score>=4?colors.red:score>=2?colors.resultAmber:colors.resultGreen}}><Ionicons name={score===null?'help-circle-outline':score>=4?'close-circle-outline':score>=2?'warning-outline':'checkmark-circle-outline'} size={64} color={riskColor}/></View>
+      <View testID="result-symbol" style={{width:112,height:112,borderRadius:score!==null&&score>=4?28:56,alignItems:'center',justifyContent:'center',marginBottom:20,backgroundColor:symbolBg}}><Ionicons name={score===null?'help-circle-outline':score>=4?'alert':score>=2?'warning':'checkmark-circle'} size={68} color={score===null?colors.muted:score>=2&&score<4?colors.onAmber:colors.onRisk}/></View>
       <Txt style={{ fontSize: 22, fontWeight: '700', color: riskColor, textAlign: 'center' }}>{score === null ? t.unable : t.riskLabels[score - 1]}</Txt>
       {score !== null && <Txt testID="warning-score" accessibilityLabel={t.score+': '+score+' / 5'} style={{fontSize:32,fontWeight:'800',color:riskColor,writingDirection:'ltr',textAlign:'center',marginVertical:12}}>{score+' / 5'}</Txt>}
       {score !== null && <Row style={{ gap: 7, marginBottom: 20 }}>{[1, 2, 3, 4, 5].map(n => <View key={n} style={{ width: 39, height: 7, borderRadius: 5, backgroundColor: score !== null && n <= score ? riskColor : colors.line }} />)}</Row>}
       <Txt style={{ textAlign: 'center', fontSize:16, marginTop: 13, lineHeight:24 }}>{result.summary}</Txt>
     </View>
     {result.urlEvidence.some(entry=>entry.reputation.status==='listed') && <Txt style={[styles.error,{color:colors.red}]}>{f.listedNotice}</Txt>}
-    <View style={[styles.card, { borderColor: colors.accentBorder }]}><Txt style={styles.sectionTitle}>{t.actions}</Txt><Txt>{result.recommendedActions[0]}</Txt></View>
-    <Button title={f.recovery} icon="help-buoy-outline" secondary onPress={()=>router.push('/recovery')}/>
+    <View style={[styles.card, { borderColor: riskColor, borderStartWidth:5 }]}><Row style={{marginBottom:12}}><Ionicons name={score!==null&&score>=2?'hand-left':'shield-checkmark'} color={riskColor} size={28}/><Txt style={{fontSize:21,fontWeight:'700',flex:1}}>{t.actions}</Txt></Row><Txt>{result.recommendedActions[0]}</Txt></View>
+    <Button title={f.recovery} icon="warning" tone="danger" secondary onPress={()=>router.push('/recovery')}/>
     <Txt style={[styles.muted,{marginTop:16}]}>{t.noGuarantee}</Txt>
     {score !== null && score <= 2 && <Txt style={styles.muted}>{t.shortLimit}</Txt>}
     <Button title={t.newCheck} icon="add-circle-outline" onPress={reset} />
