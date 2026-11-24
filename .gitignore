@@ -42,6 +42,10 @@ server/.env
 coverage/
 ~$*
 
+# Superseded submission files may remain locally open in Office.
+/submission/TAAKAD_Competition_Presentation.pptx
+/submission/TAAKAD_Project_Description.docx
+
 # typescript
 *.tsbuildinfo
 

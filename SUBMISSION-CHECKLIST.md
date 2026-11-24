@@ -1,5 +1,11 @@
 # TAAKAD submission requirements
 
+## Rubric and submission rebuild on 24 November 2026
+
+The team supplied the kickoff weights: Detection Accuracy 30%, Early Detection and Coverage 25%, Explainability and Actionability 20%, UAE Relevance and Innovation 15%, and Feasibility and Presentation 10%. These sum to 100% and supplement the original terms below. The team reported the current app working in manual testing.
+
+The current deliverables are `submission/TAAKAD_Judges_Presentation.pptx` (16 slides) and `submission/TAAKAD_Project_Report.docx` (12 pages), rebuilt completely from the current app baseline. All eight screenshot-bearing slides pair English/Arabic captures; the two team-supplied storyboards are labelled illustrative. The rubric weights are never presented as performance scores, and the proposed detection study is distinct from completed software checks. Current source/content, capture/build scripts and asset provenance are included. The earlier dated artifact records below are historical and superseded; final portal upload, recorded demo, eligibility, rights confirmations and receipt remain outstanding.
+
 ## Latest verification on 24 November 2026
 
 The user confirmed browser startup and physical-phone cropping work. Final-assessment reliability now includes bounded automatic recovery for transient model/network errors and invalid responses within one app request. The exact earlier failure was not captured; six synthetic live diagnostic checks succeeded before the change. After the change, three live cropped-photo journeys each completed with one final assessment tap. All 93 backend/helper tests and 78 browser tests, typecheck, lint and iOS/Android/web exports passed. Fault injection verifies one HTTP request can recover from an upstream 503 and that invalid data, exhausted retries, billing errors and cancellation cannot fabricate a result. These checks do not guarantee provider uptime.
@@ -18,7 +24,7 @@ Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026
 | README problem and solution | Added explicit problem/solution section. |
 | README technical reasoning, trade-offs, omissions and future improvements | Added architecture/model rationale/privacy sections; features and prototype limits distinguish implemented behavior from plans. |
 | README build/run instructions | Lockfile install, private environment setup, one-command startup, tests and bundle export documented. Fresh source copy installed and verified independent browser startup on 2026-11-23 with no author credentials. Physical iPhone Expo Go requires the reviewer's own matching Expo account; live AI needs their private API key. |
-| Technical documentation and PPT covering architecture, model choice, privacy | README plus submission/TAAKAD_Competition_Presentation.pptx and submission/TAAKAD_Project_Description.docx cover these topics. Files are prepared; portal uploads remain outstanding. |
+| Technical documentation and PPT covering architecture, model choice, privacy | README plus submission/TAAKAD_Judges_Presentation.pptx and submission/TAAKAD_Project_Report.docx cover these topics. Files are prepared; portal uploads remain outstanding. |
 | Respect third-party IP; no plagiarism | Existing Expo template and phishing-feed notices retained. Dependency license metadata reviewed; full redistribution obligations and custom-asset provenance require final team review. Do not represent third-party frameworks or pretrained models as team inventions. |
 | Responsible use of systems/network; privacy and confidentiality | No automated access to SMS/WhatsApp, no fetching user-submitted destinations, explicit AI consent, fixed feed allowlists, no intentional logging of submitted content; temporary, separated private report records, synthetic tests. Production privacy/security review remains necessary before public deployment. |
 | Registration and team of 3-5 | Administrative: team must verify registration, truthful participant details, eligibility and agreement. Code cannot verify these. |

@@ -1,0 +1,755 @@
+{
+  "edition": "24 November 2026",
+  "baseline": "bb0a74d",
+  "team": [
+    "Fatima Alhallak",
+    "Abdelfattah Sayed",
+    "Abdalrahman Moataz"
+  ],
+  "repo": "https://github.com/AbdelfattahGamalSayed/TAAKAD",
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "TAAKAD",
+      "subtitle": "Check suspicious messages\nChoose a safer next step",
+      "body": "An Arabic and English MVP for the Abu Dhabi Police × 42 Abu Dhabi hackathon"
+    },
+    {
+      "layout": "rubric",
+      "title": "The judging criteria",
+      "rows": [
+        [
+          "Detection Accuracy",
+          "30%",
+          "Detection design and a transparent evaluation plan"
+        ],
+        [
+          "Early Detection and Coverage",
+          "25%",
+          "Checks before acting and guidance after exposure"
+        ],
+        [
+          "Explainability and Actionability",
+          "20%",
+          "Warning signs connected to a clear next action"
+        ],
+        [
+          "UAE Relevance and Innovation",
+          "15%",
+          "Bilingual journeys and locally relevant scam scenarios"
+        ],
+        [
+          "Feasibility and Presentation",
+          "10%",
+          "A working, reproducible MVP and a clear demonstration"
+        ]
+      ],
+      "note": "Weights supplied by the team after the kickoff presentation. These are judging weights, not our performance scores."
+    },
+    {
+      "layout": "story",
+      "title": "An urgent bank message",
+      "photo": "bank-message.jpg",
+      "screen": "message",
+      "body": "Pressure to act can arrive in an ordinary message. TAAKAD gives the user a place to pause and check.",
+      "note": "Team-supplied illustrative storyboard. The current app appears in both languages. Checking cannot guarantee safety."
+    },
+    {
+      "layout": "story",
+      "title": "An unexpected approval request",
+      "photo": "unknown-caller.jpg",
+      "screen": "learn",
+      "body": "A caller asks for a UAE PASS approval. The guide explains why to stop.",
+      "note": "Illustrative scenario and current learning screens. No live-call monitoring or UAE PASS integration is implemented."
+    },
+    {
+      "layout": "ui",
+      "title": "A simple starting point",
+      "screen": "home",
+      "lead": "Two large choices",
+      "items": [
+        "Add a screenshot",
+        "Paste a message or link",
+        "Help remains easy to find"
+      ],
+      "note": "Current application UI. Public features are available to guests."
+    },
+    {
+      "layout": "ui",
+      "title": "Choose once and crop if needed",
+      "screen": "crop",
+      "lead": "The photo stays local until Scan",
+      "items": [
+        "Keep the whole image or adjust the frame",
+        "Crop the selected photo without choosing it again",
+        "Scan starts the OpenAI reading step"
+      ],
+      "note": "Current application UI with a synthetic message. Clear readings proceed to relevant questions; text remains editable."
+    },
+    {
+      "layout": "ui",
+      "title": "A warning and a useful next action",
+      "screen": "result",
+      "lead": "Understand what to do next",
+      "items": [
+        "A written warning level and a 1–5 score",
+        "A short explanation in the selected language",
+        "One immediate action before extra detail"
+      ],
+      "note": "Real model responses to synthetic inputs. The warning level is not a probability or a safety guarantee."
+    },
+    {
+      "layout": "ui",
+      "title": "Evidence without technical overload",
+      "screen": "details",
+      "lead": "More details is optional",
+      "items": [
+        "Relevant quotes must match the submitted text",
+        "Link findings retain their limitations",
+        "Context answers never verify the sender"
+      ],
+      "note": "Current application UI with synthetic inputs. Explanations are observable evidence, not a claim to expose internal model reasoning."
+    },
+    {
+      "layout": "ui",
+      "title": "Help after something was shared",
+      "screen": "recovery",
+      "lead": "One question at a time",
+      "items": [
+        "Passwords, codes, payments and card details",
+        "Only relevant recovery steps",
+        "User-initiated official help routes"
+      ],
+      "note": "Current application UI. Aman receives security information and is distinct from a formal criminal report. No automatic referral or callback is promised."
+    },
+    {
+      "layout": "coverage",
+      "title": "Early detection and coverage",
+      "rows": [
+        [
+          "Before acting",
+          "SMS and WhatsApp screenshots",
+          "User chooses what to share"
+        ],
+        [
+          "Before acting",
+          "Pasted messages and visible links",
+          "Submitted destinations are never opened"
+        ],
+        [
+          "Without a link",
+          "Code, payment and impersonation requests",
+          "Severe scams can contain no URL"
+        ],
+        [
+          "After exposure",
+          "Guided recovery for what was shared",
+          "Advice cannot guarantee recovery"
+        ],
+        [
+          "Ongoing awareness",
+          "Official UAE updates and two learning videos",
+          "One approved news publisher, not universal coverage"
+        ]
+      ],
+      "note": "The MVP is user initiated. It does not monitor private messages, intercept calls or continuously scan the phone."
+    },
+    {
+      "layout": "accuracy",
+      "title": "Detection accuracy and current evidence",
+      "leftTitle": "Code behavior verified",
+      "left": [
+        "93 backend and helper tests",
+        "78 browser regression tests",
+        "Team-confirmed iPhone browser journey"
+      ],
+      "rightTitle": "Detection accuracy is not yet measured",
+      "right": [
+        "No representative held-out benchmark",
+        "Synthetic checks demonstrate functionality",
+        "No percentage accuracy or loss reduction is claimed"
+      ],
+      "note": "Passing software tests is different from identifying scams correctly across a real-world population."
+    },
+    {
+      "layout": "evaluation",
+      "title": "The next accuracy evaluation",
+      "rows": [
+        [
+          "Dataset",
+          "Proposed 200 labelled cases, balanced across Arabic and English, plus 40 ambiguous cases"
+        ],
+        [
+          "Labels and split",
+          "Two reviewers, resolved disagreements and a held-out split by scam family or message template"
+        ],
+        [
+          "Operating points",
+          "Freeze the prompt and model; evaluate caution at level 2+ and high warning at level 4+"
+        ],
+        [
+          "Measures",
+          "Scam recall, precision, false warnings, abstention and transcription/link errors"
+        ]
+      ],
+      "note": "Proposed evaluation, not completed results. Report language and scam-family slices, including no-link scams and legitimate bank messages."
+    },
+    {
+      "layout": "architecture",
+      "title": "Architecture and privacy",
+      "note": "OpenAI processing is external. API keys stay on the Node backend. store:false does not establish a zero-retention guarantee."
+    },
+    {
+      "layout": "ui",
+      "title": "Structured reports with clear boundaries",
+      "screen": "community",
+      "lead": "Awareness with privacy controls",
+      "items": [
+        "Three simple questions and an approved preview",
+        "Public summaries separated from private notes",
+        "Authority handoff remains a labelled demonstration"
+      ],
+      "note": "Current demo UI. Posting uses an unverified demo sign-in; no receiving authority or referral agreement exists."
+    },
+    {
+      "layout": "feasibility",
+      "title": "A working MVP the panel can run",
+      "lead": "npm.cmd run demo",
+      "items": [
+        "Full source and README on the public master branch",
+        "Browser QR needs no Expo account or installation",
+        "Laptop and phone share a trusted Wi-Fi network",
+        "Live AI needs internet access and a private API key"
+      ],
+      "note": "Install dependencies and run setup first. This is a local demonstration, not an internet-hosted production service."
+    },
+    {
+      "layout": "closing",
+      "title": "The next evidence to build",
+      "items": [
+        "Measure detection on held-out bilingual cases",
+        "Test older-user comprehension and recovery actions",
+        "Add production identity, storage and security controls",
+        "Agree a real support process before sharing cases"
+      ],
+      "note": "TAAKAD helps users pause, understand warning signs and choose a safer next step."
+    }
+  ],
+  "pages": [
+    {
+      "title": "TAAKAD",
+      "subtitle": "Project report",
+      "cover": true,
+      "blocks": [
+        {
+          "p": "An Arabic and English app for checking suspicious messages and choosing a safer next step."
+        },
+        {
+          "h": "Project team"
+        },
+        {
+          "p": "Fatima Alhallak\nAbdelfattah Sayed\nAbdalrahman Moataz"
+        },
+        {
+          "p": "Abu Dhabi Police × 42 Abu Dhabi hackathon\nSubmission edition 24 November 2026"
+        },
+        {
+          "p": "Working MVP, technical design and rubric evidence\nSource baseline bb0a74d"
+        }
+      ]
+    },
+    {
+      "title": "Overview and judging criteria",
+      "blocks": [
+        {
+          "p": "TAAKAD addresses a familiar decision: a person receives an alarming message and is unsure whether to click, pay, share a code or approve a request. The MVP accepts a screenshot, pasted message or link, explains warning signs in Arabic or English and recommends a next action. It also offers guided recovery, official UAE awareness updates, learning material and structured community reports."
+        },
+        {
+          "p": "The interface is designed for the general public, including older users. Large controls, short steps, optional detail and language-aware layouts reduce the amount of technical information required to complete a check. The app is a prototype, not an official police service."
+        },
+        {
+          "table": [
+            [
+              "Judging criterion",
+              "Weight",
+              "Evidence in this report"
+            ],
+            [
+              "Detection Accuracy",
+              "30%",
+              "Detection design and proposed evaluation, pages 5–6"
+            ],
+            [
+              "Early Detection and Coverage",
+              "25%",
+              "Check journey and coverage boundaries, pages 3 and 8"
+            ],
+            [
+              "Explainability and Actionability",
+              "20%",
+              "Results, recovery and responsible support, pages 7 and 10"
+            ],
+            [
+              "UAE Relevance and Innovation",
+              "15%",
+              "Local scenarios and bilingual design, page 4"
+            ],
+            [
+              "Feasibility and Presentation",
+              "10%",
+              "Architecture, reproducibility and verification, pages 9 and 11"
+            ]
+          ],
+          "widths": [
+            190,
+            55,
+            250
+          ]
+        },
+        {
+          "p": "The weights above were supplied by the team after the kickoff presentation. They guide the organization of this report and do not represent a self-awarded score. Current software checks establish functioning behavior. Representative detection accuracy remains to be measured."
+        }
+      ]
+    },
+    {
+      "title": "The Check experience",
+      "blocks": [
+        {
+          "p": "The home screen offers two large actions: Add a screenshot and Paste Text. For a photo, the user selects the image once, optionally crops it in the local preview, then taps Scan photo. Skipping crop keeps the complete image. Neither selecting nor cropping sends the image to OpenAI."
+        },
+        {
+          "pair": "crop",
+          "caption": "Current English and Arabic crop previews using synthetic content. The same selected image is edited locally."
+        },
+        {
+          "p": "After Scan, the backend reads the visible message and sender. Clear readings move directly to relevant context questions. Unclear readings require correction, and extracted text remains editable before assessment. Questions such as whether the user has an account add unverified context; they do not authenticate the sender."
+        },
+        {
+          "p": "Final consent authorizes a text assessment. Changing a crop discards prior transcription, answers and consent so the edited image is read again. The interface preserves a recovery route when a request fails or is cancelled."
+        }
+      ]
+    },
+    {
+      "title": "UAE relevance and innovation",
+      "blocks": [
+        {
+          "h": "Locally relevant decisions"
+        },
+        {
+          "p": "The supplied banking storyboard shows urgency and a request to verify an account. The caller storyboard shows a person claiming to represent a government department and asking for a UAE PASS approval. These are illustrative scenarios, not records of actual incidents. TAAKAD teaches users to verify independently and never approve an unexpected identity request."
+        },
+        {
+          "p": "Arabic and English are supported throughout the UI, with mirrored reading order, appropriately aligned text and both light and dark themes. The team confirmed the browser and crop journey in manual iPhone testing. Comprehension with older users and assistive technology still needs a dedicated study."
+        },
+        {
+          "h": "A connected public-facing workflow"
+        },
+        {
+          "p": "The product combines a screenshot-first check, limited context questions, an understandable result and relevant recovery guidance. Optional technical evidence stays behind More details. The proposed innovation lies in this connected, localized workflow built around an existing pretrained model."
+        },
+        {
+          "h": "Official information with honest limits"
+        },
+        {
+          "p": "Alerts use only approved Abu Dhabi Media Office RSS endpoints, subject to publisher guidance, robots checks and bounded collection. They preserve attribution, publication dates, source links and stale-content labels. The current integration covers one publisher. It does not scrape social media, commercial news outlets or arbitrary article pages. [1]"
+        },
+        {
+          "p": "Official help is user initiated. Aman distinguishes security information from formal criminal reports, and its FAQ directs emergencies to 999. The app does not imply that publishing a community report creates a police case or triggers a callback. [2]"
+        }
+      ]
+    },
+    {
+      "title": "Detection design",
+      "blocks": [
+        {
+          "p": "A screenshot is cropped locally, resized if necessary and encoded for external transcription. The backend returns the visible text and sender. Assessment then uses text, sender and relevant context rather than sending the original image again. Pasted text uses the assessment stage directly."
+        },
+        {
+          "table": [
+            [
+              "Component",
+              "Contribution",
+              "Important boundary"
+            ],
+            [
+              "Image transcription",
+              "Reads the visible message and sender",
+              "OCR may misread names, URLs or cropped content"
+            ],
+            [
+              "GPT-4.1 mini assessment",
+              "Produces schema-constrained warning signs, actions and an ordinal level",
+              "A pretrained external model, not a measured fraud classifier"
+            ],
+            [
+              "Quote validation",
+              "Checks quoted evidence against submitted text or sender",
+              "Unsupported quotes are removed and uncertainty is retained"
+            ],
+            [
+              "Visible URL checks",
+              "Inspects lexical signals and exact-hostname reputation",
+              "No submitted destination is visited and a missing match is not safety"
+            ]
+          ],
+          "widths": [
+            115,
+            190,
+            190
+          ]
+        },
+        {
+          "p": "The backend validates field types, score/status consistency and bounded output. An assessed response requires an integer from 1 to 5. Insufficient information requires no numeric level. Severe requests for codes, payments or personal information can be dangerous without a link; the absence of a URL never caps the warning level."
+        },
+        {
+          "p": "The prompt treats submitted text, sender labels, links and context as untrusted data. Context answers are not proof of genuine identity. A reported exact-hostname match can raise the overall warning to at least 4 while preserving the separate message-only level. Reports may be wrong or old. [3, 4]"
+        },
+        {
+          "p": "A single app request now handles recoverable network, provider and invalid-response failures with at most three attempts inside one 42-second budget. Billing, credential errors and explicit refusals are not retried. Exhausted attempts return an error, not an invented assessment."
+        }
+      ]
+    },
+    {
+      "title": "Detection accuracy evaluation",
+      "blocks": [
+        {
+          "p": "No representative held-out detection benchmark has been completed. The 93 backend/helper tests and 78 browser tests check software behavior, validation and journeys. They do not establish a percentage accuracy, scam recall, false-positive rate or reduction in financial loss."
+        },
+        {
+          "h": "Proposed study"
+        },
+        {
+          "p": "Begin with a proposed 200 labelled cases balanced between Arabic and English, plus a separate 40-case ambiguous set. Include realistic SMS and WhatsApp text/screenshots, written caller descriptions, no-link OTP/payment scams, impersonation, and legitimate banking, delivery and account messages. These are planning targets, not collected results."
+        },
+        {
+          "p": "Use permissioned or de-identified material. Two reviewers label each case independently, resolve disagreements and record the rationale. Split by message template and scam family to reduce leakage. Tune only on development cases, then freeze the prompt, model, UI thresholds and test set. Evaluate both the clean text and screenshot path so transcription failures are visible."
+        },
+        {
+          "table": [
+            [
+              "Measure",
+              "Purpose"
+            ],
+            [
+              "Recall and false reassurance",
+              "How often scams produce a caution/high warning; separately count scam cases shown as level 1"
+            ],
+            [
+              "Precision and false-warning rate",
+              "How often warnings are justified, including legitimate bank and reset messages"
+            ],
+            [
+              "Abstention and coverage",
+              "Report unscored/inconclusive cases separately rather than hiding them in accuracy"
+            ],
+            [
+              "Language and threat slices",
+              "Compare Arabic/English, screenshot/text, no-link scams and each major family"
+            ],
+            [
+              "Transcription and URL fidelity",
+              "Measure text and exact URL errors, and their effect on the final warning"
+            ]
+          ],
+          "widths": [
+            170,
+            325
+          ]
+        },
+        {
+          "p": "Report caution at level 2+ and high warning at level 4+, matching the current interface. Publish the confusion matrices, sample counts, uncertainty intervals and error examples. Reassurance must remain cautious even if future test performance is strong."
+        }
+      ]
+    },
+    {
+      "title": "Explainability and actionability",
+      "blocks": [
+        {
+          "p": "Results put a plain-language warning and the most useful next action first. Color is accompanied by a distinct symbol, a written label and an ordinal score. The number expresses warning signs, not the probability that a scam is present. Insufficient information has no numeric score."
+        },
+        {
+          "pair": "result",
+          "caption": "Current UI with real model responses to synthetic inputs. The two language examples are not an accuracy benchmark."
+        },
+        {
+          "p": "More details holds relevant quotes, additional actions, visible-link findings, source status and limitations. Quotes must occur in the submitted message or sender label. These are observable evidence and explanations, not a disclosure of the model's internal reasoning."
+        },
+        {
+          "p": "The recovery journey asks one question at a time about passwords, codes, payments, card details and opened links, then shows only relevant steps. Instructions preserve evidence before reporting or deleting. Completion ticks do not prove that an account is secure or money can be recovered."
+        }
+      ]
+    },
+    {
+      "title": "Early detection and coverage",
+      "blocks": [
+        {
+          "p": "The main prevention opportunity is before the user acts. TAAKAD provides a deliberate pause: choose the suspicious content, inspect warning signs and verify independently. After an incident, guided recovery supports the next decision. The project has not measured time saved, losses avoided or population-level impact."
+        },
+        {
+          "table": [
+            [
+              "Input or stage",
+              "Implemented coverage",
+              "Boundary"
+            ],
+            [
+              "Screenshots",
+              "User-selected SMS/WhatsApp or other visible message images",
+              "No background access to conversations"
+            ],
+            [
+              "Text and links",
+              "Pasted messages, visible URLs and written descriptions",
+              "No visiting submitted websites"
+            ],
+            [
+              "No-link threats",
+              "Code requests, impersonation, pressure and payment demands",
+              "Absence of a link does not imply a low level"
+            ],
+            [
+              "Caller scenarios",
+              "Written descriptions and an awareness video",
+              "No call recording, audio analysis or interception"
+            ],
+            [
+              "After exposure",
+              "Relevant recovery steps and official contact routes",
+              "No automatic case creation or guaranteed recovery"
+            ],
+            [
+              "Awareness",
+              "Official RSS updates and two supplied learning videos",
+              "One news publisher and English video content"
+            ]
+          ],
+          "widths": [
+            105,
+            195,
+            195
+          ]
+        },
+        {
+          "p": "The collector refreshes approved feeds while the backend runs, ordinarily hourly. Failed collection can use labelled cache for a bounded period of up to 24 hours. Stale, older, empty and unavailable content remain distinguishable. Topic filters are optional local preferences and can miss relevant items."
+        },
+        {
+          "p": "Learn contains four Arabic/English illustrated guides. The team's supplied UnknownCallerVideo and UnknownLinkVideo are exact 30-second MP4 copies with original audio. They play locally without autoplay and pause when leaving Learn. English videos are labelled honestly in both interfaces, with related Arabic/English written tips rather than a claim to provide translated audio or captions."
+        }
+      ]
+    },
+    {
+      "title": "Architecture and model choices",
+      "blocks": [
+        {
+          "table": [
+            [
+              "Layer",
+              "Responsibility",
+              "Reasoning and trade-off"
+            ],
+            [
+              "Expo SDK 58 and React Native",
+              "Bilingual UI, local crop, questions, consent and browser/native targets",
+              "One TypeScript codebase; platform and Expo Go constraints remain"
+            ],
+            [
+              "Node.js backend",
+              "Private API key, validation, rate limits, model requests and temporary report state",
+              "Portable and easy to run; in-memory state is not durable production storage"
+            ],
+            [
+              "OpenAI Responses API",
+              "Image transcription and structured assessment with GPT-4.1 mini",
+              "Practical multimodal starting point; no comparative model benchmark yet"
+            ],
+            [
+              "Fixed external sources",
+              "ADMO RSS for awareness and Phishing.Database for hostname reputation",
+              "Attributed, bounded integrations; incomplete and potentially stale coverage"
+            ]
+          ],
+          "widths": [
+            125,
+            185,
+            185
+          ]
+        },
+        {
+          "p": "The browser reaches the backend through the app server's /api proxy. The backend binds to localhost on port 8787; the browser/app server uses port 8081. The local pairing token is available in the development bundle and is not production user authentication. Privileged moderator/support tokens and the OpenAI key stay outside the public source and client bundle."
+        },
+        {
+          "p": "GPT-4.1 mini was selected as a practical image/text and structured-output option, not a demonstrated best model. The team has not trained or fine-tuned model weights. Schema-constrained output reduces formatting problems but does not guarantee factual correctness or accurate detection. [3]"
+        },
+        {
+          "p": "A normal screenshot check makes two model calls: transcription, then text assessment. Pasted text uses one. Optional report moderation uses the generated public summary only. Recoverable failures may produce up to three attempts per structured call and add provider cost. Live use depends on available credit and internet access."
+        },
+        {
+          "p": "The committee route is a browser QR with no Expo account or installation. Published Expo Go previews remain account-restricted under Expo's policy. A signed native release, persistent service deployment and production operational review remain future work. [5]"
+        }
+      ]
+    },
+    {
+      "title": "Privacy and responsible support",
+      "blocks": [
+        {
+          "table": [
+            [
+              "Data",
+              "Recipient or access",
+              "Prototype treatment"
+            ],
+            [
+              "Selected image",
+              "Local preview, then backend/OpenAI only after Scan",
+              "Crop is optional; app does not intentionally persist or log image content"
+            ],
+            [
+              "Message and context",
+              "Backend/OpenAI after final consent",
+              "Stateless Responses calls with store:false; not a zero-retention certification"
+            ],
+            [
+              "Public report summary",
+              "People using the demo, after exact-preview consent",
+              "Fixed sanitized templates with moderation and flagging controls"
+            ],
+            [
+              "Private report note",
+              "The session that created it",
+              "Separate from the public summary; not sent for AI moderation"
+            ],
+            [
+              "Support demonstration",
+              "Authorized local demo role with separate consent",
+              "Fixed fictional contact, revocation and access events; no authority delivery"
+            ]
+          ],
+          "widths": [
+            120,
+            190,
+            185
+          ]
+        },
+        {
+          "p": "Community uses three questions and a preview instead of open discussion. Guests can read public features but posting requires a demo phone-code session. No SMS is sent, no phone ownership is verified and UAE PASS remains unavailable. A guest draft stays in memory during sign-in. AI moderation assists rather than certifies safety."
+        },
+        {
+          "p": "Report/session state is temporary and bounded, including expiry within one hour and loss on backend restart. Private own-report access is tied to the creating session, not recovery by an unverified phone number. Evidence uploads are not implemented. OS/browser caches can outlive the app's temporary state."
+        },
+        {
+          "p": "No receiving authority or referral agreement exists. The support handoff remains clearly labelled demonstration-only and separate consent is required even for demo access. Official contact options are alternatives, not evidence that a post creates a criminal complaint. Aman distinguishes information from formal reports. [2]"
+        },
+        {
+          "p": "Production deployment requires HTTPS, real identity, durable access-controlled storage, audited retention/deletion, shared abuse protection and a reviewed authority workflow. The current trusted-LAN setup is for synthetic demonstrations, not a claim of production security or legal certification."
+        }
+      ]
+    },
+    {
+      "title": "Feasibility and verification",
+      "blocks": [
+        {
+          "table": [
+            [
+              "Evidence",
+              "Verified result",
+              "What it establishes"
+            ],
+            [
+              "Backend/helper suite",
+              "93 passing tests",
+              "Input/output guards, privacy boundaries, rate controls and recovery logic"
+            ],
+            [
+              "Browser regression suite",
+              "78 passing tests",
+              "Bilingual journeys, crop pixels/touch controls, themes and replacement video playback"
+            ],
+            [
+              "Build checks",
+              "Typecheck, lint and iOS/Android/web exports passed",
+              "Source consistency and bundle generation, not native certification"
+            ],
+            [
+              "Live AI checks",
+              "Three cropped-photo journeys completed with one final tap",
+              "A working provider session, not measured detection accuracy"
+            ],
+            [
+              "Team manual testing",
+              "Team confirmed the updated iPhone browser experience",
+              "Practical demonstration feedback, not a structured usability study"
+            ]
+          ],
+          "widths": [
+            125,
+            170,
+            200
+          ]
+        },
+        {
+          "h": "Running the submitted source"
+        },
+        {
+          "p": "Use Node.js 22.18 or later. From the complete repository, install locked dependencies and generate local setup. Put an available OpenAI key only in the private server/.env file. Never put a secret in chat, the repository or the presentation."
+        },
+        {
+          "code": "npm ci\nnpm run setup\nnpm run demo"
+        },
+        {
+          "p": "On Windows use npm.cmd if PowerShell restricts npm.ps1. The demo command starts or reuses the matching backend/app session and shows a browser QR. Scan with the phone Camera and open Safari/Chrome. No Expo login is required. Keep the laptop awake, the server running and both devices on the same trusted Wi-Fi with peer traffic allowed."
+        },
+        {
+          "p": "The public repository contains the complete MVP, dependency lockfile, safe environment example, assets, tests, source notices and README on master. Provider outages or exhausted credit can still prevent a live result. The earlier intermittent error was not captured exactly; bounded recovery was verified with injected transient failures and strict validation."
+        }
+      ]
+    },
+    {
+      "title": "Next steps and references",
+      "blocks": [
+        {
+          "h": "Next evidence and engineering work"
+        },
+        {
+          "p": "First, complete the held-out bilingual accuracy study and publish false-warning, false-reassurance and abstention results. Second, test comprehension and completion of safety actions with older users, including accessibility and Android/native interruptions. Third, add real identity, secure persistence and operational controls before public deployment. Finally, agree a receiving organization and formal consent/delivery process before enabling real support referrals."
+        },
+        {
+          "p": "Notifications, widgets, live call/message interception, voice cloning/TTS, real SMS, UAE PASS integration and authority case delivery are outside the current MVP. The user-supplied storyboards illustrate risks; they are not evidence of actual events or guaranteed outcomes. The team remains responsible for participation eligibility, media rights, final portal uploads and the required recorded one-minute non-AI-generated submission demo."
+        },
+        {
+          "h": "References and evidence"
+        },
+        {
+          "refs": [
+            [
+              "1  Abu Dhabi Media Office RSS guidance",
+              "https://www.mediaoffice.abudhabi/en/rss-news-feeds-abu-dhabi-media-office/"
+            ],
+            [
+              "2  Abu Dhabi Police Aman FAQ",
+              "https://srv.adpolice.gov.ae/en/aman/pages/qa.aspx"
+            ],
+            [
+              "3  OpenAI structured model outputs",
+              "https://developers.openai.com/api/docs/guides/structured-outputs"
+            ],
+            [
+              "4  Phishing.Database source and limitations",
+              "https://github.com/Phishing-Database/Phishing.Database"
+            ],
+            [
+              "5  Expo Go loading policy",
+              "https://expo.dev/changelog/expo-go-loading-changes-may-2026"
+            ],
+            [
+              "6  TAAKAD source and technical README",
+              "https://github.com/AbdelfattahGamalSayed/TAAKAD"
+            ]
+          ]
+        },
+        {
+          "p": "External source pages reviewed on 24 November 2026. Judging weights and competition terms were supplied by the team. Source baseline bb0a74d; current UI captured on 24 November with synthetic inputs, including real model responses for the result screens. Automated checks are functional evidence, not accuracy measurements. Team: Fatima Alhallak, Abdelfattah Sayed and Abdalrahman Moataz."
+        }
+      ]
+    }
+  ]
+}

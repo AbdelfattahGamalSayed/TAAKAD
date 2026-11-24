@@ -1,8 +1,6 @@
 # TAAKAD competition submission
 
-Prepared 23 November 2026. App source baseline: `05bb195`. Submission branch: `master`.
-
-App update note, 24 November 2026: the source README is current. The dated PPTX/DOCX below retain their 23 November baseline and need a final refresh before portal upload: photo selection now uses a local optional crop preview followed by Scan photo, the committee route uses a browser QR without Expo login, analysis has bounded automatic recovery, and Learn uses two supplied 30-second English videos with original audio instead of generated silent clips. The three named team members and project-card fields below remain unchanged. The in-app videos do not replace the required recorded submission demo.
+Completely rebuilt on 24 November 2026 around the kickoff judging rubric and the current app. App source baseline: `bb0a74d`. Submission branch: `master`. The current files below supersede the 23 November presentation/report.
 
 ## Project Title or Name
 
@@ -32,15 +30,27 @@ Public access was verified without authentication on 23 November 2026.
 
 ## Presentation
 
-Upload [TAAKAD_Competition_Presentation.pptx](TAAKAD_Competition_Presentation.pptx). The editable deck has 13 slides, including architecture, model choice, privacy, implemented features and demonstration limits. Speaker notes contain implementation references and context. It is below the 20 MB limit.
+Upload [TAAKAD_Judges_Presentation.pptx](TAAKAD_Judges_Presentation.pptx). The editable 16-slide deck uses the app's current colors, both supplied storyboards and paired current English/Arabic UI screenshots on all eight screenshot-bearing slides. It covers the rubric, architecture, model choice, privacy, implementation, evaluation plans and judge startup. Native tables and the architecture diagram are editable. Source/context notes accompany the slides. The file is about 2.4 MB, below the 20 MB limit.
 
 Optional public presentation link:
 
-https://github.com/AbdelfattahGamalSayed/TAAKAD/blob/master/submission/TAAKAD_Competition_Presentation.pptx
+https://github.com/AbdelfattahGamalSayed/TAAKAD/blob/master/submission/TAAKAD_Judges_Presentation.pptx
 
 ## Project Description Document
 
-Upload [TAAKAD_Project_Description.docx](TAAKAD_Project_Description.docx). The 10-page report includes a team cover, contents page, numbered sections, page numbers and a styled privacy table. It explains the app, architecture, privacy, technical trade-offs, verification, limitations and judge setup. It is below the 20 MB limit.
+Upload [TAAKAD_Project_Report.docx](TAAKAD_Project_Report.docx). The 12-page report uses a clean editorial layout, a bilingual UI cover, black headings, page numbers, readable paragraphs and comparison tables. It maps the five judging criteria to evidence, explains the current design and model choices, and documents privacy, feasibility, coverage and a proposed accuracy study. It is about 0.45 MB, below the 20 MB limit.
+
+## Judging criteria
+
+| Criterion supplied after kickoff | Weight |
+| --- | ---: |
+| Detection Accuracy | 30% |
+| Early Detection and Coverage | 25% |
+| Explainability and Actionability | 20% |
+| UAE Relevance and Innovation | 15% |
+| Feasibility and Presentation | 10% |
+
+These are judging weights, not performance results. The 93 backend/helper tests and 78 browser tests verify behavior. No representative detection-accuracy percentage is claimed. The proposed 200-case bilingual study plus 40 ambiguous cases is explicitly future work.
 
 ## Demo Video
 
@@ -49,3 +59,19 @@ The team will record and upload the required one-minute demonstration and discus
 ## Scope and provenance
 
 Screenshots were captured from the working app using synthetic examples. Materials do not claim measured detection accuracy, real SMS verification, UAE PASS integration, an authority partnership or production security certification. Frameworks and pretrained models are attributed; AI coding assistance was used during development. Team membership, rights confirmations, final uploads and the submission receipt remain the team's responsibility.
+
+UI result screenshots use real model responses to synthetic messages; different language examples may receive different ordinal levels. Supplied storyboards are illustrations, not proof of actual events or guaranteed safety. Source assets and their rights notice are in [assets/](assets/README.md).
+
+## Editing and rebuilding the files
+
+The app does not require Office. To rebuild these editable submission artifacts on Windows, install Microsoft Word/PowerPoint and Python 3, then use:
+
+```powershell
+# With the current app running and a private AI key configured:
+node scripts/capture-submission.mjs
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-submission.ps1
+python scripts/verify-submission.py --build .local/rubric-submission --normalize-metadata
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/render-submission-pdf.ps1 -PdfPath .local/rubric-submission/report.pdf -OutputDirectory .local/rubric-submission/report-pages
+```
+
+Content lives in [source/content.json](source/content.json). Capture uses only synthetic messages and makes two real text-assessment requests. Builds and QA PDFs/PNGs stay private under `.local/`. Inspect every rendered slide/page before copying the final PPTX and DOCX into `submission/`. Package validation checks all screenshot pairs, rubric weights, editability, team names, file size and basic document geometry; it does not replace visual/factual review.

@@ -1,0 +1,147 @@
+{
+  "capturedOn": "2026-11-24",
+  "sourceCommit": "bb0a74d",
+  "note": "Current application UI. Synthetic inputs only. Result screens use real model responses; this is not an accuracy benchmark.",
+  "records": [
+    {
+      "screen": "home",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "crop",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "message",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "context",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "result",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "locale": "en",
+      "liveResult": "assessed",
+      "warningLevel": 5,
+      "source": "real model response to synthetic text",
+      "analyzedAt": "2026-11-24T08:50:28.706Z"
+    },
+    {
+      "screen": "details",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "recovery",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "learn",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "community",
+      "locale": "en",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "home",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "crop",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "message",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "context",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "result",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "locale": "ar",
+      "liveResult": "assessed",
+      "warningLevel": 4,
+      "source": "real model response to synthetic text",
+      "analyzedAt": "2026-11-24T08:50:35.540Z"
+    },
+    {
+      "screen": "details",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "recovery",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "learn",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "screen": "community",
+      "locale": "ar",
+      "content": "synthetic demonstration",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

@@ -264,6 +264,8 @@ This README addresses the supplied requirements for **problem/solution, technica
 - Do not submit credentials, private reports/screenshots, `.local/`, `node_modules/` or development tokens. Test a clean checkout of the exact submitted commit.
 - The editable presentation, Word project description and project-card text are in [submission/](submission/README.md). The team must upload these and supply its recorded one-minute demo video; AI-generated demo video is prohibited. Campus conduct, confidentiality and responsible-network rules still apply; no probing or unauthorized access is part of TAAKAD.
 
+The submission materials were rebuilt completely on 24 November 2026 after the team supplied the kickoff rubric: Detection Accuracy 30%, Early Detection and Coverage 25%, Explainability and Actionability 20%, UAE Relevance and Innovation 15%, Feasibility and Presentation 10%. Current files: [16-slide presentation](submission/TAAKAD_Judges_Presentation.pptx) and [12-page report](submission/TAAKAD_Project_Report.docx). Every presentation slide containing app screenshots pairs Arabic and English. The supplied storyboards are labelled illustrative, and proposed evaluation work is separate from measured results. Sources, synthetic captures, provenance and rebuild scripts are included; final portal upload and the recorded demo remain team actions.
+
 See [SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md) for the full mapping and outstanding administrative/release checks.
 
 ## Demo reliability update on 24 November 2026
