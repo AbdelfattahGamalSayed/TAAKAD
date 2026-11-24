@@ -91,7 +91,9 @@ export const copy = {
     "errors": {
       "API_NOT_CONFIGURED": "Checking is not ready yet. Ask the person running this demo for help.",
       "API_AUTH_ERROR": "Checking is unavailable. Ask the person running this demo for help.",
-      "API_LIMIT": "Checking is busy or temporarily unavailable. Try again later. If it continues, ask for help.",
+      "API_QUOTA": "AI credit has run out. Ask the person running this demo to restore it, then try again.",
+      "API_MODEL_ERROR": "The checking service needs a setup change. Ask the person running this demo for help.",
+      "API_LIMIT": "Too many checks at once. Wait a moment, then try again.",
       "AI_TIMEOUT": "This is taking too long. Try again.",
       "AI_UNREACHABLE": "Cannot reach the checking service. Check your internet and try again.",
       "AI_UNAVAILABLE": "Checking is temporarily unavailable. Try again later.",
@@ -200,6 +202,8 @@ export const copy = {
     "errors": {
       "API_NOT_CONFIGURED": "خدمة التحقق ليست جاهزة بعد. اطلب مساعدة مشغّل النسخة التجريبية.",
       "API_AUTH_ERROR": "خدمة التحقق غير متاحة. اطلب مساعدة مشغّل النسخة التجريبية.",
+      "API_QUOTA": "نفد رصيد خدمة الفحص. اطلب من مشغّل النسخة التجريبية تجديده ثم حاول مجدداً.",
+      "API_MODEL_ERROR": "تحتاج خدمة الفحص إلى تعديل الإعدادات. اطلب المساعدة من مشغّل النسخة التجريبية.",
       "API_LIMIT": "الخدمة مشغولة أو غير متاحة مؤقتاً. حاول لاحقاً. إذا استمرت المشكلة، اطلب المساعدة.",
       "AI_TIMEOUT": "استغرق الفحص وقتاً طويلاً. حاول مجدداً.",
       "AI_UNREACHABLE": "تعذّر الوصول إلى خدمة التحقق. تحقّق من الإنترنت وحاول مجدداً.",

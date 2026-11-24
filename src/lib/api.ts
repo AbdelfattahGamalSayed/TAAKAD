@@ -2,6 +2,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import type { Locale } from './copy';
 import type { CheckContext } from './checkFlow';
+import { fetchJson } from './http';
 
 export type Assessment = {
   status: 'assessed' | 'insufficient_information'; riskLevel: number | null;
@@ -14,27 +15,21 @@ export type Assessment = {
 };
 export function apiOrigin() {
   if (Platform.OS === 'web' && typeof window !== 'undefined') return window.location.origin;
+  const previewApi = Constants.expoConfig?.extra?.previewApiUrl;
+  if (typeof previewApi === 'string' && /^https?:\/\//.test(previewApi)) return previewApi.replace(/\/$/, '');
   const host = Constants.expoConfig?.hostUri || 'localhost:8081';
   return `${host.includes('exp.direct') || host.includes('ngrok') ? 'https' : 'http'}://${host}`;
 }
 export async function health() {
-  const response = await fetch(`${apiOrigin()}/api/health`, { signal: AbortSignal.timeout(6000) });
-  if (!response.ok) throw new Error('NETWORK');
-  return response.json() as Promise<{ ok: boolean; configured: boolean }>;
+  return fetchJson<{ ok: boolean; configured: boolean }>(`${apiOrigin()}/api/health`, {}, { timeoutMs: 6000 });
 }
 type Request = { text: string; sender: string; image: string | null; locale: Locale; consent: boolean; source?: 'text' | 'reviewed_screenshot' | 'transcribed_screenshot'; reviewConfirmed?: boolean; prepared?: boolean; context?: CheckContext };
 export type Extraction = { status: 'readable' | 'unclear'; text: string; sender: string; warnings: string[] };
-export async function requestExtraction(body: Request, signal: AbortSignal): Promise<Extraction> { return request('/api/extract', body, signal); }
-export async function requestAssessment(body: Request, signal: AbortSignal): Promise<Assessment> { return request('/api/analyze', body, signal); }
-async function request(path: string, body: Request, signal: AbortSignal) {
-  let response;
-  try {
-    response = await fetch(`${apiOrigin()}${path}`, {
+export async function requestExtraction(body: Request, signal: AbortSignal): Promise<Extraction> { return request<Extraction>('/api/extract', body, signal); }
+export async function requestAssessment(body: Request, signal: AbortSignal): Promise<Assessment> { return request<Assessment>('/api/analyze', body, signal); }
+async function request<T>(path: string, body: Request, signal: AbortSignal): Promise<T> {
+    return fetchJson<T>(`${apiOrigin()}${path}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${Constants.expoConfig?.extra?.developmentToken || ''}` },
       body: JSON.stringify(body), signal,
-    });
-  } catch (error) { if (signal.aborted) throw error; throw new Error('NETWORK'); }
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'DEFAULT');
-  return data;
+    }, { timeoutMs: 50000, timeoutCode: 'AI_TIMEOUT' });
 }

@@ -6,6 +6,23 @@ import { createServer } from './index.mjs';
 const input = { text: 'Send me your OTP now.', sender: '', image: null, locale: 'en', consent: true };
 const assessment = { status: 'assessed', riskLevel: 5, summary: 'An OTP request is suspicious.', observedSignals: ['Requests your OTP.'], recommendedActions: ['Do not share the code.'], limitations: ['Identity is unverified.'], evidenceQuality: 'strong', evidence: [] };
 
+test('billing exhaustion and unavailable model have distinct sanitized recovery codes',async()=>{
+ for(const [providerCode,code] of [['insufficient_quota','API_QUOTA'],['model_not_found','API_MODEL_ERROR']]){
+  await assert.rejects(analyze(input,{config:{key:'test',model:'x'},fetchImpl:async()=>new Response(JSON.stringify({error:{code:providerCode,message:'private upstream message'}}),{status:providerCode==='insufficient_quota'?429:404})}),new RegExp(code));
+ }
+});
+
+test('transport metadata is removed from evidence and uncertainty remains visible',async()=>{
+ const raw={...assessment,evidence:[{quote:'OTP',reason:'Requests a code'},{quote:'claimedSender":"Demo only',reason:'Metadata is not message evidence'}]};
+ const result=await analyze(input,{config:{key:'test',model:'x'},fetchImpl:async()=>new Response(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(raw)}]}]})),reputationCheck:async()=>[]});
+ assert.deepEqual(result.evidence,[{quote:'OTP',reason:'Requests a code'}]);assert.equal(result.evidenceQuality,'limited');assert.ok(result.limitations.some(x=>x.includes('removed')));
+});
+test('a high warning with only unsupported quotes becomes insufficient information',async()=>{
+ const raw={...assessment,evidence:[{quote:'not present',reason:'Unsupported'}]};
+ const result=await analyze(input,{config:{key:'test',model:'x'},fetchImpl:async()=>new Response(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(raw)}]}]})),reputationCheck:async()=>[]});
+ assert.equal(result.status,'insufficient_information');assert.equal(result.riskLevel,null);assert.deepEqual(result.evidence,[]);
+});
+
 test('input requires explicit consent and nonempty evidence', () => {
   assert.throws(() => validateInput({ ...input, consent: false }), /CONSENT_REQUIRED/);
   assert.throws(() => validateInput({ ...input, text: ' ' }), /EMPTY_INPUT/);

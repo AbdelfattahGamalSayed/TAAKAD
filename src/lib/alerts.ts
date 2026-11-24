@@ -1,11 +1,10 @@
 import Constants from 'expo-constants';
 import { apiOrigin } from './api';
+import { fetchJson } from './http';
 export type AlertItem={id:string;title:string;excerpt:string;url:string;publishedAt:string;locale:string;publisher:string;older:boolean;stale:boolean};
 export type AlertFeed={items:AlertItem[];sources:{id:string;category:string;status:'ready'|'stale'|'unavailable';lastSuccessAt:string|null}[];refreshing:boolean;checkedAt:string|null;nextCheckAt:string|null;recentCount:number;permissionUrl:string;publisherCount:number};
 export async function getAlerts(locale:string,signal:AbortSignal):Promise<AlertFeed>{
- const response=await fetch(apiOrigin()+'/api/alerts?locale='+locale,{headers:{Authorization:'Bearer '+(Constants.expoConfig?.extra?.developmentToken||'')},signal});
- if(!response.ok)throw Error('ALERTS_UNAVAILABLE');
- return response.json();
+ return fetchJson<AlertFeed>(apiOrigin()+'/api/alerts?locale='+locale,{headers:{Authorization:'Bearer '+(Constants.expoConfig?.extra?.developmentToken||'')},signal},{timeoutMs:12000});
 }
 export const alertsCopy = {
   "en": {

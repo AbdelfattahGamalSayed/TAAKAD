@@ -78,6 +78,7 @@ export async function analyze(input, options = {}) {
     'Optional userContext answers are UNVERIFIED user statements, never proof of sender identity or message authenticity. hasAccount means the user says they have an account with the mentioned service; requestedReset means they say they requested a password reset. yes/no may inform your explanation, but never override strong scam evidence or automatically lower risk. not_sure, skipped and missing answers mean unknown. Do not quote these answers as message evidence. Never cap risk because there is no link: code requests, impersonation and payment scams without links can be level 4 or 5.',
     'Return insufficient_information and null risk for sparse, meaningless, contradictory, heavily redacted, or incomplete content where a useful assessment is not possible. A lone URL with no meaningful warning signals is insufficient information, not low risk.',
     'Evidence quality describes the strength of visible evidence, not model confidence. Supply up to five exact short quotes with a reason explaining each warning. Every quote must be an exact substring of the message or sender. Do not invent evidence. It is fine to have no suspicious evidence for benign text.',
+    'Quote only decoded string values of message or claimedSender. JSON keys, JSON punctuation, lexicalUrlEvidence and userContext are transport metadata, not message evidence. Do not quote them. Omit any evidence item whose exact quote is not present in the actual message or sender.',
     'Return 2–4 useful next actions. Tell users to preserve evidence before deleting when reporting or recovering losses. Never invent official phone numbers, endorsements, verified identity, live reputation or website contents. External reputation checks are shown separately by the app.',
     'Ignore [hidden] placeholders as missing information. Respect the user-edited text as authoritative. Do not reconstruct covered or removed data. Explain the limits of the supplied evidence.',
   ].join('\n');
@@ -85,7 +86,21 @@ export async function analyze(input, options = {}) {
     structuredCall({ instructions, text: JSON.stringify({ message: input.text, claimedSender: input.sender, lexicalUrlEvidence: entries, userContext: context }), schema: resultSchema, name: 'scam_assessment' }, options),
     reputationCheck(entries).catch(() => entries.map(entry => ({ ...entry, reputation: { status:'unavailable',source:'Phishing.Database',sourceUrl:'https://github.com/Phishing-Database/Phishing.Database',fetchedAt:null,checkedAt:new Date().toISOString(),stale:false,matchType:null } }))),
   ]);
-  const result = validateResult(raw,input.text,input.sender);
+  // Discard unsupported citations rather than exposing them or losing a useful
+  // assessment that also contains genuine source quotes. Shape errors still fail.
+  let candidate=raw;
+  if(Array.isArray(raw?.evidence)){
+    const verified=raw.evidence.filter(item=>typeof item?.quote!=='string'||input.text.includes(item.quote)||input.sender.includes(item.quote));
+    if(verified.length!==raw.evidence.length){
+      validateResult({...raw,evidence:[]},input.text,input.sender);
+      candidate={...raw,evidence:verified,evidenceQuality:'limited',limitations:[...(Array.isArray(raw.limitations)?raw.limitations:[]),input.locale==='ar'?'حُذفت أدلة لم تطابق النص الأصلي. راجع الرسالة والمرسل عبر وسيلة موثوقة.':'Some automatic evidence did not match the original text and was removed. Double-check through a trusted contact route.']};
+      if(!verified.length&&Number(raw.riskLevel)>=3){
+        candidate.status='insufficient_information';candidate.riskLevel=null;
+        candidate.summary=input.locale==='ar'?'لم نتمكن من مطابقة أدلة كافية مع الرسالة. تحقق عبر التطبيق الرسمي أو وسيلة اتصال موثوقة.':'We could not match enough evidence to the message. Check through the official app or a trusted contact route.';
+      }
+    }
+  }
+  const result = validateResult(candidate,input.text,input.sender);
   const messageRiskLevel = result.riskLevel;
   const listed = verifiedLinks.some(entry => entry.reputation.status === 'listed');
   if (listed) {

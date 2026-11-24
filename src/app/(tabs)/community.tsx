@@ -18,7 +18,7 @@ function CommunityContent({initialMine}:{initialMine:boolean}){
  const [preview,setPreview]=useState<ScamReport|null>(null),[previewOwner,setPreviewOwner]=useState(''),[consent,setConsent]=useState(false);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[flag,setFlag]=useState(''),[notice,setNotice]=useState('');
  const generation=useRef(0);
- const request=async(path:string,body:object={})=>authRequest('/api/reports/'+path,body,session?.token,path==='prepare'?AbortSignal.timeout(55000):undefined);
+ const request=async(path:string,body:object={})=>authRequest('/api/reports/'+path,body,session?.token);
  const signin=()=>{welcome();router.push('/signin');};
  const load=useCallback(async()=>{
    const id=++generation.current;setBusy(true);setError('');

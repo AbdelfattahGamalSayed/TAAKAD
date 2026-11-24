@@ -25,6 +25,11 @@ export async function structuredCall({ instructions, text, image = null, schema,
     });
   } catch (error) { throw new AnalysisError(['TimeoutError', 'AbortError'].includes(error.name) ? 'AI_TIMEOUT' : 'AI_UNREACHABLE', 503); }
   if (!response.ok) {
+    // Interpret known provider codes without logging or returning its response body.
+    let providerCode;
+    try { providerCode = (await response.json())?.error?.code; } catch { /* Non-JSON provider error. */ }
+    if (providerCode === 'insufficient_quota') throw new AnalysisError('API_QUOTA', 503);
+    if (providerCode === 'model_not_found') throw new AnalysisError('API_MODEL_ERROR', 503);
     if ([401, 403].includes(response.status)) throw new AnalysisError('API_AUTH_ERROR', 503);
     if (response.status === 429) throw new AnalysisError('API_LIMIT', 429);
     throw new AnalysisError('AI_UNAVAILABLE', 502);

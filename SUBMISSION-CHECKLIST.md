@@ -61,3 +61,7 @@ A separate staged-source archive was installed with `npm ci`, without copying au
 ## Prepared submission package on 2026-11-23
 
 The project-card text, editable 13-slide PPTX and Word project description are in submission/. The repository is public and anonymous access was checked. The team will handle the required one-minute recorded demonstration and discussion; AI-generated submission video is not permitted. Prepared files are not evidence that the portal submission has been completed.
+
+## Reliability and committee-preview work on 2026-11-24
+
+Live model access, screenshot extraction and synthetic assessment were checked without exposing keys. The reported app failures cleared after combined startup. Bounded client requests and sanitized provider recovery codes are covered by regressions. A published Expo Go preview was created separately from normal source configuration; its manifest is served anonymously and points to the maintainer's trusted-LAN demo backend. Do not claim signed-out iPhone behavior is device-verified until the user confirms that specific QR. The report/presentation retain their 23 November source baseline and need a final demo-workflow review before submission.

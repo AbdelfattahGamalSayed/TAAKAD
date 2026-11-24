@@ -17,6 +17,7 @@
     "expo-linking": "~58.0.17",
     "expo-router": "~58.0.32",
     "expo-status-bar": "~58.0.5",
+    "expo-updates": "~58.0.22",
     "expo-video": "~58.0.14",
     "fast-xml-parser": "^5.12.1",
     "he": "^2.0.0",
@@ -37,6 +38,8 @@
     "typescript": "~6.0.3"
   },
   "scripts": {
+    "publish:preview": "node scripts/publish-preview.mjs",
+    "check:demo": "node scripts/check-demo.mjs",
     "setup": "node scripts/setup.mjs",
     "review": "node scripts/dev.mjs --web --offline",
     "start": "node scripts/dev.mjs",
@@ -49,6 +52,8 @@
     "web": "node scripts/dev.mjs --web",
     "test:ui": "playwright test"
   },
-  "engines": { "node": ">=22.18.0" },
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "private": true
 }
