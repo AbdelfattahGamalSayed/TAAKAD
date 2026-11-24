@@ -1,5 +1,31 @@
 # TAAKAD committee demo
 
+## Simple steps in the VS Code terminal
+
+Open the **TAAKAD** folder in VS Code, then choose **Terminal > New Terminal**. Keep the phone and computer on the same Wi-Fi. On this configured computer, the two normal run commands are:
+
+| Open on the phone | Command | Scan with |
+| --- | --- | --- |
+| Safari / Chrome, no Expo login | `npm.cmd run demo` | Phone Camera; open the browser link |
+| Expo Go on iPhone | `npm.cmd start` | Phone Camera; open in Expo Go |
+
+**Browser QR**
+
+1. Run `npm.cmd run demo`.
+2. Wait for the browser QR page to open.
+3. Scan that QR with the phone Camera and open Safari or Chrome. To use the computer browser, open `http://localhost:8081`.
+
+**Expo Go QR**
+
+1. Install Expo Go compatible with SDK 58 on the iPhone.
+2. Run `npx.cmd expo login` once, and sign into Expo Go with that **same Expo account**. A reviewer can use their own account for local development.
+3. Start from a stopped app: if it is already running, press **Ctrl+C in the original server terminal**. Then run `npm.cmd start` and wait for the terminal QR.
+4. Scan that **development QR** with the phone Camera and open Expo Go. Do not scan the older published preview QR: it has separate owner-membership restrictions.
+
+Keep the original server terminal open and the laptop awake. Press **Ctrl+C in that terminal** to stop both servers. If startup says it reused a running app, the original terminal still owns those servers; stop them there before requesting a fresh Expo Go development QR.
+
+**First run on a new computer only:** install Node.js 22.18 or later, run `npm.cmd ci`, then `npm.cmd run setup`. Add a working OpenAI key to the generated private `server/.env` and save it. The app needs internet and available API credit for live AI checks. Never put the key in the public repository. On macOS/Linux, use `npm` and `npx` without `.cmd`.
+
 ## Recommended committee route: browser QR
 
 From the project folder, run:

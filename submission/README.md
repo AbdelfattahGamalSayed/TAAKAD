@@ -26,11 +26,11 @@ TypeScript, JavaScript, React Native, Expo SDK 58, Expo Router, React Native Web
 
 https://github.com/AbdelfattahGamalSayed/TAAKAD
 
-Public access was verified without authentication on 23 November 2026.
+Public access was verified without authentication on 24 November 2026.
 
 ## Presentation
 
-Upload [TAAKAD_Judges_Presentation.pptx](TAAKAD_Judges_Presentation.pptx). The editable 16-slide deck uses the app's current colors, both supplied storyboards and paired current English/Arabic UI screenshots on all eight screenshot-bearing slides. It covers the rubric, architecture, model choice, privacy, implementation, evaluation plans and judge startup. Native tables and the architecture diagram are editable. Source/context notes accompany the slides. The file is about 2.4 MB, below the 20 MB limit.
+Upload [TAAKAD_Judges_Presentation.pptx](TAAKAD_Judges_Presentation.pptx). The current 12-slide deck preserves the team's shortened slide order and adds a final slide with the supplied English and Arabic safety posters. It uses the app's current colors, both earlier storyboards and paired current English/Arabic UI screenshots on all eight screenshot-bearing slides. The architecture diagram and slide text remain editable. Source/context notes accompany the slides. The file is about 2.7 MB, below the 20 MB limit. The full judging rubric, evidence and proposed evaluation remain in the report.
 
 Optional public presentation link:
 
@@ -38,7 +38,7 @@ https://github.com/AbdelfattahGamalSayed/TAAKAD/blob/master/submission/TAAKAD_Ju
 
 ## Project Description Document
 
-Upload [TAAKAD_Project_Report.docx](TAAKAD_Project_Report.docx). The 12-page report uses a clean editorial layout, a bilingual UI cover, black headings, page numbers, readable paragraphs and comparison tables. It maps the five judging criteria to evidence, explains the current design and model choices, and documents privacy, feasibility, coverage and a proposed accuracy study. It is about 0.45 MB, below the 20 MB limit.
+Upload [TAAKAD_Project_Report.docx](TAAKAD_Project_Report.docx). The 12-page report now has a full-page navy cover with white type, green/red accents and all three team names. The body retains black headings, paired bilingual UI examples, page numbers, readable paragraphs and comparison tables. It maps the five judging criteria to evidence, explains the current design and model choices, and documents privacy, feasibility, coverage and a proposed accuracy study. It is about 0.35 MB, below the 20 MB limit.
 
 ## Judging criteria
 
@@ -75,3 +75,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/render-submission-pd
 ```
 
 Content lives in [source/content.json](source/content.json). Capture uses only synthetic messages and makes two real text-assessment requests. Builds and QA PDFs/PNGs stay private under `.local/`. Inspect every rendered slide/page before copying the final PPTX and DOCX into `submission/`. Package validation checks all screenshot pairs, rubric weights, editability, team names, file size and basic document geometry; it does not replace visual/factual review.
+
+To preserve further manual slide edits, pass `-SourcePresentation path/to/edited-draft.pptx` to the builder. That draft must omit the closing slide; the script appends it once, preserves the existing slides and refreshes their page numbers. The current content source also reflects the team's shortened order. See [simple launch instructions](../docs/DEMO.md#simple-steps-in-the-vs-code-terminal) for the separate browser and Expo Go QR routes.

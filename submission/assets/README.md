@@ -9,3 +9,5 @@ No blanket relicensing permission for these supplied images is asserted. Copyrig
 The two Learn screenshots show the supplied English caller video inside each language interface. The written tips and surrounding UI are translated; the video itself is not claimed to have translated audio/captions.
 
 `repository-qr.png` encodes only the public GitHub repository URL. It is not a deployed-app or LAN demo QR. No credentials or local network address are embedded.
+
+The team subsequently supplied `Image (8).jpg` and `Image (9).jpg` as English/Arabic closing safety posters. Exact originals are stored as `closing/safety-en.jpg` and `closing/safety-ar.jpg`. The final slide uses reversible native PowerPoint crops to remove the black phone frame, scrollbar and superseded name footer; all five safety points and the closing community message remain visible. The original image bytes are embedded and carry the same rights limitation as the storyboards above.

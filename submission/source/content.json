@@ -15,38 +15,6 @@
       "body": "An Arabic and English MVP for the Abu Dhabi Police × 42 Abu Dhabi hackathon"
     },
     {
-      "layout": "rubric",
-      "title": "The judging criteria",
-      "rows": [
-        [
-          "Detection Accuracy",
-          "30%",
-          "Detection design and a transparent evaluation plan"
-        ],
-        [
-          "Early Detection and Coverage",
-          "25%",
-          "Checks before acting and guidance after exposure"
-        ],
-        [
-          "Explainability and Actionability",
-          "20%",
-          "Warning signs connected to a clear next action"
-        ],
-        [
-          "UAE Relevance and Innovation",
-          "15%",
-          "Bilingual journeys and locally relevant scam scenarios"
-        ],
-        [
-          "Feasibility and Presentation",
-          "10%",
-          "A working, reproducible MVP and a clear demonstration"
-        ]
-      ],
-      "note": "Weights supplied by the team after the kickoff presentation. These are judging weights, not our performance scores."
-    },
-    {
       "layout": "story",
       "title": "An urgent bank message",
       "photo": "bank-message.jpg",
@@ -123,83 +91,6 @@
       "note": "Current application UI. Aman receives security information and is distinct from a formal criminal report. No automatic referral or callback is promised."
     },
     {
-      "layout": "coverage",
-      "title": "Early detection and coverage",
-      "rows": [
-        [
-          "Before acting",
-          "SMS and WhatsApp screenshots",
-          "User chooses what to share"
-        ],
-        [
-          "Before acting",
-          "Pasted messages and visible links",
-          "Submitted destinations are never opened"
-        ],
-        [
-          "Without a link",
-          "Code, payment and impersonation requests",
-          "Severe scams can contain no URL"
-        ],
-        [
-          "After exposure",
-          "Guided recovery for what was shared",
-          "Advice cannot guarantee recovery"
-        ],
-        [
-          "Ongoing awareness",
-          "Official UAE updates and two learning videos",
-          "One approved news publisher, not universal coverage"
-        ]
-      ],
-      "note": "The MVP is user initiated. It does not monitor private messages, intercept calls or continuously scan the phone."
-    },
-    {
-      "layout": "accuracy",
-      "title": "Detection accuracy and current evidence",
-      "leftTitle": "Code behavior verified",
-      "left": [
-        "93 backend and helper tests",
-        "78 browser regression tests",
-        "Team-confirmed iPhone browser journey"
-      ],
-      "rightTitle": "Detection accuracy is not yet measured",
-      "right": [
-        "No representative held-out benchmark",
-        "Synthetic checks demonstrate functionality",
-        "No percentage accuracy or loss reduction is claimed"
-      ],
-      "note": "Passing software tests is different from identifying scams correctly across a real-world population."
-    },
-    {
-      "layout": "evaluation",
-      "title": "The next accuracy evaluation",
-      "rows": [
-        [
-          "Dataset",
-          "Proposed 200 labelled cases, balanced across Arabic and English, plus 40 ambiguous cases"
-        ],
-        [
-          "Labels and split",
-          "Two reviewers, resolved disagreements and a held-out split by scam family or message template"
-        ],
-        [
-          "Operating points",
-          "Freeze the prompt and model; evaluate caution at level 2+ and high warning at level 4+"
-        ],
-        [
-          "Measures",
-          "Scam recall, precision, false warnings, abstention and transcription/link errors"
-        ]
-      ],
-      "note": "Proposed evaluation, not completed results. Report language and scam-family slices, including no-link scams and legitimate bank messages."
-    },
-    {
-      "layout": "architecture",
-      "title": "Architecture and privacy",
-      "note": "OpenAI processing is external. API keys stay on the Node backend. store:false does not establish a zero-retention guarantee."
-    },
-    {
       "layout": "ui",
       "title": "Structured reports with clear boundaries",
       "screen": "community",
@@ -210,6 +101,11 @@
         "Authority handoff remains a labelled demonstration"
       ],
       "note": "Current demo UI. Posting uses an unverified demo sign-in; no receiving authority or referral agreement exists."
+    },
+    {
+      "layout": "architecture",
+      "title": "Architecture and privacy",
+      "note": "OpenAI processing is external. API keys stay on the Node backend. store:false does not establish a zero-retention guarantee."
     },
     {
       "layout": "feasibility",
@@ -224,15 +120,13 @@
       "note": "Install dependencies and run setup first. This is a local demonstration, not an internet-hosted production service."
     },
     {
-      "layout": "closing",
-      "title": "The next evidence to build",
-      "items": [
-        "Measure detection on held-out bilingual cases",
-        "Test older-user comprehension and recovery actions",
-        "Add production identity, storage and security controls",
-        "Agree a real support process before sharing cases"
+      "title": "Together we protect our community",
+      "layout": "bilingualClosing",
+      "photos": [
+        "safety-en.jpg",
+        "safety-ar.jpg"
       ],
-      "note": "TAAKAD helps users pause, understand warning signs and choose a safer next step."
+      "note": "English and Arabic safety posters supplied by the team on 24 November 2026. Original JPGs are embedded with native PowerPoint crops that remove the black phone frame, scrollbar and superseded brand footer; the five safety messages remain visible. These are awareness illustrations, not screenshots of the app or proof of protection."
     }
   ],
   "pages": [
@@ -251,10 +145,7 @@
           "p": "Fatima Alhallak\nAbdelfattah Sayed\nAbdalrahman Moataz"
         },
         {
-          "p": "Abu Dhabi Police × 42 Abu Dhabi hackathon\nSubmission edition 24 November 2026"
-        },
-        {
-          "p": "Working MVP, technical design and rubric evidence\nSource baseline bb0a74d"
+          "p": "Abu Dhabi Police x 42 Abu Dhabi hackathon\n24 November 2026"
         }
       ]
     },

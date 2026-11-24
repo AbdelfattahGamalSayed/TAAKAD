@@ -1,4 +1,4 @@
-param([string]$BuildDirectory='',[switch]$ReportOnly,[switch]$DeckOnly)
+param([string]$BuildDirectory='',[switch]$ReportOnly,[switch]$DeckOnly,[string]$SourcePresentation='')
 $ErrorActionPreference='Stop'
 $project=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 if(!$BuildDirectory){$BuildDirectory=Join-Path $project '.local/rubric-submission'}
@@ -26,6 +26,25 @@ function Pic($slide,[string]$path,[double]$x,[double]$y,[double]$w,[double]$h,[s
  $im=[Drawing.Image]::FromFile($path);try{$scale=[Math]::Min($w/$im.Width,$h/$im.Height);$iw=$im.Width*$scale;$ih=$im.Height*$scale}finally{$im.Dispose()}
  $shape=M (G $slide 'Shapes') 'AddPicture' @($path,0,-1,[single]($x+($w-$iw)/2),[single]($y+($h-$ih)/2),[single]$iw,[single]$ih);S $shape 'Name' $name;S $shape 'AlternativeText' $name;return ,$shape
 }
+function ClosingPic($slide,[string]$path,[double]$x,[double]$y,[double]$boxWidth,[double]$boxHeight,[double[]]$viewport,[string]$name){
+ # Native, reversible picture crops remove only the phone chrome and old footer.
+ $im=[Drawing.Image]::FromFile($path);try{$sourceWidth=$im.Width;$sourceHeight=$im.Height}finally{$im.Dispose()}
+ $scale=[Math]::Min($boxWidth/$viewport[2],$boxHeight/$viewport[3]);$w=$viewport[2]*$scale;$h=$viewport[3]*$scale
+ $shape=M (G $slide 'Shapes') 'AddPicture' @($path,[int]0,[int]-1,[single]0,[single]0,[single]($sourceWidth*$scale),[single]($sourceHeight*$scale))
+ $crop=G (G $shape 'PictureFormat') 'Crop'
+ S $crop 'PictureWidth' ([single]($sourceWidth*$scale));S $crop 'PictureHeight' ([single]($sourceHeight*$scale))
+ S $crop 'ShapeWidth' ([single]$w);S $crop 'ShapeHeight' ([single]$h)
+ S $crop 'PictureOffsetX' ([single](($sourceWidth/2-$viewport[0]-$viewport[2]/2)*$scale));S $crop 'PictureOffsetY' ([single](($sourceHeight/2-$viewport[1]-$viewport[3]/2)*$scale))
+ S $shape 'Left' ([single]($x+($boxWidth-$w)/2));S $shape 'Top' ([single]($y+($boxHeight-$h)/2))
+ S $shape 'Name' $name;S $shape 'AlternativeText' $(if($name -eq 'CLOSING_EN'){'English community scam-safety advice supplied by the team'}else{'Arabic community scam-safety advice supplied by the team'})
+}
+function Closing($slide){
+ S $slide 'FollowMasterBackground' 0;$fill=G (G $slide 'Background') 'Fill';$null=M $fill 'Solid';S (G $fill 'ForeColor') 'RGB' (RGB '112E43')
+ ClosingPic $slide (Join-Path $assets 'closing/safety-en.jpg') 68 30 520 650 @(36,5,668,925) 'CLOSING_EN'
+ ClosingPic $slide (Join-Path $assets 'closing/safety-ar.jpg') 692 30 520 650 @(40,15,710,905) 'CLOSING_AR'
+ $notes=G (G $slide 'NotesPage') 'Shapes';$ph=M (G $notes 'Placeholders') 'Item' @(2)
+ S (G (G $ph 'TextFrame') 'TextRange') 'Text' 'English and Arabic safety images supplied by the team on 24 November 2026. The original JPEGs are embedded; reversible crops remove phone chrome and the superseded brand footer. No authority endorsement or guaranteed protection is implied.'
+}
 function Pair($slide,[string]$screen,[double]$x=650,[double]$y=142,[double]$w=234,[double]$gap=55){
  $null=T $slide 'English' $x ($y-28) $w 25 18 $muted $true
  $null=T $slide ([string]([char]0x0627+[string][char]0x0644+[string][char]0x0639+[string][char]0x0631+[string][char]0x0628+[string][char]0x064A+[string][char]0x0629)) ($x+$w+$gap) ($y-28) $w 25 18 $muted $true
@@ -49,11 +68,19 @@ function Arrow($slide,[double]$x1,[double]$y1,[double]$x2,[double]$y2){$s=M (G $
 # Only the presentation/document created here are closed by this script.
 if(!$ReportOnly){
 $ppt=New-Object -ComObject PowerPoint.Application
-$deck=M (G $ppt 'Presentations') 'Add' @(0)
+if($SourcePresentation){$deck=M (G $ppt 'Presentations') 'Open' @([string]([IO.Path]::GetFullPath($SourcePresentation)),[int]-1,[int]0,[int]0)}else{$deck=M (G $ppt 'Presentations') 'Add' @(0)}
 try{
+ if($SourcePresentation){
+  if((G (G $deck 'Slides') 'Count') -ne ($data.slides.Count-1)){throw 'Use the team-edited draft without its closing slide as SourcePresentation, or omit SourcePresentation to rebuild from the current source.'}
+  $script:stage='append to the team-edited presentation';$count=G (G $deck 'Slides') 'Count'
+  $s=M (G $deck 'Slides') 'Add' @([int]($count+1),[int]12);Closing $s
+  # Deletions/reordering left static page labels from the original deck.
+  for($index=1;$index -le $count;$index++){$slide=M (G $deck 'Slides') 'Item' @($index);$shapes=G $slide 'Shapes';for($si=1;$si -le (G $shapes 'Count');$si++){$shape=M $shapes 'Item' @($si);if((G $shape 'Left') -gt 1200 -and (G $shape 'Top') -gt 665 -and (G $shape 'HasTextFrame') -eq -1){$tr=G (G $shape 'TextFrame') 'TextRange';if((G $tr 'Text') -match '^\d+$'){S $tr 'Text' ([string]$index)}}}}
+ }else{
  $setup=G $deck 'PageSetup';S $setup 'SlideWidth' 1280;S $setup 'SlideHeight' 720
  foreach($d in $data.slides){
   $script:slideIndex++;$script:stage='slide '+$script:slideIndex+' '+$d.layout;Write-Output $script:stage;$s=M (G $deck 'Slides') 'Add' @($script:slideIndex,12);S $s 'FollowMasterBackground' 0;$fill=G (G $s 'Background') 'Fill';$null=M $fill 'Solid';S (G $fill 'ForeColor') 'RGB' $(if($d.layout -eq 'cover'){$navy}else{$calm})
+  if($d.layout -eq 'bilingualClosing'){Closing $s;continue}
   if($d.layout -eq 'cover'){
    $null=T $s $d.title 60 80 1120 102 80 $white $true
    $null=T $s $d.subtitle 64 220 1120 140 46 $white $true
@@ -90,13 +117,14 @@ try{
   $notes=G (G $s 'NotesPage') 'Shapes';$ph=M (G $notes 'Placeholders') 'Item' @(2);$nr=G (G $ph 'TextFrame') 'TextRange'
   S $nr 'Text' ($d.note+"`r`rEvidence: current app source bb0a74d, README and captured UI, 24 November 2026. Judging weights supplied by the team. Storyboards are user-supplied illustrations. Sources: https://www.mediaoffice.abudhabi/en/rss-news-feeds-abu-dhabi-media-office/ ; https://srv.adpolice.gov.ae/en/aman/pages/qa.aspx ; https://developers.openai.com/api/docs/guides/structured-outputs ; https://expo.dev/changelog/expo-go-loading-changes-may-2026")
  }
+ }
  $script:stage='presentation export'
  $null=M $deck 'SaveAs' @([string](Join-Path $build 'TAAKAD_Judges_Presentation.pptx'),[int]24,[int]0)
  $null=M $deck 'Export' @([string](Join-Path $build 'slides'),[string]'PNG',[int]1600,[int]900)
  $null=M $deck 'SaveAs' @([string](Join-Path $build 'presentation.pdf'),[int]32,[int]0)
  Write-Output ('PowerPoint slides: '+(G (G $deck 'Slides') 'Count'))
 }finally{$null=M $deck 'Close'}
-$script:fitWarnings | Set-Content -LiteralPath (Join-Path $build 'slide-fit-warnings.txt') -Encoding UTF8
+[IO.File]::WriteAllLines((Join-Path $build 'slide-fit-warnings.txt'),[string[]]$script:fitWarnings)
 }
 if($DeckOnly){return}
 
@@ -105,6 +133,19 @@ $word=New-Object -ComObject Word.Application;S $word 'Visible' $false;S $word 'D
 $doc=M (G $word 'Documents') 'Add';$sel=G $word 'Selection'
 $script:pictureTables=@()
 function Para([string]$text,[int]$style=-1){S $sel 'Style' $style;$null=M $sel 'TypeText' @($text.Replace("`n","`v"));$null=M $sel 'TypeParagraph'}
+function CoverPara([string]$text,[double]$size,[int]$color,[bool]$bold,[double]$before,[double]$after,[int]$style=-1){
+ S $sel 'Style' $style;$font=G $sel 'Font';S $font 'Name' 'Segoe UI';S $font 'Size' $size;S $font 'Color' $color;S $font 'Bold' $(if($bold){-1}else{0})
+ $pf=G $sel 'ParagraphFormat';S $pf 'SpaceBefore' $before;S $pf 'SpaceAfter' $after;S $pf 'Alignment' 0;S $pf 'ReadingOrder' 1;S $pf 'KeepWithNext' 0
+ $null=M $sel 'TypeText' @($text.Replace("`n","`v"));$null=M $sel 'TypeParagraph'
+}
+function CoverBackground($section){
+ $header=M (G $section 'Headers') 'Item' @(2);$shapes=G $header 'Shapes'
+ foreach($spec in @(@('Cover background',0,0,595.3,841.9,'0F1B3D'),@('Green edge',573.3,0,22,841.9,'087443'),@('Red accent',573.3,720,22,121.9,'C8102E'))){
+  $shape=M $shapes 'AddShape' @([int]1,[single]$spec[1],[single]$spec[2],[single]$spec[3],[single]$spec[4]);S $shape 'Name' $spec[0]
+  S $shape 'RelativeHorizontalPosition' 1;S $shape 'RelativeVerticalPosition' 1;S $shape 'Left' ([single]$spec[1]);S $shape 'Top' ([single]$spec[2]);S (G $shape 'WrapFormat') 'Type' 5;S (G $shape 'Line') 'Visible' 0
+  $fill=G $shape 'Fill';$null=M $fill 'Solid';S (G $fill 'ForeColor') 'RGB' (RGB $spec[5])
+ }
+}
 function AfterTable($table){$e=G (G $table 'Range') 'End';$r=M $doc 'Range' @([int]$e,[int]$e);$null=M $r 'Select';$null=M $sel 'TypeParagraph'}
 function WTable($rows,$widths){
  $t=M (G $doc 'Tables') 'Add' @((G $sel 'Range'),$rows.Count,$rows[0].Count);S $t 'AllowAutoFit' $false
@@ -135,8 +176,17 @@ try{
   $script:stage='report page '+($pi+1)+' '+$page.title
   if($pi -gt 0){$null=M $sel 'InsertBreak' @(7)}
   if($page.cover){
-   Para 'ABU DHABI POLICE x 42 ABU DHABI HACKATHON';Para ''
-   Para $page.title -63;S $sel 'Style' ([int]-1);S (G $sel 'Font') 'Size' 26;$null=M $sel 'TypeText' @($page.subtitle);$null=M $sel 'TypeParagraph';S (G $sel 'Font') 'Size' 11
+   $pale=RGB 'D9E5F8';$brightGreen=RGB '73D4BB'
+   CoverPara "ABU DHABI POLICE x 42 ABU DHABI`nHACKATHON 2026" 10 $pale $false 24 68
+   CoverPara $page.title 64 $white $true 0 12 -63
+   CoverPara $page.subtitle 29 $white $false 0 28
+   CoverPara "Check suspicious messages.`nFind a safer next step." 20 $pale $false 0 54
+   CoverPara 'PROJECT TEAM' 10 $brightGreen $true 0 12
+   CoverPara ($data.team -join "`n") 14 $white $false 0 48
+   CoverPara "AI-powered scam awareness`nArabic and English" 14 $brightGreen $false 0 22
+   CoverPara '24 November 2026' 10 $pale $false 0 0
+   S $sel 'Style' ([int]-1);$null=M (G $sel 'Font') 'Reset';$null=M (G $sel 'ParagraphFormat') 'Reset'
+   $pi++;continue
   }else{Para $page.title -2}
   foreach($b in $page.blocks){
    if($b.h){Para $b.h -3}
@@ -146,12 +196,12 @@ try{
    elseif($b.code){S $sel 'Style' ([int]-1);S (G $sel 'Font') 'Name' 'Consolas';S (G $sel 'Font') 'Size' 11;$null=M $sel 'TypeText' @($b.code.Replace("`n","`v"));$null=M $sel 'TypeParagraph';S (G $sel 'Font') 'Name' 'Calibri'}
    elseif($b.refs){foreach($ref in $b.refs){S $sel 'Style' ([int]-1);S (G $sel 'Font') 'Size' 10;Para $ref[0];$null=M (G $doc 'Hyperlinks') 'Add' @((G $sel 'Range'),[string]$ref[1],[Type]::Missing,[Type]::Missing,[string]$ref[1]);$null=M $sel 'TypeParagraph'};S (G $sel 'Font') 'Size' 11}
   }
-  if($page.cover){WPair 'home' 135}
   $pi++
  }
  $allpf=G (G $doc 'Content') 'ParagraphFormat';S $allpf 'ReadingOrder' 1;S $allpf 'Alignment' 0
  foreach($pictures in $script:pictureTables){S (G (G $pictures 'Range') 'ParagraphFormat') 'Alignment' 1}
  $section=M (G $doc 'Sections') 'Item' @(1);$header=M (G $section 'Headers') 'Item' @(1);$hr=G $header 'Range';S $hr 'Text' 'TAAKAD    PROJECT REPORT';S (G $hr 'Font') 'Name' 'Calibri';S (G $hr 'Font') 'Size' 9;S (G $hr 'Font') 'Color' 0;S (G $hr 'ParagraphFormat') 'Alignment' 0
+ CoverBackground $section
  $footer=M (G $section 'Footers') 'Item' @(1);$fr=G $footer 'Range';S $fr 'Text' '';$null=M (G $fr 'Fields') 'Add' @($fr,-1,'PAGE',$false);S (G $fr 'ParagraphFormat') 'Alignment' 2;S (G $fr 'Font') 'Size' 9;S (G $fr 'Font') 'Color' 0
  $script:stage='report export'
  $null=M $doc 'Repaginate';Write-Output ('Word pages: '+(M $doc 'ComputeStatistics' @(2)))
