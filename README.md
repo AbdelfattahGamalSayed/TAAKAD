@@ -10,7 +10,7 @@ This repository contains the mobile/web source, Node backend, bundled learning m
 
 For a **development-server QR**, current Expo Go on a physical iPhone requires the Expo CLI on your computer and Expo Go on your phone to be signed in to the same Expo account. **Use your own account on both.** A QR code served by the author's signed-in CLI is not the independent-review route. This rule comes from Expo, not TAAKAD, and is not bypassed by a tunnel. Android Expo Go and the browser are not subject to that iPhone requirement. See [Expo's account requirement](https://docs.expo.dev/troubleshooting/expo-go-sign-in-required/) and [starting a project](https://docs.expo.dev/get-started/start-developing/), checked 23 November 2026.
 
-For **no Expo login at all**, use the browser review command below. A separately published Expo Go committee preview is also configured for the maintainer; see [the demo guide](docs/DEMO.md). It has an explicit API origin and still needs the running backend on the trusted event Wi-Fi. Signed-out physical-iPhone confirmation is required before relying on it. For a future account-free installed iPhone app, a separately signed/distributed build would be needed; no signed build is included here.
+For **no Expo login at all**, use the browser review command below. A published Expo Go preview was tested but returned HTTP 403 while signed out. Expo also restricts published EAS Update projects to the signed-in owner or organisation members. This route does not meet the account-free committee requirement; see [the corrected demo guide](docs/DEMO.md). For a future account-free installed iPhone app, a separately signed/distributed build would be needed; no signed build is included here.
 
 ### Prerequisites
 
@@ -48,7 +48,8 @@ Choose one run mode:
 | Mode | Command | Account requirement |
 | --- | --- | --- |
 | Expo Go on a phone | `npm.cmd start` | Physical iPhone: your own matching Expo account in CLI and Expo Go; Android: no author account |
-| Configured committee preview | `npm.cmd run demo` | Published Expo Go QR; maintainer preview settings and same trusted Wi-Fi required |
+| Committee browser QR (recommended) | `npm.cmd run demo` | No Expo account or installation; scan with Camera and open Safari/Chrome on the same trusted Wi-Fi |
+| Account-member Expo Go preview | `npm.cmd run demo -- --expo-go-member` | Owner or organisation-member login required; not an account-free committee route |
 | Browser review | `npm.cmd run review` | No Expo login; opens localhost web preview |
 | Normal web preview | `npm.cmd run web` | No author account; normal Expo network checks |
 
@@ -269,8 +270,12 @@ See [SUBMISSION-CHECKLIST.md](SUBMISSION-CHECKLIST.md) for the full mapping and 
 
 The combined backend and Metro must be running; `npx expo start` alone starts no API backend. The reported session recovered after `npm start`. Live provider access, synthetic screenshot transcription and a synthetic text assessment were verified. API credit exhaustion, rate limiting and model configuration errors now have distinct recovery codes. Client deadlines cover both headers and JSON bodies, including native fetch implementations that do not finish promptly on abort. Community, Alerts and consented checks stop waiting and expose a recovery path.
 
-Use `npm run check:demo` before presenting; `npm run check:demo -- --live` makes one real synthetic assessment and may incur a small API charge. The new published preview uses a different QR from the development server; see [docs/DEMO.md](docs/DEMO.md) for network and publishing requirements. Normal source startup has no fixed author/project binding.
+Use `npm run demo` for the committee browser QR and `npm run check:demo` before presenting. `npm run check:demo -- --live` makes one real synthetic assessment and may incur a small API charge. See [docs/DEMO.md](docs/DEMO.md) for network and optional account-member publishing requirements. Normal source startup has no fixed author/project binding.
 
-Reliability validation: all 77 backend/helper tests and 64 browser regressions passed, with a further 26 targeted browser checks after the final backend adjustment. Typecheck and lint passed; Expo Update exported iOS, Android and web bundles. A live synthetic assessment passed after excluding unmatched metadata quotes. These checks do not replace physical signed-out iPhone verification.
+Reliability validation: all 77 backend/helper tests and 64 browser regressions passed, with a further 26 targeted browser checks after the final backend adjustment. Typecheck and lint passed; Expo Update exported iOS, Android and web bundles. A live synthetic assessment passed after excluding unmatched metadata quotes. The later Expo access failure and selected browser route are recorded below.
 
-Duplicate-start protection was verified on 24 November 2026. `npm run demo` starts or reuses the configured demo and opens its published QR; `npm start` remains the development route. All 80 backend/helper tests passed, including matching-session reuse and refusing partial/unrelated listeners. A fresh demo launch, duplicate start, proxy health, Community pairing and direct occupied-port recovery were checked.
+Duplicate-start protection was verified on 24 November 2026. `npm run demo` starts or reuses the app and opens its **browser QR**; `npm start` remains the Expo development route. All 82 backend/helper tests passed, including LAN address selection, matching-session reuse and refusing partial/unrelated listeners. A fresh demo launch, duplicate start, proxy health, Community pairing and direct occupied-port recovery were checked.
+
+Access correction on 24 November 2026: the user's physical signed-out Expo Go test returned HTTP 403. Published EAS Update access is limited to owners/account members under [Expo's policy](https://expo.dev/changelog/expo-go-loading-changes-may-2026). Earlier tentative references to a signed-out published preview are superseded. The user selected the browser QR route: `npm run demo` opens Safari/Chrome without Expo login or installation. Keep the server computer running and both devices on the same trusted Wi-Fi. This is a LAN demo, not public hosting; browser upload uses the whole photo. Physical-phone browser verification remains a separate check.
+
+The selected browser route was tested in a fresh Chrome session at the laptop's actual LAN address: guest Check, live synthetic screenshot extraction/assessment, Learn guide/video playback and Community's real API pairing passed. All 82 backend/helper tests, typecheck and lint passed after the launcher change. Desktop browser automation does not certify physical iPhone/Safari or event-network access.

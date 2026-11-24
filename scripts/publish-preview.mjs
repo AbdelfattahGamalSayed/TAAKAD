@@ -9,7 +9,7 @@ if(!existsSync(stateFile)){console.error('Preview publishing is optional. Config
 const settings=JSON.parse(readFileSync(stateFile,'utf8'));
 const health=await fetch(settings.apiUrl+'/api/health',{signal:AbortSignal.timeout(6000)}).then(r=>r.json()).catch(()=>null);
 if(!health?.ok){console.error('Start npm start first, then publish. The preview needs this backend during the demo.');process.exit(1);}
-console.log('Publishing a committee preview. Keep this computer running and phones on the same trusted Wi-Fi.');
+console.log('Publishing an account-restricted Expo Go preview. Recipients must sign in as members of the owning account; this cannot provide a signed-out committee demo.');
 const npx=process.platform==='win32'?'npx.cmd':'npx';
 const args=['--yes','eas-cli@latest','update','--branch','committee','--environment','preview','--platform','all','--message','TAAKAD-committee-preview','--non-interactive','--input-dir','.local/committee-update','--clear-cache'];
 const result=spawnSync(npx,args,{cwd:root,env:{...process.env,TAAKAD_PUBLISH_PREVIEW:'1'},stdio:'inherit',shell:process.platform==='win32'});

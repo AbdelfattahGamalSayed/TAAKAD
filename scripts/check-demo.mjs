@@ -13,5 +13,5 @@ try{
   const result=await check('/api/analyze',{text:'Synthetic test: send me your verification code now.',sender:'Demo only',image:null,locale:'en',consent:true,source:'text'});
   console.log('Live synthetic AI check: '+(result.status==='assessed'?'passed.':'completed with limited information.'));
  }
- console.log('Demo preparation: use the published-preview QR for signed-out iPhone Expo Go. See docs/DEMO.md.');
+ console.log('Account-free committee browser QR: npm run demo. Expo Go published previews require owner-account membership. See docs/DEMO.md.');
 }catch(error){console.error('Demo check failed: '+error.message+'. Start npm start in a second terminal. For API_QUOTA, restore API credit; for UNAUTHORIZED, reload from the current QR.');process.exitCode=1;}

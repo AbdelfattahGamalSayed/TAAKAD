@@ -64,4 +64,10 @@ The project-card text, editable 13-slide PPTX and Word project description are i
 
 ## Reliability and committee-preview work on 2026-11-24
 
-Live model access, screenshot extraction and synthetic assessment were checked without exposing keys. The reported app failures cleared after combined startup. Bounded client requests and sanitized provider recovery codes are covered by regressions. A published Expo Go preview was created separately from normal source configuration; its manifest is served anonymously and points to the maintainer's trusted-LAN demo backend. Do not claim signed-out iPhone behavior is device-verified until the user confirms that specific QR. The report/presentation retain their 23 November source baseline and need a final demo-workflow review before submission.
+Live model access, screenshot extraction and synthetic assessment were checked without exposing keys. The reported app failures cleared after combined startup. Bounded client requests and sanitized provider recovery codes are covered by regressions. A published Expo Go preview was created separately from normal source configuration, but the physical test below established that it is account-restricted. The report/presentation retain their 23 November source baseline and need a final demo-workflow review before submission.
+
+## Physical Expo Go access result on 2026-11-24
+
+The user confirmed HTTP 403 while signed out: the EAS Update preview requires owner/account membership. Anonymous manifest download was not proof of Expo Go access. The account-free published-preview route is unavailable under Expo policy. The user selected the browser QR route. `npm run demo` now starts/reuses the app and generates a plain HTTP LAN QR for Safari/Chrome, without an Expo account or installation. The computer must remain running on the same trusted Wi-Fi. Physical-phone browser verification remains outstanding; do not claim a signed-out Expo Go success.
+
+Browser-route checks: 82 backend/helper tests, typecheck and lint passed. A fresh Chrome session at the laptop's actual LAN origin passed guest Check, live synthetic screenshot extraction/AI assessment, Learn guide/video playback and Community API access. The launcher reused the matching running servers without another port binding. These are desktop checks, not physical Safari or event-network certification.

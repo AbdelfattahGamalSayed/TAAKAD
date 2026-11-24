@@ -4,10 +4,12 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { inspectRunningApp } from './dev-preflight.mjs';
 import { showPreview } from './show-preview.mjs';
+import { showBrowserDemo } from './show-browser-demo.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const args=process.argv.slice(2),demo=args.includes('--demo'),open=!args.includes('--no-open');
-const expoArgs=args.filter(arg=>!['--demo','--no-open'].includes(arg));
+const memberPreview=args.includes('--expo-go-member');
+const expoArgs=args.filter(arg=>!['--demo','--no-open','--expo-go-member'].includes(arg));
 const children=[];
 let stopping=false;
 function stop(code=0){if(stopping)return;stopping=true;for(const child of children)child.kill();process.exit(code);}
@@ -31,17 +33,17 @@ try{
   const state=await inspectRunningApp({token});
   if(state.status==='running'){
     console.log('TAAKAD is already running on ports 8081 and 8787. No second server was started.');
-    if(demo)await showPreview({open});
-    else console.log('For the signed-out iPhone test, run npm run demo. Use its published QR, not a development-server QR.');
+    if(demo)await (memberPreview?showPreview({open}):showBrowserDemo({open}));
+    else console.log('Expo Go previews require account access. For account-free browser review, open http://localhost:8081 or use npm run review.');
     process.exit(0);
   }
   if(state.status==='conflict')throw Error('Port '+state.ports.join(' / ')+' is already in use by a partial or different session. Stop that server in its original terminal, then run this command again. No existing process was stopped.');
-  if(demo&&!existsSync(new URL('../.local/committee-preview-url.txt',import.meta.url)))throw Error('No published preview is configured here. See docs/DEMO.md.');
+  if(demo&&memberPreview&&!existsSync(new URL('../.local/committee-preview-url.txt',import.meta.url)))throw Error('No published Expo Go preview is configured here. See docs/DEMO.md.');
   mkdirSync(new URL('../.local/',import.meta.url),{recursive:true});
   if(!existsSync(session))writeFileSync(session,JSON.stringify({token:randomBytes(24).toString('hex')}));
   console.log('Starting TAAKAD backend and app server.');
-  if(!demo)console.log('Development QR: iPhone requires matching Expo logins. For the published committee QR, use npm run demo.');
+  if(!demo)console.log('Development QR: iPhone requires matching Expo logins. Published Expo Go previews also require owner-account membership. Browser review: npm run review.');
   start(['server/index.mjs']);await ready('http://127.0.0.1:8787');
   start(['node_modules/expo/bin/cli','start','--go','--clear','--port','8081',...expoArgs],demo?{...process.env,CI:'1'}:process.env);
-  if(demo){await ready('http://127.0.0.1:8081');await showPreview({open});}
+  if(demo){await ready('http://127.0.0.1:8081');await (memberPreview?showPreview({open}):showBrowserDemo({open}));}
 }catch(error){console.error(error.message);stop(1);}
