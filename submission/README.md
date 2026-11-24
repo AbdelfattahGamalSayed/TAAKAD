@@ -2,6 +2,8 @@
 
 Prepared 23 November 2026. App source baseline: `05bb195`. Submission branch: `master`.
 
+App update note, 24 November 2026: the source README is current. The dated PPTX/DOCX below retain their 23 November baseline and need a final refresh before portal upload: photo selection now uses a local optional crop preview followed by Scan photo, the committee route uses a browser QR without Expo login, analysis has bounded automatic recovery, and Learn uses two supplied 30-second English videos with original audio instead of generated silent clips. The three named team members and project-card fields below remain unchanged. The in-app videos do not replace the required recorded submission demo.
+
 ## Project Title or Name
 
 TAAKAD

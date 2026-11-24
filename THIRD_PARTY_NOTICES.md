@@ -12,7 +12,7 @@ The direct runtime dependencies declare MIT licenses. Playwright and TypeScript 
 
 ## External services and official feeds
 
-The added learning clips use original project-created geometric storyboards and text, with no downloaded footage or audio. See `docs/LEARNING-MEDIA.md` and `assets/learning/LICENSE.txt` for source, reproduction and scoped reuse permission. `expo-video` declares MIT licensing; its upstream license must accompany redistributed dependencies. No TTS or voice-cloning service is included.
+The active learning clips are the two user-supplied UnknownCallerVideo and UnknownLinkVideo MP4s, copied unchanged with their original audio at the user's express request for app/public-repository inclusion. They replace the generated silent storyboards. See `docs/LEARNING-MEDIA.md`, `assets/learning/media.json` and `assets/learning/LICENSE.txt` for provenance, hashes and the media-specific rights notice. The software MIT license does not relicense these videos or any third-party marks/audio they contain. `expo-video` declares MIT licensing; its upstream license must accompany redistributed dependencies. The app adds no TTS or voice-cloning service.
 
 OpenAI provides inference through its Responses API; no model weights are included in this source. A separate API account/key and available quota are required. Provider terms and data policies apply independently of source-code licenses.
 

@@ -15,7 +15,7 @@ function LearnContent(){
  const visible=lessons.filter(l=>interest==='all'||l.topic===interest);
  function exit(){setSelected(null);setStep(0);setVideo(false);}
  return <Screen key={`${selected}:${step}:${video}`}>
-  <Txt style={styles.heading}>{lesson?content!.title:t.learnTitle}</Txt>
+  <Txt style={styles.heading}>{lesson?video&&lesson.videoId?c.videoTitles[lesson.videoId as 'caller'|'link']:content!.title:t.learnTitle}</Txt>
   {!lesson?<>
    <Txt style={[styles.muted,{marginTop:12}]}>{c.intro}</Txt><InterestFilter/>
    {interest!=='all'&&<Button title={interestCopy[locale].all} secondary onPress={()=>setInterest('all')}/>}
@@ -28,7 +28,7 @@ function LearnContent(){
   </>:<>
    <Button title={c.done} secondary onPress={exit}/>
    {video?<>
-    <LearningVideo key={locale+lesson.id} id={lesson.id as 'codes'|'payments'}/>
+    <LearningVideo key={locale+lesson.id} id={lesson.videoId as 'caller'|'link'}/>
     <Button title={c.close} secondary onPress={()=>setVideo(false)}/>
     <Txt style={[styles.sectionTitle,{marginTop:20}]}>{c.transcript}</Txt>
     {content!.steps.map(([title,body],i)=><View key={title} style={styles.card}><Txt style={styles.sectionTitle}>{i+1}. {title}</Txt><Txt>{body}</Txt></View>)}

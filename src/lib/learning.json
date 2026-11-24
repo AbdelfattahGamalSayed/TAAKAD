@@ -1,6 +1,164 @@
 [
- {"id":"codes","topic":"accounts","icon":"key-outline","video":true,"en":{"title":"Keep your codes private","steps":[["Pause","A caller asks for the code on your phone. Stop before replying."],["Keep it private","Do not share sign-in or payment codes with someone who asks."],["Check yourself","Open the real app or call a number you already trust."]]},"ar":{"title":"احتفظ برموزك لنفسك","steps":[["تمهّل","يطلب متصل الرمز الذي وصلك. توقّف قبل الرد."],["احتفظ به لنفسك","لا تشارك رموز الدخول أو الدفع مع من يطلبها."],["تحقّق بنفسك","افتح التطبيق الرسمي أو اتصل برقم تثق به."]]}},
- {"id":"payments","topic":"money","icon":"card-outline","video":true,"en":{"title":"Check before you pay","steps":[["Do not rush","An urgent payment request may be a trick."],["Check another way","Open the real app yourself. Do not use the message’s link."],["Already paid?","Contact your bank through its app or a trusted number. Keep the message and receipt."]]},"ar":{"title":"تحقّق قبل الدفع","steps":[["لا تستعجل","قد يكون طلب الدفع العاجل خدعة."],["تحقّق بطريقة أخرى","افتح التطبيق الرسمي بنفسك. لا تستخدم رابط الرسالة."],["هل دفعت بالفعل؟","تواصل مع بنكك من تطبيقه أو رقم موثوق. احتفظ بالرسالة والإيصال."]]}},
- {"id":"messages","topic":"messages","icon":"chatbubble-outline","video":false,"en":{"title":"Is this really your friend?","steps":[["Pause","A familiar name or photo can be copied."],["Call your friend","Use the number you already saved, not a new number in the message."],["Wait before helping","Do not send money or codes until you have checked independently."]]},"ar":{"title":"هل هذا صديقك فعلاً؟","steps":[["تمهّل","يمكن نسخ الاسم أو الصورة التي تعرفها."],["اتصل بصديقك","استخدم الرقم المحفوظ لديك، لا رقماً جديداً في الرسالة."],["تحقّق قبل المساعدة","لا ترسل مالاً أو رموزاً حتى تتحقّق بطريقة مستقلة."]]}},
- {"id":"links","topic":"messages","icon":"link-outline","video":false,"en":{"title":"Handle a suspicious link","steps":[["Leave the link alone","Do not open an unexpected link to sign in or pay."],["Open the real app","Check your account or delivery in the app you normally use."],["Save and report","Keep evidence if needed. Use the message app’s block and report options."]]},"ar":{"title":"تعامل مع رابط مشبوه","steps":[["لا تفتح الرابط","لا تفتح رابطاً غير متوقع للدخول أو الدفع."],["افتح التطبيق الرسمي","تحقّق من حسابك أو شحنتك في التطبيق الذي تستخدمه عادةً."],["احتفظ بالدليل وأبلغ","احتفظ بالدليل عند الحاجة. استخدم خيارات الحظر والإبلاغ في تطبيق الرسائل."]]}}
+  {
+    "id": "codes",
+    "topic": "accounts",
+    "icon": "key-outline",
+    "video": true,
+    "en": {
+      "title": "Keep your codes private",
+      "steps": [
+        [
+          "Pause",
+          "A caller claims to be from a government department. Do not approve anything yet."
+        ],
+        [
+          "Keep it private",
+          "Never share a code or approve a UAE PASS request you did not start."
+        ],
+        [
+          "Check yourself",
+          "End the call. Contact the organization using its official app or a number you already trust."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "احتفظ برموزك لنفسك",
+      "steps": [
+        [
+          "تمهّل",
+          "يدّعي متصل أنه من جهة حكومية. لا توافق على أي طلب الآن."
+        ],
+        [
+          "احتفظ به لنفسك",
+          "لا تشارك أي رمز، ولا توافق على طلب في UAE PASS لم تبدأه بنفسك."
+        ],
+        [
+          "تحقّق بنفسك",
+          "أنه المكالمة. تواصل مع الجهة من تطبيقها الرسمي أو عبر رقم تعرفه وتثق به."
+        ]
+      ]
+    },
+    "videoId": "caller"
+  },
+  {
+    "id": "payments",
+    "topic": "money",
+    "icon": "card-outline",
+    "video": false,
+    "en": {
+      "title": "Check before you pay",
+      "steps": [
+        [
+          "Do not rush",
+          "An urgent payment request may be a trick."
+        ],
+        [
+          "Check another way",
+          "Open the real app yourself. Do not use the message’s link."
+        ],
+        [
+          "Already paid?",
+          "Contact your bank through its app or a trusted number. Keep the message and receipt."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "تحقّق قبل الدفع",
+      "steps": [
+        [
+          "لا تستعجل",
+          "قد يكون طلب الدفع العاجل خدعة."
+        ],
+        [
+          "تحقّق بطريقة أخرى",
+          "افتح التطبيق الرسمي بنفسك. لا تستخدم رابط الرسالة."
+        ],
+        [
+          "هل دفعت بالفعل؟",
+          "تواصل مع بنكك من تطبيقه أو رقم موثوق. احتفظ بالرسالة والإيصال."
+        ]
+      ]
+    }
+  },
+  {
+    "id": "messages",
+    "topic": "messages",
+    "icon": "chatbubble-outline",
+    "video": false,
+    "en": {
+      "title": "Is this really your friend?",
+      "steps": [
+        [
+          "Pause",
+          "A familiar name or photo can be copied."
+        ],
+        [
+          "Call your friend",
+          "Use the number you already saved, not a new number in the message."
+        ],
+        [
+          "Wait before helping",
+          "Do not send money or codes until you have checked independently."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "هل هذا صديقك فعلاً؟",
+      "steps": [
+        [
+          "تمهّل",
+          "يمكن نسخ الاسم أو الصورة التي تعرفها."
+        ],
+        [
+          "اتصل بصديقك",
+          "استخدم الرقم المحفوظ لديك، لا رقماً جديداً في الرسالة."
+        ],
+        [
+          "تحقّق قبل المساعدة",
+          "لا ترسل مالاً أو رموزاً حتى تتحقّق بطريقة مستقلة."
+        ]
+      ]
+    }
+  },
+  {
+    "id": "links",
+    "topic": "messages",
+    "icon": "link-outline",
+    "video": true,
+    "en": {
+      "title": "Handle a suspicious link",
+      "steps": [
+        [
+          "Leave the link alone",
+          "Do not open an unexpected link to sign in or pay."
+        ],
+        [
+          "Open the real app",
+          "Check your account or delivery in the app you normally use."
+        ],
+        [
+          "Save and report",
+          "Keep evidence if needed. Use the message app’s block and report options."
+        ]
+      ]
+    },
+    "ar": {
+      "title": "تعامل مع رابط مشبوه",
+      "steps": [
+        [
+          "لا تفتح الرابط",
+          "لا تفتح رابطاً غير متوقع للدخول أو الدفع."
+        ],
+        [
+          "افتح التطبيق الرسمي",
+          "تحقّق من حسابك أو شحنتك في التطبيق الذي تستخدمه عادةً."
+        ],
+        [
+          "احتفظ بالدليل وأبلغ",
+          "احتفظ بالدليل عند الحاجة. استخدم خيارات الحظر والإبلاغ في تطبيق الرسائل."
+        ]
+      ]
+    },
+    "videoId": "link"
+  }
 ]

@@ -1,22 +1,16 @@
-MIT License
+Team-provided learning videos
 
-Applies only to the original TAAKAD learning storyboards, generated MP4 clips,
-and their generation script supplied with this project. No third-party footage,
-music, logos, voices or font files are included in these assets. This permission
-does not relicense dependencies, official feed content or other project assets.
+Files: UnknownCallerVideo.mp4, UnknownLinkVideo.mp4
+Provided by the project maintainer on 24 November 2026, with express instructions
+to copy them into the TAAKAD application and its public GitHub repository.
+The caller source was named UnkownCallerVideo.mp4; only its filename changed.
+Both copies preserve the supplied video and audio bytes.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of these assets and associated source files, to deal in them without restriction,
-including without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies, and to permit persons to whom they
-are furnished to do so, subject to the following conditions:
+Copyright remains with the respective rights holders. No separate blanket
+reuse/relicensing permission was supplied for these videos; the repository's
+software MIT license does not relicense the media or third-party marks/audio.
+Contact the project team for permission for other uses. The team remains
+responsible for confirming any third-party content rights before submission.
 
-The above permission notice shall be included in all copies or substantial
-portions of these assets and source files.
-
-THE ASSETS AND SOURCE FILES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THESE ASSETS OR SOURCE FILES OR THE USE OR OTHER DEALINGS IN THEM.
+The previously generated silent storyboard clips have been replaced. Their
+former scoped MIT notice does not apply to these replacement MP4 files.

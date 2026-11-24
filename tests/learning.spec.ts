@@ -6,17 +6,20 @@ test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'}
 test('topic matching supports both languages and All topics retains general updates',()=>{
  expect(matchesInterest('Bank payment alert','money')).toBe(true);expect(matchesInterest('احم حسابك وكلمة المرور','accounts')).toBe(true);expect(matchesInterest('مكالمة واتساب','messages')).toBe(true);expect(matchesInterest('General cyber awareness','all')).toBe(true);expect(matchesInterest('General cyber awareness','money')).toBe(false);
 });
-for(const locale of ['en','ar'] as const)test(`${locale}: guides, local silent video playback, pause on leaving and written alternative`,async({page})=>{
- const c=learnCopy[locale],lesson=lessons[0][locale];
+for(const locale of ['en','ar'] as const)for(const item of lessons.filter(l=>l.video))test(`${locale} ${item.videoId}: guide, original audio video, pause on leaving and written safety tips`,async({page})=>{
+ const c=learnCopy[locale],lesson=item[locale];
  await page.addInitScript(l=>localStorage.setItem('t2akkad-language',l),locale);await page.goto('/learn');
  await page.getByRole('button',{name:c.guide+' — '+lesson.title,exact:true}).click();
  await expect(page.getByText(lesson.steps[0][1],{exact:true})).toBeVisible();await page.getByRole('button',{name:c.next,exact:true}).click();await expect(page.getByText(lesson.steps[1][1],{exact:true})).toBeVisible();
- await page.screenshot({path:`.local/learn-guide-${locale}.png`});await page.getByRole('button',{name:c.back,exact:true}).click();await expect(page.getByText(lesson.steps[0][1],{exact:true})).toBeVisible();await page.getByRole('button',{name:c.done,exact:true}).first().click();
+ await page.screenshot({path:`.local/learn-guide-${item.videoId}-${locale}.png`});await page.getByRole('button',{name:c.back,exact:true}).click();await expect(page.getByText(lesson.steps[0][1],{exact:true})).toBeVisible();await page.getByRole('button',{name:c.done,exact:true}).first().click();
  await page.getByRole('button',{name:c.watch+' — '+lesson.title,exact:true}).click();
  const video=page.locator('video');await expect(video).toHaveCount(1);await expect.poll(()=>video.evaluate((e:HTMLVideoElement)=>e.readyState)).toBeGreaterThan(1);
- expect(await video.evaluate((e:HTMLVideoElement)=>e.paused)).toBe(true);await page.getByRole('button',{name:c.play,exact:true}).click();
+ const metadata=await video.evaluate((e:HTMLVideoElement)=>({paused:e.paused,muted:e.muted,loop:e.loop,width:e.videoWidth,height:e.videoHeight,duration:e.duration,src:e.currentSrc}));
+ expect(metadata.paused).toBe(true);expect(metadata.muted).toBe(false);expect(metadata.loop).toBe(false);expect(metadata.width).toBe(960);expect(metadata.height).toBe(540);expect(metadata.duration).toBeCloseTo(30,0);expect(metadata.src).toContain(item.videoId==='caller'?'UnknownCallerVideo':'UnknownLinkVideo');
+ await expect(page.getByText(c.videoTitles[item.videoId as 'caller'|'link'],{exact:true})).toBeVisible();await expect(page.getByText(c.videoNote,{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:c.play,exact:true}).click();
  await expect.poll(()=>video.evaluate((e:HTMLVideoElement)=>e.currentTime)).toBeGreaterThan(0.1);await page.getByRole('button',{name:c.pause,exact:true}).click();expect(await video.evaluate((e:HTMLVideoElement)=>e.paused)).toBe(true);
- await expect(page.getByText(lesson.steps[2][1],{exact:true})).toBeVisible();await video.scrollIntoViewIfNeeded();await page.screenshot({path:`.local/learn-video-${locale}.png`});
+ await expect(page.getByText(lesson.steps[2][1],{exact:true})).toBeVisible();await video.scrollIntoViewIfNeeded();await page.screenshot({path:`.local/learn-video-${item.videoId}-${locale}.png`});
  await page.getByRole('button',{name:c.play,exact:true}).click();await page.getByRole('tab',{name:locale==='en'?'Settings':'الإعدادات',exact:true}).click();
  await expect.poll(()=>page.locator('video').evaluateAll(es=>es.every(e=>(e as HTMLVideoElement).paused))).toBe(true);
 });

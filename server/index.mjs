@@ -30,7 +30,7 @@ async function readBody(req, maxBytes = 7_100_000) {
   catch { throw new AnalysisError('INVALID_INPUT'); }
 }
 
-export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth(), reports = createReports(), moderatorToken, supportToken } = {}) {
+export function createServer({ token, analyzeImpl = analyze, extractImpl = extractText, getConfig = readConfig, alerts = alertsService, auth = createDemoAuth(), reports = createReports(), moderatorToken, supportToken, onDiagnostic=()=>{} } = {}) {
   let windowStart = Date.now(), requestCount = 0, inFlight = 0;
   return http.createServer(async (req, res) => {
     try {
@@ -76,15 +76,18 @@ export function createServer({ token, analyzeImpl = analyze, extractImpl = extra
       if (Date.now() - windowStart > 60_000) { requestCount = 0; windowStart = Date.now(); }
       if (++requestCount > 12 || inFlight >= 2) return json(res, 429, { error: 'RATE_LIMIT' });
       inFlight++;
+      const abort=new AbortController();
+      const disconnected=()=>{if(!res.writableEnded)abort.abort();};res.on('close',disconnected);
       try {
         const extracting = req.url === '/api/extract';
         const input = validateInput(await readBody(req), { purpose: extracting ? 'extract' : 'analysis' });
-        const result = await (extracting ? extractImpl : analyzeImpl)(input);
+        const result = await (extracting ? extractImpl : analyzeImpl)(input,{signal:abort.signal,onRetry:event=>onDiagnostic({stage:extracting?'extract':'analyze',event:'retry',...event})});
         return json(res, 200, result);
-      } finally { inFlight--; }
+      } finally { res.removeListener('close',disconnected);inFlight--; }
     } catch (error) {
       const known = error instanceof AnalysisError;
-      if (!res.headersSent) json(res, known ? error.status : 500, { error: known ? error.code : 'SERVER_ERROR' });
+      if(['/api/analyze','/api/extract'].includes(req.url))onDiagnostic({stage:req.url==='/api/extract'?'extract':'analyze',event:'failed',code:known?error.code:'SERVER_ERROR'});
+      if (!res.headersSent&&!res.destroyed) json(res, known ? error.status : 500, { error: known ? error.code : 'SERVER_ERROR' });
     }
   });
 }
@@ -95,7 +98,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if(!existsSync(moderatorFile))writeFileSync(moderatorFile,JSON.stringify({token:randomBytes(32).toString('hex')}));
   const supportFile=new URL('../.local/report-support.json',import.meta.url);
   if(!existsSync(supportFile))writeFileSync(supportFile,JSON.stringify({token:randomBytes(32).toString('hex')}));
-  const server = createServer({ token: session.token, moderatorToken: JSON.parse(readFileSync(moderatorFile,'utf8')).token, supportToken: JSON.parse(readFileSync(supportFile,'utf8')).token });
+  const server = createServer({ token: session.token, moderatorToken: JSON.parse(readFileSync(moderatorFile,'utf8')).token, supportToken: JSON.parse(readFileSync(supportFile,'utf8')).token,
+    onDiagnostic:event=>console.warn('TAAKAD request status: '+JSON.stringify(event)) });
   server.requestTimeout = 60_000;
   server.on('listening',()=>alertsService.start());
   server.on('close',()=>alertsService.stop());

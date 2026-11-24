@@ -66,6 +66,7 @@ When changing network/IP, regenerating local pairing state or changing app code,
 - `API_LIMIT`: temporary provider rate limiting; wait before retrying.
 - `API_AUTH_ERROR` or `API_MODEL_ERROR`: check the private key permissions and configured model.
 - `AI_TIMEOUT`: the check exceeded its deadline. The app stops loading and allows another attempt.
+- A single tap now automatically retries recoverable model/network errors within one 42-second backend budget (at most three attempts). Billing, authentication, consent errors and explicit refusals are not retried. A valid inconclusive result is not retried to force a score. The terminal logs only sanitized stage/error/retry metadata if recovery is needed.
 - `UNAUTHORIZED`: an old bundle may have a different pairing token; reload from the current published QR or republish after replacing local state.
 
 On 24 November 2026 a live provider request and synthetic screenshot extraction succeeded; the latter completed in about 1.2 seconds. The user confirmed that the earlier errors cleared after restarting the combined server. This establishes a working session, not a promise of provider availability during the event.
@@ -81,3 +82,5 @@ The signed-out iPhone returned HTTP 403 requiring account membership. The initia
 ## Browser route validation on 24 November 2026
 
 All 82 backend/helper tests, typecheck and lint passed. The browser demo command reused the running matching session, validated the LAN app/API address and generated an HTTP browser QR. A fresh Chrome session at the actual LAN origin opened guest Check without Expo credentials. A live synthetic screenshot reached extraction, context and AI results; separate Learn guide/video playback and guest Community API checks passed. These desktop checks do not establish physical iPhone/Safari behavior or event Wi-Fi connectivity; verify those before presenting.
+
+The user subsequently confirmed browser startup and the new physical-phone crop flow work. Learn now plays the team's two supplied 30-second English MP4s with original audio, plus written Arabic/English safety tips. Check phone volume and test both clips before presenting. They do not autoplay and pause when leaving Learn.

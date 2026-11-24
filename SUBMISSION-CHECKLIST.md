@@ -1,5 +1,11 @@
 # TAAKAD submission requirements
 
+## Latest verification on 24 November 2026
+
+The user confirmed browser startup and physical-phone cropping work. Final-assessment reliability now includes bounded automatic recovery for transient model/network errors and invalid responses within one app request. The exact earlier failure was not captured; six synthetic live diagnostic checks succeeded before the change. After the change, three live cropped-photo journeys each completed with one final assessment tap. All 93 backend/helper tests and 78 browser tests, typecheck, lint and iOS/Android/web exports passed. Fault injection verifies one HTTP request can recover from an upstream 503 and that invalid data, exhausted retries, billing errors and cancellation cannot fabricate a result. These checks do not guarantee provider uptime.
+
+The two supplied 30-second English learning MP4s replace the generated clips. Exact-byte copies, original audio, file hashes and media-specific rights/provenance notes are included. Both clips play in both interface languages with bilingual written safety tips; no translated audio is claimed. New physical-phone audio/playback confirmation remains separate from browser checks. The earlier dated submission documents need their final content refresh before portal delivery.
+
 Baseline: hackathon and 42 Abu Dhabi campus terms supplied by the user on **2026-11-21**. This is an engineering readiness checklist, not a certification of legal compliance. No deadline, scoring weights, repository visibility requirement, AI-assistance prohibition or mandatory self-trained model was specified in the supplied text. Verify later organizer updates rather than guessing.
 
 ## Requirement mapping
